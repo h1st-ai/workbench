@@ -1,18 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { KeycloakProvider } from '@react-keycloak/web'
+import keycloak from './auth';
+
+import './app.css';
+import DashboardController from './containers/dashboard'
 
 function App() {
   return (
+    <KeycloakProvider keycloak={keycloak}>
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
         H1st Workbench Planceholder
+        <DashboardController />
       </header>
     </div>
+    </KeycloakProvider> 
   );
 }
 
