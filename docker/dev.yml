@@ -1,19 +1,18 @@
-  
 version: "3"
 services:
-#   haproxy:
-#     container_name: haproxy
-#     image: haproxy:2.2.2
-#     port:
-#       - "80:80"
-#     volumes:
-#       - "${H1ST_VSWB_WEB_CONFIG_PATH}:/usr/local/etc/haproxy:ro"
+  #   haproxy:
+  #     container_name: haproxy
+  #     image: haproxy:2.2.2
+  #     port:
+  #       - "80:80"
+  #     volumes:
+  #       - "${H1ST_VSWB_WEB_CONFIG_PATH}:/usr/local/etc/haproxy:ro"
 
   redis:
     container_name: redis
     image: redis
     ports:
-      -  "6379:6379"
+      - "6379:6379"
 
   postgres:
     container_name: postgres
@@ -38,7 +37,8 @@ services:
       - 8080:8080
     volumes:
       - keycloak_data:/var/vswb/keycloak
-      - /Users/khoama/Workspace/Arimo/my-awesome-theme/build:/opt/jboss/keycloak/themes/my-awesome
+      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/h1st:/opt/jboss/keycloak/themes
+      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
     environment:
       - DB_VENDOR=postgres
       - DB_ADDR=postgres
@@ -48,8 +48,7 @@ services:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
 
-
-volumes: 
+volumes:
   keycloak_postgresql:
   keycloak_postgresql_data:
   keycloak_data:
