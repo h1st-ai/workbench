@@ -7,10 +7,16 @@ interface ISearchBox {
   initialValue?: string;
   onChange?: Function;
   onSearch?: Function;
+  placeholder?: string;
 }
 
-function SearchBox({ onChange, onSearch }: ISearchBox) {
+function SearchBox({
+  onChange,
+  onSearch,
+  placeholder = 'Search...',
+}: ISearchBox) {
   const [value, setValue] = useState('');
+  const [plcHolder, setPlaceholder] = useState(placeholder);
 
   const valueChanged = (e: any) => {
     console.log(e.target.value);
@@ -27,9 +33,23 @@ function SearchBox({ onChange, onSearch }: ISearchBox) {
     }
   };
 
+  const onFocus = () => {
+    if (value !== '') {
+      setPlaceholder(value);
+    }
+
+    setValue('');
+  };
+
   return (
     <div className={styles.input}>
-      <input type="text" value={value} onChange={valueChanged} />
+      <input
+        placeholder={plcHolder}
+        type="text"
+        value={value}
+        onChange={valueChanged}
+        onFocus={onFocus}
+      />
       <a onClick={search}>
         <Icon icon="search" />
       </a>
