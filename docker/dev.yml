@@ -30,16 +30,18 @@ services:
       - keycloak_postgresql_data:/var/vswb/postgres/data
 
   keycloak:
-    image: h1st/keycloak:latest
-    # image: jboss/keycloak:11.0.0
+    # image: h1st/keycloak:latest
+    image: jboss/keycloak:11.0.0
+    # build: ../services/auth
     links:
       - postgres
     ports:
       - 8080:8080
     volumes:
       - keycloak_data:/var/vswb/keycloak
-      # - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/h1st:/opt/jboss/keycloak/themes
-      # - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/h1st:/opt/jboss/keycloak/themes
+      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
     environment:
       - DB_VENDOR=postgres
       - DB_ADDR=postgres
@@ -48,6 +50,7 @@ services:
       - DB_PASSWORD=keycloak
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
+      - PROXY_ADDRESS_FORWARDING=true
 
 volumes:
   keycloak_postgresql:
