@@ -1,17 +1,24 @@
 import React from 'react';
 
 interface IIconPropsp {
+  width?: Number;
+  height?: Number;
   icon: string;
   fill?: string;
 }
 
-function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
+function Icon({
+  icon,
+  width = 16,
+  height = 16,
+  fill = '#B0B6C1',
+}: IIconPropsp) {
   switch (icon) {
     case 'user':
       return (
         <svg
-          width="16"
-          height="16"
+          width={width.toString()}
+          height={height.toString()}
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -45,8 +52,8 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
     case 'gear':
       return (
         <svg
-          width="16"
-          height="16"
+          width={width.toString()}
+          height={height.toString()}
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -72,8 +79,8 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
     case 'logout':
       return (
         <svg
-          width="16"
-          height="16"
+          width={width.toString()}
+          height={height.toString()}
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -92,8 +99,8 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
     case 'play':
       return (
         <svg
-          width="14"
-          height="14"
+          width={width.toString()}
+          height={height.toString()}
           viewBox="0 0 14 14"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -112,8 +119,8 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
     case 'stop':
       return (
         <svg
-          width="10"
-          height="10"
+          width={width.toString()}
+          height={height.toString()}
           viewBox="0 0 10 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -125,8 +132,8 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
     case 'pause':
       return (
         <svg
-          width="10"
-          height="10"
+          width={width.toString()}
+          height={height.toString()}
           viewBox="0 0 10 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -141,8 +148,8 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
     case 'search':
       return (
         <svg
-          width="18"
-          height="18"
+          width={width.toString()}
+          height={height.toString()}
           viewBox="0 0 18 18"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -170,6 +177,36 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
+          />
+        </svg>
+      );
+
+    case 'grid':
+      return (
+        <svg
+          width={width.toString()}
+          height={height.toString()}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill={fill}
+        >
+          <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      );
+
+    case 'list':
+      return (
+        <svg
+          width={width.toString()}
+          height={height.toString()}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill={fill}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+            clip-rule="evenodd"
           />
         </svg>
       );
