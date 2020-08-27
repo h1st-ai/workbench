@@ -1,5 +1,9 @@
+:root {
+  --header-height: 52px;
+}
+
 .appHeader {
-  height: 52px;
+  height: var(--header-height);
   background: #ffffff;
   padding: 0px 24px;
   display: flex;
@@ -41,4 +45,56 @@
 
 .logo span {
   margin-left: 8px;
+}
+
+.title {
+  position: absolute;
+  margin: auto;
+  width: 200px;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
+  height: 100%;
+  line-height: var(--header-height);
+}
+
+.userMenu {
+  position: relative;
+  height: 52px;
+  display: flex;
+  align-items: center;
+}
+
+.userMenu ul {
+  position: absolute;
+  right: 0px;
+  top: calc(100% + 4px);
+
+  border-radius: 5px;
+  list-style: none;
+  width: 223px;
+  margin: 0px;
+  padding: 0px;
+  width: 150px;
+  background: #fff;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.05);
+}
+
+.userMenu ul li a {
+  color: var(--color-dblue);
+  text-decoration: none;
+  height: 40px;
+  border-bottom: 1px solid #ebedef;
+  display: flex;
+  align-items: center;
+  padding: 0px 15px;
+}
+
+.userMenu ul li a:lastchild {
+  border-botton: none;
+}
+.userMenu ul li a svg {
+  margin-right: 16px;
 }

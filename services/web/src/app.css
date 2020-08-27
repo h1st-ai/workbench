@@ -3,11 +3,16 @@
 :root {
   --color-primary: #30479b;
   --color-white-1: #f2f4f5;
+  --color-dblue: #2c3d69;
+
+  --color-grey-3: #6b7180;
+  --color-grey-4: #8b98a1;
   --font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
 }
 
 body {
   font-family: var(--font-family);
-  font-size: 100%;
+  /* font-size: 100%; */
   background: var(--color-white-1);
+  color: var(--color-grey-3);
 }
