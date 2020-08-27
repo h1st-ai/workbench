@@ -1,12 +1,13 @@
 import React from 'react';
 import { withKeycloak } from '@react-keycloak/web';
+import AppHeader from 'components/app-header';
+import styles from './style.module.css';
 
 function DashboardContainer({ keycloak }: any) {
   return (
-    <React.Fragment>
-      <p>Dashboard container</p>
-      <p>{JSON.stringify(keycloak)}</p>
-    </React.Fragment>
+    <div>
+      <AppHeader />
+    </div>
   );
 }
 
