@@ -159,14 +159,14 @@ function Icon({
             cy="6.66667"
             r="5.66667"
             stroke={fill}
-            stroke-width="2"
+            strokeWidth="2"
           />
           <circle
             cx="11.3334"
             cy="6.66667"
             r="5.66667"
             stroke={fill}
-            stroke-width="2"
+            strokeWidth="2"
           />
           <line
             x1="7.33337"
@@ -174,9 +174,9 @@ function Icon({
             x2="1.74759"
             y2="16.3333"
             stroke={fill}
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       );
