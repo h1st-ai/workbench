@@ -1,12 +1,20 @@
+import {
+  Resource,
+  Roles,
+  Scopes,
+  AllowAnyRole,
+  Public,
+} from 'nest-keycloak-connect';
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+@Controller('test')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @AllowAnyRole()
+  getHeartBeat(): string {
+    return this.appService.getHeartBeat();
   }
 }
