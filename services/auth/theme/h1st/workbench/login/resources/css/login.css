@@ -60,6 +60,14 @@ body {
   margin: 0px auto;
 }
 
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0px;
+}
+
 .form-horizontal .form-group {
   margin-right: 0px;
   margin-left: 0px;
@@ -92,12 +100,14 @@ body {
   padding-left: 50px;
   background: url(../img/logo.svg) left center no-repeat;
   line-height: 40px;
-  margin: 10vh auto 5vh auto;
+  margin: 7vh auto 3vh auto;
 }
 
 .h1stlogin-pf-social-all {
-  padding: 16px 0px;
+  padding: 24px 0px;
   border-top: 1px solid #ddd;
+  margin-bottom: 0px;
+  margin-top: 24px;
 }
 
 .h1stlogin-pf-social-all .zocial {
@@ -118,4 +128,8 @@ body {
 
 .h1stlogin-pf-social-all .zocial.github {
   background: #30479b url(../img/github.svg) 100px center no-repeat;
+}
+
+#kc-form-options {
+  margin: 10px 0px 20px;
 }
