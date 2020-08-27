@@ -67,6 +67,10 @@
   align-items: center;
 }
 
+.userMenu > a {
+  cursor: pointer;
+}
+
 .userMenu ul {
   position: absolute;
   right: 0px;

@@ -1,0 +1,20 @@
+.input {
+  position: relative;
+  width: 250px;
+  height: 42px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input input {
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  width: 80%;
+  height: 100%;
+}

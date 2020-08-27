@@ -89,6 +89,91 @@ function Icon({ icon, fill = '#B0B6C1' }: IIconPropsp) {
         </svg>
       );
 
+    case 'play':
+      return (
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6.88916 0L13.7782 6.88908L6.88916 13.7782V6.88908V0Z"
+            fill={fill}
+          />
+          <path
+            d="M6.88916 0L13.7782 6.88908L6.88916 13.7782V6.88908V0Z"
+            fill={fill}
+          />
+        </svg>
+      );
+
+    case 'stop':
+      return (
+        <svg
+          width="10"
+          height="10"
+          viewBox="0 0 10 10"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="10" height="10" fill={fill} />
+        </svg>
+      );
+
+    case 'pause':
+      return (
+        <svg
+          width="10"
+          height="10"
+          viewBox="0 0 10 10"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M0 0H3.33333V10H0V0Z" fill={fill} />
+          <path d="M0 0H3.33333V10H0V0Z" fill={fill} />
+          <path d="M6.66667 0H10V10H6.66667V0Z" fill={fill} />
+          <path d="M6.66667 0H10V10H6.66667V0Z" fill={fill} />
+        </svg>
+      );
+
+    case 'search':
+      return (
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="11.3334"
+            cy="6.66667"
+            r="5.66667"
+            stroke={fill}
+            stroke-width="2"
+          />
+          <circle
+            cx="11.3334"
+            cy="6.66667"
+            r="5.66667"
+            stroke={fill}
+            stroke-width="2"
+          />
+          <line
+            x1="7.33337"
+            y1="10.7476"
+            x2="1.74759"
+            y2="16.3333"
+            stroke={fill}
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      );
+
     default:
       return <span>Icon not found</span>;
   }
