@@ -95,7 +95,7 @@ body {
 
   color: #2241b0;
   text-transform: uppercase;
-  max-width: 200px;
+  max-width: 240px;
   min-height: 40px;
   padding-left: 50px;
   background: url(../img/logo.svg) left center no-repeat;
@@ -127,9 +127,21 @@ body {
 }
 
 .h1stlogin-pf-social-all .zocial.github {
-  background: #30479b url(../img/github.svg) 100px center no-repeat;
+  background: #30479b url(../img/github.svg) 16px center no-repeat;
+}
+
+.h1stlogin-pf-social-all .zocial.google {
+  background: #30479b url(../img/google.svg) 16px center no-repeat;
 }
 
 #kc-form-options {
   margin: 10px 0px 20px;
+}
+
+.h1stlogin-pf-social-link {
+  margin-bottom: 16px;
+}
+
+.h1stlogin-pf-social-link:last-child {
+  margin-bottom: 0px;
 }
