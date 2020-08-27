@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="//d2nowutmrjvedl.cloudfront.net/font.css" type="text/css" />
+    <link rel="stylesheet" href="//d2nowutmrjvedl.cloudfront.net/font.css" />
 
     <#if properties.meta?has_content>
         <#list properties.meta?split(' ') as meta>
