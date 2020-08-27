@@ -4,3 +4,27 @@
   /* background: rgba(255, 0, 0, 0.7); */
   padding: 24px 0px;
 }
+
+.toolBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.toolBar .listModes {
+  display: flex;
+}
+
+.toolBar .listModes button {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.toolBar .listModes button.active {
+  color: var(--color-primary);
+}
+
+.toolBar .listModes button.active svg {
+  fill: var(--color-primary) !important;
+}

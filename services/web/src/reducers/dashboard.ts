@@ -32,7 +32,7 @@ export const DashboardSlice = createSlice({
 });
 
 // Actions
-export const countActions = DashboardSlice.actions;
+export const dashboardActions = DashboardSlice.actions;
 
 // Selector
 export const selectDashboard = (state: IStore): IDashboardSlice =>

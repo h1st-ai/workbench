@@ -29,7 +29,7 @@ function SearchBox({
 
   const search = () => {
     if (onSearch) {
-      onSearch.call(value);
+      onSearch(value);
     }
   };
 
@@ -41,6 +41,12 @@ function SearchBox({
     setValue('');
   };
 
+  const onKeyDown = (e: any) => {
+    if (e.key === 'Enter') {
+      search();
+    }
+  };
+
   return (
     <div className={styles.input}>
       <input
@@ -49,6 +55,7 @@ function SearchBox({
         value={value}
         onChange={valueChanged}
         onFocus={onFocus}
+        onKeyDown={onKeyDown}
       />
       <a onClick={search}>
         <Icon icon="search" />
