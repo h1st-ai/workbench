@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
   Controller,
   Get,
@@ -6,29 +7,30 @@ import {
   Request,
   Param,
   Body,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+
 import { AuthGuard } from '@nestjs/passport';
 import { DataService } from 'src/data/data.service';
-import { ProjectRepository } from './projects.repository';
+import { ProjectService } from './project.service';
 
 @UseGuards(AuthGuard('custom'))
 @Controller()
 export class ProjectController {
   constructor(
     private readonly dataService: DataService,
-    @InjectRepository(ProjectRepository)
-    private readonly projectRepository: ProjectRepository,
+    private readonly projectService: ProjectService,
   ) {}
 
   @Get('projects')
-  getAllUserProjects(@Request() req): any {
+  getAllUserProjects(@Request() req: any): any {
     const { preferred_username } = req.user;
     return this.dataService.getAllProjects(preferred_username);
   }
 
   @Post('project')
-  createProject(@Request() req, @Body() metaData: any): any {
+  createProject(@Request() req: any, @Body() metaData: any, @Res() res): any {
     /*
     req.user looks like this
     {
@@ -40,15 +42,22 @@ export class ProjectController {
       "family_name": "Ma",
       "picture": "https://lh3.googleusercontent.com/a-/AOh14GjouHQcSq2gPdOmRJWautCUsp7hk2L9TjW-noI16PQ",
       "email": "khoama@gmail.com"
-    }
+    } 
     */
     const { preferred_username, name, picture } = req.user;
-    // retrieve data from the remote rest API
-    console.log('retrieving from remote');
+    const project_name = metaData.project_name;
 
-    const remoteData: any = this.dataService.createProject(preferred_username);
+    this.projectService
+      .createNewProject({
+        preferred_username,
+        name,
+        picture,
+        project_name,
+      })
+      .catch((ex) => res.status(400).send({ status: 'error', msg: ex }))
+      .then((data) => res.status(HttpStatus.OK).send(data));
 
-    console.log('remoteData', remoteData);
+    // return remoteData;
     /* 
       remoteData looks like this
       {
@@ -59,27 +68,49 @@ export class ProjectController {
         "success": true
       }
     */
-    if (remoteData.success === true) {
-      const { project_name } = metaData;
 
-      const commitResult = this.projectRepository.createNewProject({
-        id: remoteData.item.workbench_id,
-        name: project_name,
-        author_name: name,
-        author_username: preferred_username,
-        author_picture: picture,
-        status: 'starting', // set starting by default
-        workspace: `https://cloud.h1st.ai/project/${remoteData.item.workbench_id}`,
-      });
+    // remoteData.then((data) => {
+    //   if (data.success === true) {
+    //     console.log(
+    //       'metaData ',
+    //       metaData.project_name,
+    //       preferred_username,
+    //       name,
+    //       picture,
+    //     );
 
-      console.log('commitResult', commitResult);
+    //     this.projectRepository
+    //       .createNewProject({
+    //         id: data.item.workbench_id,
+    //         name: metaData.project_name,
+    //         author_name: name,
+    //         author_username: preferred_username,
+    //         author_picture: picture,
+    //         status: 'starting', // set starting by default
+    //         workspace: `https://cloud.h1st.ai/project/${data.item.workbench_id}`,
+    //       })
+    //       .then((savedData) => {
+    //         console.log('commitResult', savedData);
 
-      return commitResult;
-    } else {
-      return {
-        error: 'Error creating project',
-      };
-    }
+    //         return res.json({
+    //           item: savedData,
+    //           status: 'success',
+    //         });
+    //       })
+    //       .catch((ex) => {
+    //         console.log('error saving db', ex);
+
+    //         return {
+    //           status: 'error',
+    //         };
+    //       });
+    //   } else {
+    //     return {
+    //       status: 'error',
+    //       error: 'Error creating project',
+    //     };
+    //   }
+    // });
   }
 
   @Get('project/:id')

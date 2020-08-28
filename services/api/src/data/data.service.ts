@@ -5,7 +5,7 @@ import { response } from 'express';
 @Injectable()
 export class DataService {
   request(url: string, options: any) {
-    console.log('requestiong ', url, options);
+    console.log('fetching remote data ', url, options);
     return fetch(url, options);
   }
 
@@ -60,11 +60,14 @@ export class DataService {
   }
 
   async createProject(username: string) {
+    console.log('creating project');
     const response = await this.request(
       this.makeUrl(`workbenches?user_id=${encodeURIComponent(username)}`),
       { method: 'POST' },
     );
 
-    return await response.json();
+    const res = await response.json();
+    console.log('project created ', res);
+    return res;
   }
 }

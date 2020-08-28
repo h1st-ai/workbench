@@ -14,7 +14,7 @@ import store from 'stores';
 import Dashboard from 'containers/dashboard';
 
 function PrivateRoute({ children, authenticator, ...rest }: any) {
-  console.log('test', authenticator);
+  console.log('test', authenticator.keycloak.token);
 
   if (!authenticator) {
     console.log('no authenticator');
