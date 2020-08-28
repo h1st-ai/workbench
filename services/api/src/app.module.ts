@@ -6,14 +6,16 @@ import {
   RoleGuard,
   AuthGuard,
 } from 'nest-keycloak-connect';
+import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     KeycloakConnectModule.register({
-      authServerUrl: process.env.KEYCLOAK_URL || 'http://localhost:8080/auth',
+      authServerUrl: process.env.KEYCLOAK_URL || 'http://localhost/access/auth',
       realm: process.env.KEYCLOAK_REALM || 'h1st',
       clientId: process.env.KEYCLOAK_CLIENT || 'h1st-workbench-api',
       secret: process.env.KEYCLOAK_SECRET,
