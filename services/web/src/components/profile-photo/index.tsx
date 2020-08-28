@@ -20,8 +20,10 @@ function ProfilePhoto({ keycloak }: any) {
   useEffect(() => {
     async function getProfile() {
       const p = await keycloak.loadUserProfile();
-      console.log(p);
       setProfile(p);
+
+      const test = await fetch('http://localhost/api/test');
+      console.log('test', test);
     }
 
     getProfile();

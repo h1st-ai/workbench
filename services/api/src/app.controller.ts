@@ -1,19 +1,13 @@
-import {
-  Resource,
-  Roles,
-  Scopes,
-  AllowAnyRole,
-  Public,
-} from 'nest-keycloak-connect';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 
 @Controller('test')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @UseGuards(AuthGuard('custom'))
   @Get()
-  @AllowAnyRole()
   getHeartBeat(): string {
     return this.appService.getHeartBeat();
   }

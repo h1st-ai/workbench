@@ -69,15 +69,22 @@
 
 .card {
   list-style: none;
-  width: calc(100% / 3 - 24px);
-  margin-right: 32px;
-  margin-bottom: 32px;
+  width: calc(100% / 3 - 1.2vw);
+  margin-right: 1.5vw;
+  margin-bottom: 1.5vw;
   padding: 24px;
-
   background: #ffffff;
   border-radius: 5px;
   box-sizing: border-box;
-  min-height: 200px;
+  min-height: 150px;
+  height: 15vw;
+  max-height: 230px;
+  transition: transform 150ms;
+}
+
+.card:hover {
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(0px) translateY(-2px);
 }
 
 .card:nth-child(3n) {
