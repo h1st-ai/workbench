@@ -12,6 +12,7 @@ const initialState: IDashboardSlice = {
   searchKeyword: '',
   viewMode: VIEW_MODE_GRID,
   projects: [],
+  showCreateProjectDialog: false,
 };
 
 export const DashboardSlice = createSlice({
@@ -27,6 +28,15 @@ export const DashboardSlice = createSlice({
     },
     setSearchKeyword: (state, { payload }): void => {
       state.searchKeyword = payload.keyword;
+    },
+    setProjects: (state, { payload }): void => {
+      state.projects = payload.projects;
+    },
+    addProject: (state, { payload }): void => {
+      state.projects.unshift(payload.project);
+    },
+    toggleCreateProjectDialog: (state): void => {
+      state.showCreateProjectDialog = !state.showCreateProjectDialog;
     },
   },
 });

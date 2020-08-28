@@ -13,11 +13,20 @@ export class ProjectService {
   async createNewProject(data: any) {
     const { preferred_username, picture, project_name, name } = data;
     // retrieve data from the remote rest API
+
+    /* 
+      remoteData looks like this when success
+      {
+        "item": {
+          "user_id": "khoama@gmail.com",
+          "workbench_id": "6dsqyebqwm"
+        },
+        "success": true
+      }
+    */
     const remoteData: any = await this.dataService.createProject(
       preferred_username,
     );
-
-    console.log('remoteData', remoteData);
 
     if (remoteData.success === true) {
       try {

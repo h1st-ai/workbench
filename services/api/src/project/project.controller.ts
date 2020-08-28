@@ -56,61 +56,6 @@ export class ProjectController {
       })
       .catch((ex) => res.status(400).send({ status: 'error', msg: ex }))
       .then((data) => res.status(HttpStatus.OK).send(data));
-
-    // return remoteData;
-    /* 
-      remoteData looks like this
-      {
-        "item": {
-          "user_id": "khoama@gmail.com",
-          "workbench_id": "6dsqyebqwm"
-        },
-        "success": true
-      }
-    */
-
-    // remoteData.then((data) => {
-    //   if (data.success === true) {
-    //     console.log(
-    //       'metaData ',
-    //       metaData.project_name,
-    //       preferred_username,
-    //       name,
-    //       picture,
-    //     );
-
-    //     this.projectRepository
-    //       .createNewProject({
-    //         id: data.item.workbench_id,
-    //         name: metaData.project_name,
-    //         author_name: name,
-    //         author_username: preferred_username,
-    //         author_picture: picture,
-    //         status: 'starting', // set starting by default
-    //         workspace: `https://cloud.h1st.ai/project/${data.item.workbench_id}`,
-    //       })
-    //       .then((savedData) => {
-    //         console.log('commitResult', savedData);
-
-    //         return res.json({
-    //           item: savedData,
-    //           status: 'success',
-    //         });
-    //       })
-    //       .catch((ex) => {
-    //         console.log('error saving db', ex);
-
-    //         return {
-    //           status: 'error',
-    //         };
-    //       });
-    //   } else {
-    //     return {
-    //       status: 'error',
-    //       error: 'Error creating project',
-    //     };
-    //   }
-    // });
   }
 
   @Get('project/:id')

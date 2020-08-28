@@ -16,3 +16,93 @@ body {
   background: var(--color-white-1);
   color: var(--color-grey-3);
 }
+
+.text-input {
+  /* height: 42px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  border-radius: 5px;
+  -webkit-appearance: none;
+  border: none;
+  outline: none; */
+  line-height: 1.66666667;
+  color: #363636;
+
+  height: 40px;
+  /* line-height: 45px; */
+  padding: 0px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  border-radius: 5px;
+  box-shadow: none;
+  display: block;
+  width: 100%;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.btn {
+  height: 48px;
+  padding: 0px 16px;
+  /*  */
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  border: none;
+
+  /* margin: 8px 8px; */
+}
+
+.btn.primary {
+  color: #fff;
+  width: 100%;
+  background: #30479b;
+}
+
+.modal-wrapper {
+  background: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: #fff;
+  border-radius: 10px;
+  padding: 32px;
+  position: relative;
+  margin: 0px auto;
+  border-top: 2px solid transparent;
+  box-shadow: 0 1px 1px rgba(3, 3, 3, 0.175);
+}
+
+.dialog .form-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.dialog .form-actions button {
+  flex: 1;
+  margin-right: 8px;
+}
+
+.dialog .form-actions button:last-child {
+  margin-right: 0px;
+}
+
+.dialog .close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.dialog .title {
+  margin-top: 0px;
+}

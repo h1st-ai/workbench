@@ -2,24 +2,25 @@ import React from 'react';
 import { withKeycloak } from '@react-keycloak/web';
 import { Provider } from 'react-redux';
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+import { useDispatch, useSelector } from 'react-redux';
 
 import store from 'stores';
+import { authActions } from 'reducers/auth';
 import Dashboard from 'containers/dashboard';
 
 function PrivateRoute({ children, authenticator, ...rest }: any) {
   console.log('test', authenticator.keycloak.token);
 
+  const dispatch = useDispatch();
+
   if (!authenticator) {
     console.log('no authenticator');
     return null;
   }
+
+  dispatch(authActions.setToken({ token: authenticator.keycloak.token }));
 
   return (
     <Route

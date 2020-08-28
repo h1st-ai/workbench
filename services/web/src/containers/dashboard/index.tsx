@@ -10,7 +10,7 @@ function DashboardContainer({ keycloak }: any) {
     <div>
       <AppHeader />
       <div className={styles.container}>
-        <Toolbar />
+        {/* <Toolbar /> */}
         <ProjectList />
       </div>
     </div>

@@ -21,9 +21,6 @@ function ProfilePhoto({ keycloak }: any) {
     async function getProfile() {
       const p = await keycloak.loadUserProfile();
       setProfile(p);
-
-      const test = await fetch('http://localhost/api/test');
-      console.log('test', test);
     }
 
     getProfile();

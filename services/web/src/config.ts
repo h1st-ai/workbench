@@ -1,6 +1,6 @@
 const dev = {
   API: {
-    URL: '/api',
+    URL: 'http://localhost/api',
   },
   AUTH: {
     URL: 'http://localhost/access/auth',
@@ -9,7 +9,7 @@ const dev = {
 
 const prod = {
   API: {
-    URL: '/api',
+    URL: 'https://cloud.h1st.ai/api',
   },
   AUTH: {
     URL: 'http://cloud.h1st.at/auth',

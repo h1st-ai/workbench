@@ -94,3 +94,37 @@
 .card h4 {
   margin: 0px 0px 8px 0px;
 }
+
+.emptyState {
+  display: flex;
+  justify-content: center;
+  margin-top: 10vh;
+  position: relative;
+}
+
+.emptyState > button {
+  cursor: pointer;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  /* left: 40.94%; */
+  /* right: 40.86%; */
+  /* top: 50.44%; */
+  /* bottom: 44.22%; */
+  background: #30479b;
+  border-radius: 5px;
+  width: 200px;
+  height: 48px;
+  margin: auto;
+  color: #fff;
+}
+
+.emptyState input {
+  margin-bottom: 14px;
+}
+
+.emptyState :global(.dialog) {
+  width: 400px;
+}
