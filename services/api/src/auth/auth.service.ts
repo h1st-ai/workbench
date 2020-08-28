@@ -14,7 +14,7 @@ export class AuthService {
     });
 
     const result = await response.json();
-    console.log('response', response.status, result);
+    // console.log('response', response.status, result);
 
     if (response.status === 200 && !result.error) {
       return result;
