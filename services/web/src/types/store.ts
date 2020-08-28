@@ -5,11 +5,15 @@ export interface IDashboardSlice {
 }
 
 export interface IProject {
-  owner: string;
+  author_username: string;
+  author_name: string;
   name: string;
   workspace: string;
-  status: string;
-  collaborators: IProjectCollaborator[];
+  status: boolean;
+  collaborators?: IProjectCollaborator[];
+  author_picture?: string;
+  updated_at?: Date;
+  created_at?: Date;
 }
 
 export interface IProjectCollaborator {

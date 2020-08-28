@@ -3,6 +3,7 @@ import { withKeycloak } from '@react-keycloak/web';
 import AppHeader from 'components/app-header';
 import Toolbar from './toolbar';
 import styles from './style.module.css';
+import ProjectList from './project-lists';
 
 function DashboardContainer({ keycloak }: any) {
   return (
@@ -10,6 +11,7 @@ function DashboardContainer({ keycloak }: any) {
       <AppHeader />
       <div className={styles.container}>
         <Toolbar />
+        <ProjectList />
       </div>
     </div>
   );
