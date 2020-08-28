@@ -16,6 +16,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "classnames": "^2.2.6",
+    "date-fns": "^2.16.0",
     "faker": "^5.1.0",
     "keycloak-js": "11.0.0",
     "react": "16.13.1",

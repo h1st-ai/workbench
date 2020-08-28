@@ -12,8 +12,8 @@ export interface IProject {
   status: boolean;
   collaborators?: IProjectCollaborator[];
   author_picture?: string;
-  updated_at?: Date;
-  created_at?: Date;
+  updated_at: Date;
+  created_at: Date;
 }
 
 export interface IProjectCollaborator {

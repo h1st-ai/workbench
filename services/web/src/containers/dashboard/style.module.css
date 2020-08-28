@@ -1,5 +1,6 @@
 .container {
   max-width: 1440px;
+  width: calc(100vw - 48px);
   margin: 0px auto;
   /* background: rgba(255, 0, 0, 0.7); */
   padding: 24px 0px;
@@ -27,4 +28,62 @@
 
 .toolBar .listModes button.active svg {
   fill: var(--color-primary) !important;
+}
+
+.projectList {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 5px;
+  border: none;
+  margin: 32px 0px;
+}
+
+.projectList tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.projectList th {
+  padding: 0px 24px;
+  height: 55px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--color-grey-3);
+  font-weight: normal;
+}
+
+.projectList td {
+  color: var(--color-grey-3);
+  font-weight: normal;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 16px 24px;
+  min-height: 40px;
+}
+
+.cardList {
+  padding: 0px;
+  margin: 32px 0px;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  list-style: none;
+  width: calc(100% / 3 - 24px);
+  margin-right: 32px;
+  margin-bottom: 32px;
+  padding: 24px;
+
+  background: #ffffff;
+  border-radius: 5px;
+  box-sizing: border-box;
+  min-height: 200px;
+}
+
+.card:nth-child(3n) {
+  margin-right: 0px;
+}
+
+.card h4 {
+  margin: 0px 0px 8px 0px;
 }

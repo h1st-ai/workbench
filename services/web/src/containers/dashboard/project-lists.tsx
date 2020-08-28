@@ -6,6 +6,8 @@ import { IProject, IStore } from 'types/store';
 import { ProjectGridItem, ProjectListItem } from './project';
 import { VIEW_MODE_LIST, VIEW_MODE_GRID } from 'constants/actions';
 
+import styles from './style.module.css';
+
 const data: any = [];
 
 for (let i = 0; i < 12; i++) {
@@ -21,7 +23,7 @@ for (let i = 0; i < 12; i++) {
   });
 }
 
-export default function ProjectLists() {
+export default function ProjectLists(): any {
   const { viewMode } = useSelector((store: IStore) => store.dashboard);
   const projects = data.map((p: IProject) => {
     if (viewMode === VIEW_MODE_LIST) {
@@ -29,6 +31,22 @@ export default function ProjectLists() {
     } else if (viewMode === VIEW_MODE_GRID) {
       return <ProjectGridItem {...p} />;
     }
-    return <li>{JSON.stringify(p)}</li>;
+    // return <li>{JSON.stringify(p)}</li>;
   });
+
+  if (viewMode === VIEW_MODE_LIST) {
+    return (
+      <table className={styles.projectList}>
+        <tr>
+          <th>Project Name</th>
+          <th>Author</th>
+          <th>Last updated</th>
+        </tr>
+        {projects}
+      </table>
+    );
+  } else if (viewMode === VIEW_MODE_GRID) {
+    return <ul className={styles.cardList}>{projects}</ul>;
+  }
+  return projects;
 }

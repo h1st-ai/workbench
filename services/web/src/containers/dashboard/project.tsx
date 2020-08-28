@@ -1,5 +1,6 @@
 import React from 'react';
 import { IProject } from 'types/store';
+import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 
 import styles from './style.module.css';
 // import { Avatar } from 'components/profile-photo';
@@ -18,7 +19,7 @@ export function ProjectListItem({
     <tr>
       <td>{name}</td>
       <td>{author_name}</td>
-      <td>{updated_at}</td>
+      <td>{formatDistance(updated_at, new Date())}</td>
     </tr>
   );
 }
@@ -45,9 +46,9 @@ export function ProjectGridItem({
   return (
     <li className={styles.card}>
       <h4>{name}</h4>
-      <p>
-        Last edited <span>{updated_at}</span>{' '}
-      </p>
+      <small>
+        Last edited <span>{formatDistance(updated_at, new Date())}</span>
+      </small>
 
       <div className={styles.author}>
         {/* <Avatar profile={author} size="medium" /> */}
