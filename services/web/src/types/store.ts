@@ -3,6 +3,8 @@ export interface IDashboardSlice {
   searchKeyword: string;
   projects: IProject[];
   showCreateProjectDialog: boolean;
+  currentProjectStatus: string | null;
+  pollingProjectId: string | null;
 }
 
 export interface IProject {

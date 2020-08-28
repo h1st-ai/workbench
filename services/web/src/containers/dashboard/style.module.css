@@ -128,3 +128,38 @@
 .emptyState :global(.dialog) {
   width: 400px;
 }
+
+.creatingPane {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* font-size: 14px; */
+  line-height: 16px;
+  font-size: 14px;
+}
+
+.creatingPane ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px 40px 40px;
+}
+
+.creatingPane ul li {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+  position: relative;
+  margin: 16px;
+}
+
+.creatingPane ul li svg {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 2px;
+}
+
+.creatingPane ul li.done {
+  color: #1a804d;
+}

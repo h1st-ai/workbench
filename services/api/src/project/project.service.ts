@@ -10,6 +10,43 @@ export class ProjectService {
     @InjectRepository(ProjectRepository)
     private readonly projectRepository: ProjectRepository,
   ) {}
+  async findMyProject(author_username: string) {
+    const remoteData: any = await this.dataService.getAllProjects(
+      author_username,
+    );
+
+    let result = [];
+
+    if (remoteData.success === true) {
+      result = await this.projectRepository
+        .createQueryBuilder('project')
+        .where('project.author_username = :author_username', {
+          author_username,
+        })
+        .getMany();
+
+      // update table with newest status
+      const mappedTable = {};
+
+      remoteData.items.forEach((i) => {
+        mappedTable[i.workbench_id] = i.status;
+      });
+
+      result = result.map((p) => {
+        if (mappedTable[p.id]) {
+          return { ...p, status: mappedTable[p.id] };
+        }
+
+        return { ...p };
+      });
+
+      console.log('result ', result);
+      return result;
+    }
+
+    return result;
+  }
+
   async createNewProject(data: any) {
     const { preferred_username, picture, project_name, name } = data;
     // retrieve data from the remote rest API

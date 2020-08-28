@@ -26,7 +26,7 @@ export class ProjectController {
   @Get('projects')
   getAllUserProjects(@Request() req: any): any {
     const { preferred_username } = req.user;
-    return this.dataService.getAllProjects(preferred_username);
+    return this.projectService.findMyProject(preferred_username);
   }
 
   @Post('project')

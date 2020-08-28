@@ -13,6 +13,8 @@ const initialState: IDashboardSlice = {
   viewMode: VIEW_MODE_GRID,
   projects: [],
   showCreateProjectDialog: false,
+  currentProjectStatus: null,
+  pollingProjectId: null,
 };
 
 export const DashboardSlice = createSlice({
@@ -37,6 +39,12 @@ export const DashboardSlice = createSlice({
     },
     toggleCreateProjectDialog: (state): void => {
       state.showCreateProjectDialog = !state.showCreateProjectDialog;
+    },
+    setCurrentProjectStatus: (state, { payload }): void => {
+      state.currentProjectStatus = payload.status;
+    },
+    setPollingProjectId: (state, { payload }): void => {
+      state.pollingProjectId = payload.id;
     },
   },
 });

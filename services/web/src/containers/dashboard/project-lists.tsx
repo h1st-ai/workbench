@@ -1,33 +1,18 @@
-import React, { useState, ReactElement } from 'react';
-import faker from 'faker';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useAxios from 'axios-hooks';
 import { withKeycloak } from '@react-keycloak/web';
 
 import { makeApiParams } from 'data/client';
 import { dashboardActions } from 'reducers/dashboard';
-import Icon from 'components/icon';
 
 import { IProject, IStore } from 'types/store';
 import { ProjectGridItem, ProjectListItem } from './project';
 import { VIEW_MODE_LIST, VIEW_MODE_GRID } from 'constants/actions';
 
+import CreateProjectDialog from './project-dialog';
+
 import styles from './style.module.css';
-
-// const data: any = [];
-
-// for (let i = 0; i < 12; i++) {
-//   data.push({
-//     author_username: faker.internet.userName(),
-//     author_name: faker.name.findName(),
-//     name: faker.commerce.productName(),
-//     workspace: 'home/project/workbench',
-//     status: faker.random.boolean(),
-//     owner_picture: faker.internet.avatar(),
-//     created_at: faker.date.past(),
-//     updated_at: faker.date.past(),
-//   });
-// }
 
 function ProjectLists({ keycloak }: any): any {
   const {
@@ -194,6 +179,7 @@ function ProjectLists({ keycloak }: any): any {
   }
 
   const projectList = projects.map((p: IProject) => {
+    console.log(p);
     if (viewMode === VIEW_MODE_LIST) {
       return <ProjectListItem {...p} />;
     } else if (viewMode === VIEW_MODE_GRID) {
@@ -217,45 +203,6 @@ function ProjectLists({ keycloak }: any): any {
   }
 
   return projectList;
-}
-
-function CreateProjectDialog() {
-  const { addProject, toggleCreateProjectDialog } = dashboardActions;
-  const [value, setValue] = useState('');
-  const dispatch = useDispatch();
-
-  const { viewMode, projects, showCreateProjectDialog } = useSelector(
-    (store: IStore) => store.dashboard,
-  );
-
-  if (showCreateProjectDialog) {
-    return (
-      <div className="modal-wrapper">
-        <div className="dialog">
-          <h3 className="title">Create a new Project</h3>
-          <input
-            className="text-input"
-            placeholder="Project Name"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          <div className="form-actions">
-            <button disabled={!value} className="btn primary">
-              CREATE
-            </button>
-            <button
-              className="btn"
-              onClick={() => dispatch(toggleCreateProjectDialog())}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
 }
 
 export default withKeycloak(ProjectLists);

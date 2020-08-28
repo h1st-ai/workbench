@@ -7,4 +7,8 @@ export class ProjectRepository extends Repository<Project> {
   createNewProject = async (project: Project): Promise<any> => {
     return await this.save([project]);
   };
+
+  findMyProjects = async (author_username: string): Promise<any> => {
+    return await this.find({ author_username });
+  };
 }

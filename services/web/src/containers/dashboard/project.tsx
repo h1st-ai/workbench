@@ -34,6 +34,9 @@ export function ProjectGridItem({
   updated_at,
   created_at,
 }: IProject) {
+  if (!author_name) {
+    return null;
+  }
   const author = {
     username: author_username,
     firstName: author_name.split(' ')[0],
