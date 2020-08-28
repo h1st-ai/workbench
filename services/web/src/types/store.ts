@@ -2,6 +2,7 @@ export interface IDashboardSlice {
   viewMode: string;
   searchKeyword: string;
   projects: IProject[];
+  showCreateProjectDialog: boolean;
 }
 
 export interface IProject {
@@ -23,6 +24,11 @@ export interface IProjectCollaborator {
   picture: string;
 }
 
+export interface IAuthSlice {
+  token: String;
+}
+
 export interface IStore {
+  auth: IAuthSlice;
   dashboard: IDashboardSlice;
 }
