@@ -15,59 +15,56 @@ export class DataService {
 
   async getAllProjects(username: string) {
     const response = await this.request(
-      this.makeUrl(`workbenches?user_id=${username}`),
+      this.makeUrl(`workbenches?user_id=${encodeURIComponent(username)}`),
       { method: 'GET' },
     );
 
-    console.log('result', response);
-    const result = await response.json();
-
-    return result;
+    return await response.json();
   }
 
   async startProject(project_id: string, username: string) {
     const response = await this.request(
-      this.makeUrl(`workbenches/${project_id}/start?user_id=${username}`),
+      this.makeUrl(
+        `workbenches/${project_id}/start?user_id=${encodeURIComponent(
+          username,
+        )}`,
+      ),
       { method: 'POST' },
     );
 
-    console.log('result', response);
-    const result = await response.json();
-
-    return result;
+    return await response.json();
   }
 
   async stopProject(project_id: string, username: string) {
     const response = await this.request(
-      this.makeUrl(`workbenches/${project_id}/stop?user_id=${username}`),
+      this.makeUrl(
+        `workbenches/${project_id}/stop?user_id=${encodeURIComponent(
+          username,
+        )}`,
+      ),
       { method: 'POST' },
     );
 
-    console.log('result', response);
-    const result = await response.json();
-
-    return result;
+    return await response.json();
   }
 
   async getProjectInfo(project_id: string, username: string) {
     const response = await this.request(
-      this.makeUrl(`workbenches/${project_id}?user_id=${username}`),
+      this.makeUrl(
+        `workbenches/${project_id}?user_id=${encodeURIComponent(username)}`,
+      ),
       { method: 'GET' },
     );
 
-    const result = await response.json();
-
-    return result;
+    return await response.json();
   }
 
   async createProject(username: string) {
     const response = await this.request(
-      this.makeUrl(`workbenches?user_id=${username}`),
+      this.makeUrl(`workbenches?user_id=${encodeURIComponent(username)}`),
       { method: 'POST' },
     );
 
-    const result = await response.json();
-
-    return result;
+    return await response.json();
   }
 }

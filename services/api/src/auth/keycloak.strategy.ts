@@ -10,8 +10,6 @@ export class KeycloakStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(req: any): Promise<any> {
-    console.log('validating ', req);
-
     const { authorization } = req.headers;
     const user = await this.authService.validateUser(authorization);
     if (!user) {
