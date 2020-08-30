@@ -12,7 +12,7 @@ const prod = {
     URL: 'https://cloud.h1st.ai/api',
   },
   AUTH: {
-    URL: 'https://cloud.h1st.at/auth',
+    URL: 'https://cloud.h1st.ai/auth',
   },
 };
 
