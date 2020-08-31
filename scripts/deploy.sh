@@ -18,7 +18,11 @@ ssh ubuntu@13.52.242.238 << EOF
     )
 
     (
+        sudo docker build -f docker/Dockerfile -t h1st/dashboard-api .
         cd services/api
-        yarn migration:run
+        sudo docker run --rm --env-file .env h1st/dashboard-api yarn migration:run
+        (sudo docker rm -f dashboard_api || true)
+        sudo docker run -d --name dashboard_api --restart always --env-file .env \
+            -p 3001:3001 h1st/dashboard-api
     )
 EOF
