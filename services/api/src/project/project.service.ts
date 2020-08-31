@@ -91,6 +91,7 @@ export class ProjectService {
           status: 'success',
         };
       } catch (e) {
+        console.log(e);
         return {
           status: 'error',
           error: 'Error saving project',
