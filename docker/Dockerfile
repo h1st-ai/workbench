@@ -8,4 +8,4 @@ EXPOSE 3000
 WORKDIR /app
 RUN yarn && yarn build
 
-CMD ["yarn", "start"]
+CMD ["node", "dist/src/main.js"]
