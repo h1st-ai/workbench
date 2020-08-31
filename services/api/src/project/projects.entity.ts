@@ -26,7 +26,11 @@ export class Project {
   @Column({ length: 20, default: 'running' })
   status: string;
 
-  @Column({ length: 255 })
+  @Column({
+    length: 255,
+    nullable: true,
+    default: 'http://static.h1st.ai/user/default.png',
+  })
   author_picture?: string;
 
   @UpdateDateColumn()
