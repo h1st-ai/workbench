@@ -60,6 +60,15 @@ export const DashboardSlice = createSlice({
         state.projects[index] = updated;
       }
     },
+    removeProjectAt: (state, { payload }): void => {
+      const { index } = payload;
+
+      const updatee = state.projects[index];
+
+      if (updatee) {
+        state.projects.splice(index, 1);
+      }
+    },
   },
 });
 

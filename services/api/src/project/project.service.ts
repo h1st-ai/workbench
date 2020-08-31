@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataService } from 'src/data/data.service';
 import { ProjectRepository } from './projects.repository';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Project } from './projects.entity';
 
 @Injectable()
 export class ProjectService {
@@ -44,6 +45,25 @@ export class ProjectService {
       return { status: 'success', items: result };
     } else {
       return { status: 'error' };
+    }
+  }
+
+  async deleteProject(id: string) {
+    try {
+      console.log("'Deleting project");
+      const result = await this.projectRepository
+        .createQueryBuilder('project')
+        .delete()
+        .from(Project)
+        .where('id = :id', { id })
+        .execute();
+
+      return {
+        item: result,
+        status: 'success',
+      };
+    } catch (error) {
+      console.log('Cannot delete project', error);
     }
   }
 

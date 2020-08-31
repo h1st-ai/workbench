@@ -84,4 +84,17 @@ export class DataService {
     console.log('project created ', res);
     return res;
   }
+
+  async deleteProject(id: string, username: string) {
+    console.log('deleting project');
+    const response = await this.request(
+      this.makeUrl(`workbenches/${id}?user_id=${encodeURIComponent(username)}`),
+      { method: 'DELETE' },
+    );
+
+    console.log('result from remote data ', response);
+    const res = await response.json();
+    console.log('project delete ', res);
+    return res;
+  }
 }

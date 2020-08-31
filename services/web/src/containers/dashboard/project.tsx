@@ -43,7 +43,7 @@ export function ProjectGridItem({
   id,
   index,
 }: IProject) {
-  const { updateProjectInfo } = dashboardActions;
+  const { updateProjectInfo, removeProjectAt } = dashboardActions;
   const dispatch = useDispatch();
 
   const [startLoading, setStartLoading] = useState(false);
@@ -144,7 +144,7 @@ export function ProjectGridItem({
   }
 
   async function stop() {
-    if (startLoading) return false;
+    if (stopLoading) return false;
 
     setStopLoading(true);
 
@@ -184,6 +184,44 @@ export function ProjectGridItem({
       console.log(error);
     } finally {
       setStopLoading(false);
+    }
+  }
+
+  async function deleteProject() {
+    if (trashLoading) return false;
+
+    const confirmedName = prompt(
+      `Are you sure you want to delete "${name}"? Confirm by enter this project's name.`,
+    );
+
+    if (!confirmedName) return null;
+
+    if (confirmedName.toLocaleLowerCase() !== name.toLocaleLowerCase()) {
+      return alert('Names mismatched');
+    }
+
+    setTrashLoading(true);
+
+    try {
+      const res = await axious.request(
+        makeApiParams({
+          url: `project/${id}`,
+          method: 'DELETE',
+          token,
+        }),
+      );
+
+      if (res.data.status === 'success') {
+        setTrashLoading(false);
+
+        dispatch(
+          removeProjectAt({
+            index,
+          }),
+        );
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -230,8 +268,9 @@ export function ProjectGridItem({
           {renderStatus()} {btn}
         </div>
 
-        <button className={styles.trashBtn} onClick={toggleMenu}>
-          <Icon icon="trash" width={20} height={20} />
+        <button className={styles.trashBtn} onClick={deleteProject}>
+          {trashLoading && <ThreeDotIndicator width={20} fill="#bbb" />}
+          {!trashLoading && <Icon icon="trash" width={20} height={20} />}
         </button>
       </div>
     );

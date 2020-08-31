@@ -9,6 +9,7 @@ import {
   Body,
   Res,
   HttpStatus,
+  Delete,
 } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
@@ -70,6 +71,14 @@ export class ProjectController {
   getProjectInfo(@Param('id') id, @Request() req): any {
     const { preferred_username } = req.user;
     return this.dataService.getProjectInfo(id, preferred_username);
+  }
+
+  @Delete('project/:id')
+  deleteProject(@Param('id') id, @Request() req): any {
+    const { preferred_username } = req.user;
+    this.dataService.deleteProject(id, preferred_username);
+
+    return this.projectService.deleteProject(id);
   }
 
   @Post('project/:id/start')
