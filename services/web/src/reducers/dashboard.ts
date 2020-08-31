@@ -50,6 +50,16 @@ export const DashboardSlice = createSlice({
     setPollingProjectId: (state, { payload }): void => {
       state.pollingProjectId = payload.id;
     },
+    updateProjectInfo: (state, { payload }): void => {
+      const { index, transformer } = payload;
+
+      const updatee = state.projects[index];
+
+      if (updatee) {
+        const updated = transformer(updatee);
+        state.projects[index] = updated;
+      }
+    },
   },
 });
 

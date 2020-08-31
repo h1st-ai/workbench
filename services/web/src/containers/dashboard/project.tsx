@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { IProject, IStore } from 'types/store';
 import { formatDistance } from 'date-fns';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { dashboardActions } from 'reducers/dashboard';
 import Icon from 'components/icon';
 import { ThreeDotIndicator } from 'components/load-indicator';
 import axious from 'axios';
@@ -40,7 +41,11 @@ export function ProjectGridItem({
   updated_at,
   created_at,
   id,
+  index,
 }: IProject) {
+  const { updateProjectInfo } = dashboardActions;
+  const dispatch = useDispatch();
+
   const [startLoading, setStartLoading] = useState(false);
   const [trashLoading, setTrashLoading] = useState(false);
   const [stopLoading, setStopLoading] = useState(false);
@@ -74,7 +79,7 @@ export function ProjectGridItem({
     interval: number,
     resultHandler: Function,
     desiredValue: any,
-    onFinsish: Function,
+    onFinsish?: Function,
   ) {
     setTimeout(async () => {
       const result = await axious.request(
@@ -97,7 +102,7 @@ export function ProjectGridItem({
           onFinsish,
         );
       } else {
-        onFinsish(result);
+        if (onFinsish) onFinsish(result);
       }
     });
   }
@@ -123,13 +128,62 @@ export function ProjectGridItem({
           3000,
           (e: any) => e.data.item.status,
           'running',
-          () => (window.location.href = `https://cloud.h1st.ai/project/${id}/`),
+          () => {
+            setTimeout(
+              () =>
+                (window.location.href = `https://cloud.h1st.ai/project/${id}/`),
+              3000,
+            );
+          },
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      setStartLoading(false);
+    }
+  }
+
+  async function stop() {
+    if (startLoading) return false;
+
+    setStopLoading(true);
+
+    try {
+      const res = await axious.request(
+        makeApiParams({
+          url: `project/${id}/stop`,
+          method: 'POST',
+          token,
+        }),
+      );
+
+      if (res.data.success) {
+        poll(
+          `project/${id}`,
+          { method: 'GET' },
+          3000,
+          (e: any) => e.data.item.status,
+          'stopped',
+          () => {
+            dispatch(
+              updateProjectInfo({
+                index,
+                transformer: (input: IProject) => ({
+                  ...input,
+                  status: 'stopped',
+                }),
+              }),
+            );
+
+            // give some time for the renderer to work
+            setTimeout(() => setStopLoading(false), 5000);
+          },
         );
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setStartLoading(false);
+      setStopLoading(false);
     }
   }
 
@@ -158,8 +212,14 @@ export function ProjectGridItem({
 
       case 'running':
         btn = (
-          <button className={`${styles.actionBtn} ${styles.playBtn}`}>
-            <Icon icon="stop" width={20} height={20} />
+          <button
+            className={`${styles.actionBtn} ${styles.playBtn}`}
+            onClick={stop}
+          >
+            {stopLoading && <ThreeDotIndicator width={20} fill="#bbb" />}
+            {!stopLoading && (
+              <Icon icon="stop" fill="#f00" width={20} height={20} />
+            )}
           </button>
         );
     }

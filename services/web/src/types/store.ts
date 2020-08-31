@@ -18,6 +18,7 @@ export interface IProject {
   author_picture?: string;
   updated_at: Date;
   created_at: Date;
+  index: number;
 }
 
 export interface IProjectCollaborator {
