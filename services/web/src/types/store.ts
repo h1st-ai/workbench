@@ -8,6 +8,7 @@ export interface IDashboardSlice {
 }
 
 export interface IProject {
+  id: string;
   author_username: string;
   author_name: string;
   name: string;

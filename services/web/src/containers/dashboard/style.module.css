@@ -1,5 +1,5 @@
 .container {
-  max-width: 1440px;
+  max-width: 1080px;
   width: calc(100vw - 48px);
   margin: 0px auto;
   /* background: rgba(255, 0, 0, 0.7); */
@@ -95,6 +95,11 @@
   margin: 0px 0px 8px 0px;
 }
 
+.card a {
+  text-decoration: none;
+  color: val(--color-primary);
+}
+
 .emptyState {
   display: flex;
   justify-content: center;
@@ -143,6 +148,7 @@
   list-style: none;
   padding: 0px;
   margin: 0px 40px 40px;
+  min-width: 65%;
 }
 
 .creatingPane ul li {
@@ -162,4 +168,12 @@
 
 .creatingPane ul li.done {
   color: #1a804d;
+}
+
+.topbarBtn {
+  position: absolute;
+  top: 6px;
+  right: 80px;
+  width: 162px !important;
+  height: 40px !important;
 }

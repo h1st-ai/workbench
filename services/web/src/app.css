@@ -81,11 +81,13 @@ body {
   margin: 0px auto;
   border-top: 2px solid transparent;
   box-shadow: 0 1px 1px rgba(3, 3, 3, 0.175);
+  min-width: 400px;
 }
 
 .dialog .form-actions {
   display: flex;
   justify-content: center;
+  margin-top: 16px;
 }
 
 .dialog .form-actions button {

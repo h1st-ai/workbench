@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useAxios from 'axios-hooks';
+import axios from 'axios';
 import { withKeycloak } from '@react-keycloak/web';
 
 import { makeApiParams } from 'data/client';
@@ -13,6 +14,7 @@ import { VIEW_MODE_LIST, VIEW_MODE_GRID } from 'constants/actions';
 import CreateProjectDialog from './project-dialog';
 
 import styles from './style.module.css';
+import Axios from 'axios';
 
 function ProjectLists({ keycloak }: any): any {
   const {
@@ -25,27 +27,46 @@ function ProjectLists({ keycloak }: any): any {
     (store: IStore) => store.dashboard,
   );
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
-  const [{ data, loading, error }, refetch] = useAxios(
-    makeApiParams({
-      url: 'projects',
-      method: 'GET',
-      token: keycloak.token,
-    }),
-  );
+  useEffect(() => {
+    axios
+      .request(
+        makeApiParams({
+          url: 'projects',
+          method: 'GET',
+          token: keycloak.token,
+        }),
+      )
+      .then((res) => {
+        if (res.data.status === 'success') {
+          dispatch(setProjects({ projects: res.data.items }));
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error!</p>;
+  let topbarButton = null;
+  let itemToDisplay = null;
 
-  if (!loading && !error && data.success) {
-    dispatch(setProjects({ projects: data.items }));
+  if (!loading && projects.length > 0) {
+    topbarButton = (
+      <button
+        className={`${styles.topbarBtn} btn primary`}
+        onClick={() => dispatch(toggleCreateProjectDialog({ value: true }))}
+      >
+        Create a project
+      </button>
+    );
   }
 
   if (!loading && projects.length === 0) {
     return (
       <div className={styles.emptyState}>
         <CreateProjectDialog />
-        <button onClick={() => dispatch(toggleCreateProjectDialog())}>
+        <button
+          onClick={() => dispatch(toggleCreateProjectDialog({ value: true }))}
+        >
           Create your first project
         </button>
         <svg
@@ -188,7 +209,7 @@ function ProjectLists({ keycloak }: any): any {
   });
 
   if (viewMode === VIEW_MODE_LIST) {
-    return (
+    itemToDisplay = (
       <table className={styles.projectList}>
         <tr>
           <th>Project Name</th>
@@ -199,10 +220,20 @@ function ProjectLists({ keycloak }: any): any {
       </table>
     );
   } else if (viewMode === VIEW_MODE_GRID) {
-    return <ul className={styles.cardList}>{projectList}</ul>;
+    itemToDisplay = (
+      <React.Fragment>
+        <ul className={styles.cardList}>{projectList}</ul>
+      </React.Fragment>
+    );
   }
 
-  return projectList;
+  return (
+    <React.Fragment>
+      {itemToDisplay}
+      {topbarButton}
+      <CreateProjectDialog />
+    </React.Fragment>
+  );
 }
 
 export default withKeycloak(ProjectLists);

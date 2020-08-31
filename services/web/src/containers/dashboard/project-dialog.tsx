@@ -11,6 +11,7 @@ import axios from 'axios';
 import styles from './style.module.css';
 import Icon from 'components/icon';
 import { makeApiParams } from 'data/client';
+import { Route } from 'react-router-dom';
 
 export default function CreateProjectDialog() {
   const {
@@ -21,27 +22,55 @@ export default function CreateProjectDialog() {
 
   const [value, setValue] = useState('');
   const [projectId, setProjectId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const { token } = useSelector((store: IStore) => store.auth);
-  const {
-    viewMode,
-    currentProjectStatus,
-    showCreateProjectDialog,
-  } = useSelector((store: IStore) => store.dashboard);
+  const { currentProjectStatus, showCreateProjectDialog } = useSelector(
+    (store: IStore) => store.dashboard,
+  );
 
-  // function createProject() {
-  //
-  // }
+  let pollInterVal = 1000;
+
+  function poll(pId: string) {
+    axios
+      .request(
+        makeApiParams({
+          url: `project/${pId}`,
+          method: 'GET',
+          token,
+        }),
+      )
+      .then((res) => {
+        const currentStatus = res.data.item.status;
+
+        if (currentStatus === 'running') {
+          setLoading(false);
+          window.location.href = `https://cloud.h1st.ai/project/${pId}`;
+        } else {
+          setTimeout(
+            () => {
+              poll(pId);
+            },
+            pollInterVal < 10000 ? (pollInterVal += 1000) : pollInterVal,
+          );
+        }
+      });
+  }
 
   if (showCreateProjectDialog) {
     return (
       <div className="modal-wrapper">
         <div className="dialog">
           <h3 className="title">Create a new Project</h3>
-          {currentProjectStatus && <CreateProjectStatus projectName={value} />}
+          {loading && (
+            <div className={styles.creatingPane}>
+              <LoadingIndicator />
+              <p>Creating {value}...</p>
+            </div>
+          )}
 
-          {!currentProjectStatus && (
+          {!loading && (
             <div>
               <input
                 className="text-input"
@@ -54,6 +83,7 @@ export default function CreateProjectDialog() {
                   disabled={!value}
                   className="btn primary"
                   onClick={async () => {
+                    setLoading(true);
                     dispatch(setCurrentProjectStatus({ status: 'creating' }));
 
                     const res = await axios.request(
@@ -68,11 +98,10 @@ export default function CreateProjectDialog() {
                     );
 
                     console.log('res', res);
-                    if (res.data.status === 'sucess') {
-                      const { id, status } = res.data.item;
+                    if (res.data.status === 'success') {
+                      const { id } = res.data.item[0];
                       setProjectId(id);
-                      dispatch(setCurrentProjectStatus({ status }));
-                      dispatch(setPollingProjectId({ id }));
+                      setTimeout(() => poll(id), 1000);
                     }
                   }}
                 >
@@ -80,7 +109,9 @@ export default function CreateProjectDialog() {
                 </button>
                 <button
                   className="btn"
-                  onClick={() => dispatch(toggleCreateProjectDialog())}
+                  onClick={() =>
+                    dispatch(toggleCreateProjectDialog({ value: false }))
+                  }
                 >
                   Cancel
                 </button>
@@ -92,116 +123,5 @@ export default function CreateProjectDialog() {
     );
   }
 
-  return null;
-}
-
-function CreateProjectStatus({ projectName }: any) {
-  const {
-    setCurrentProjectStatus,
-    toggleCreateProjectDialog,
-  } = dashboardActions;
-
-  const dispatch = useDispatch();
-  const { token } = useSelector((store: IStore) => store.auth);
-  const { currentProjectStatus, pollingProjectId } = useSelector(
-    (store: IStore) => store.dashboard,
-  );
-
-  const loading = true;
-
-  if (currentProjectStatus !== 'running') {
-    setTimeout(async () => {
-      const res = await axios.request(
-        makeApiParams({
-          url: `projects/${pollingProjectId}`,
-          method: 'POST',
-          token,
-        }),
-      );
-
-      console.log(res.data);
-
-      dispatch(setCurrentProjectStatus({ status: 'starting' }));
-    }, 2000);
-  }
-
-  let currentStep = 1;
-
-  switch (currentProjectStatus) {
-    case 'starting':
-      currentStep = 1;
-      break;
-
-    case 'running':
-      currentStep = 2;
-
-    default:
-      currentStep = 0;
-      break;
-  }
-
-  const steps = [
-    {
-      finished: 'Project created!',
-      label: 'Creating...',
-      future: 'Creat a project',
-    },
-    {
-      finished: 'Project initialized!',
-      label: 'Initializing...',
-      future: 'Initialize project',
-    },
-    {
-      finished: 'Ready to use!',
-      label: 'Finalizing...',
-      future: 'Finalize project',
-    },
-  ];
-
-  if (loading) {
-    return (
-      <div>
-        <div className={styles.creatingPane}>
-          <LoadingIndicator />
-          <p>Creating {projectName}...</p>
-          <ul>
-            {steps.map((s, i) => {
-              if (i < currentStep) {
-                return (
-                  <li>
-                    Step {i + 1}: {s.finished}{' '}
-                    <Icon icon="check" fill="#1a804d" />
-                  </li>
-                );
-              }
-
-              if (i === currentStep) {
-                return (
-                  <li>
-                    Step {i + 1}: {s.label}
-                  </li>
-                );
-              }
-
-              return (
-                <li>
-                  Step {i + 1}: {s.future}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-
-  // const [{ data, loading, error }, refetch] = useAxios(
-  //   makeApiParams({
-  //     url: 'projects',
-  //     method: 'POST',
-  //     token,
-  //   }),
-  // );
+  return <p>{showCreateProjectDialog}</p>;
 }

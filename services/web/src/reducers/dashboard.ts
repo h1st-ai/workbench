@@ -37,8 +37,12 @@ export const DashboardSlice = createSlice({
     addProject: (state, { payload }): void => {
       state.projects.unshift(payload.project);
     },
-    toggleCreateProjectDialog: (state): void => {
-      state.showCreateProjectDialog = !state.showCreateProjectDialog;
+    toggleCreateProjectDialog: (state, body?): void => {
+      if (body) {
+        state.showCreateProjectDialog = body.payload.value;
+      } else {
+        state.showCreateProjectDialog = !state.showCreateProjectDialog;
+      }
     },
     setCurrentProjectStatus: (state, { payload }): void => {
       state.currentProjectStatus = payload.status;

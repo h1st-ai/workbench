@@ -33,6 +33,7 @@ export function ProjectGridItem({
   author_picture,
   updated_at,
   created_at,
+  id,
 }: IProject) {
   if (!author_name) {
     return null;
@@ -48,9 +49,15 @@ export function ProjectGridItem({
 
   return (
     <li className={styles.card}>
-      <h4>{name}</h4>
+      <h4>
+        <a href={`https://cloud.h1st.ai/project/${id}/`} target="_blank">
+          {name}
+        </a>
+      </h4>
       <small>
-        Last edited <span>{formatDistance(updated_at, new Date())}</span>
+        {/* Last edited <span>{formatDistance(updated_at, new Date())}</span> */}
+        Last edited: {updated_at} <br />
+        Status: {status}
       </small>
 
       <div className={styles.author}>

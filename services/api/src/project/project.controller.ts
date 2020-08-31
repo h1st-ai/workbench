@@ -47,12 +47,20 @@ export class ProjectController {
     const { preferred_username, name, picture } = req.user;
     const project_name = metaData.project_name;
 
+    // generate valid file name from project_name
+    const workbench_name = `H1st${project_name
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+      })
+      .replace(/\s+/g, '')}`;
+
     this.projectService
       .createNewProject({
         preferred_username,
         name,
         picture,
         project_name,
+        workbench_name,
       })
       .catch((ex) => res.status(400).send({ status: 'error', msg: ex }))
       .then((data) => res.status(HttpStatus.OK).send(data));

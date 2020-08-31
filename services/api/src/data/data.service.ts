@@ -6,7 +6,20 @@ import { response } from 'express';
 export class DataService {
   request(url: string, options: any) {
     console.log('fetching remote data ', url, options);
-    return fetch(url, options);
+    let { body, headers, method } = options;
+
+    body = body ? JSON.stringify(body) : null;
+
+    return fetch(url, {
+      method,
+      body,
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.DATA_HOST_TOKEN ||
+          'NawsP7pLMw7hTKKC'}`,
+      },
+    });
   }
 
   makeUrl(path: string) {
@@ -59,13 +72,14 @@ export class DataService {
     return await response.json();
   }
 
-  async createProject(username: string) {
+  async createProject(username: string, workbenchName: string) {
     console.log('creating project');
     const response = await this.request(
       this.makeUrl(`workbenches?user_id=${encodeURIComponent(username)}`),
-      { method: 'POST' },
+      { method: 'POST', body: { workbench_name: workbenchName } },
     );
 
+    console.log('result from remote data ', response);
     const res = await response.json();
     console.log('project created ', res);
     return res;

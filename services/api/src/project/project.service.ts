@@ -41,14 +41,20 @@ export class ProjectService {
       });
 
       console.log('result ', result);
-      return result;
+      return { status: 'success', items: result };
+    } else {
+      return { status: 'error' };
     }
-
-    return result;
   }
 
   async createNewProject(data: any) {
-    const { preferred_username, picture, project_name, name } = data;
+    const {
+      preferred_username,
+      picture,
+      project_name,
+      name,
+      workbench_name,
+    } = data;
     // retrieve data from the remote rest API
 
     /* 
@@ -63,6 +69,7 @@ export class ProjectService {
     */
     const remoteData: any = await this.dataService.createProject(
       preferred_username,
+      workbench_name,
     );
 
     if (remoteData.success === true) {
