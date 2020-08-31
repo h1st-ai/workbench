@@ -191,7 +191,7 @@ export function ProjectGridItem({
     if (trashLoading) return false;
 
     const confirmedName = prompt(
-      `Are you sure you want to delete "${name}"? Confirm by enter this project's name.`,
+      `Are you sure you want to delete "${name}"? Confirm by entering the project's name.`,
     );
 
     if (!confirmedName) return null;
