@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useAxios from 'axios-hooks';
 import axios from 'axios';
 import { withKeycloak } from '@react-keycloak/web';
+import ReactTooltip from 'react-tooltip';
 
 import { makeApiParams } from 'data/client';
 import { dashboardActions } from 'reducers/dashboard';
@@ -14,18 +14,15 @@ import { VIEW_MODE_LIST, VIEW_MODE_GRID } from 'constants/actions';
 import CreateProjectDialog from './project-dialog';
 
 import styles from './style.module.css';
-import Axios from 'axios';
 
-function ProjectLists({ keycloak }: any): any {
-  const {
-    setProjects,
-    addProject,
-    toggleCreateProjectDialog,
-  } = dashboardActions;
+function ProjectLists(): any {
+  const { setProjects, toggleCreateProjectDialog } = dashboardActions;
 
-  const { viewMode, projects, showCreateProjectDialog } = useSelector(
+  const { viewMode, projects } = useSelector(
     (store: IStore) => store.dashboard,
   );
+  const { token } = useSelector((store: IStore) => store.auth);
+
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +32,7 @@ function ProjectLists({ keycloak }: any): any {
         makeApiParams({
           url: 'projects',
           method: 'GET',
-          token: keycloak.token,
+          token,
         }),
       )
       .then((res) => {
@@ -231,6 +228,8 @@ function ProjectLists({ keycloak }: any): any {
     <React.Fragment>
       {itemToDisplay}
       {topbarButton}
+
+      <ReactTooltip delayShow={1000} effect="solid" />
       <CreateProjectDialog />
     </React.Fragment>
   );

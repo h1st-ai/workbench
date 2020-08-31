@@ -14,6 +14,43 @@ function Icon({
   fill = '#B0B6C1',
 }: IIconPropsp) {
   switch (icon) {
+    case 'dots-h':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          width={width.toString()}
+          height={height.toString()}
+          stroke={fill}
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+          />
+        </svg>
+      );
+
+    case 'trash':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          width={width.toString()}
+          height={height.toString()}
+          stroke={fill}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
+      );
     case 'check':
       return (
         <svg
@@ -149,19 +186,16 @@ function Icon({
     case 'play':
       return (
         <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
           width={width.toString()}
           height={height.toString()}
-          viewBox="0 0 14 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+          fill={fill}
         >
           <path
-            d="M6.88916 0L13.7782 6.88908L6.88916 13.7782V6.88908V0Z"
-            fill={fill}
-          />
-          <path
-            d="M6.88916 0L13.7782 6.88908L6.88916 13.7782V6.88908V0Z"
-            fill={fill}
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+            clip-rule="evenodd"
           />
         </svg>
       );
@@ -169,13 +203,17 @@ function Icon({
     case 'stop':
       return (
         <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
           width={width.toString()}
           height={height.toString()}
-          viewBox="0 0 10 10"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+          fill={fill}
         >
-          <rect width="10" height="10" fill={fill} />
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"
+            clip-rule="evenodd"
+          />
         </svg>
       );
 

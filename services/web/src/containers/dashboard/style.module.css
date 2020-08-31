@@ -1,5 +1,5 @@
 .container {
-  max-width: 1080px;
+  max-width: 1000px;
   width: calc(100vw - 48px);
   margin: 0px auto;
   /* background: rgba(255, 0, 0, 0.7); */
@@ -72,19 +72,18 @@
   width: calc(100% / 3 - 1.2vw);
   margin-right: 1.5vw;
   margin-bottom: 1.5vw;
-  padding: 24px;
   background: #ffffff;
   border-radius: 5px;
   box-sizing: border-box;
   min-height: 150px;
   height: 15vw;
-  max-height: 230px;
+  max-height: 200px;
   transition: transform 150ms;
+  position: relative;
 }
 
 .card:hover {
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  transform: translateX(0px) translateY(-2px);
 }
 
 .card:nth-child(3n) {
@@ -93,11 +92,32 @@
 
 .card h4 {
   margin: 0px 0px 8px 0px;
+  padding-right: 40px;
 }
 
 .card a {
   text-decoration: none;
-  color: val(--color-primary);
+  color: var(--color-dblue);
+}
+
+.card .actionBtn {
+  transition: all 200ms;
+}
+
+.card .actionBtn:hover {
+  transform: scale(1.2);
+}
+
+.card .trashBtn {
+  right: 16px;
+  bottom: 16px;
+  opacity: 0.8;
+  transition: all 200ms;
+}
+
+.card .trashBtn:hover {
+  transform: scale(1.2);
+  opacity: 1;
 }
 
 .emptyState {
@@ -176,4 +196,61 @@
   right: 80px;
   width: 162px !important;
   height: 40px !important;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.author img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+}
+
+.actionBtn.playBtn svg {
+}
+
+.trashBtn {
+  outline: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mainActions {
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  border-top: 1px solid #eee;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 6px 24px;
+  font-size: 14px;
+  justify-content: space-between;
+}
+
+.innerContent {
+  padding: 24px 24px 10px 24px;
 }

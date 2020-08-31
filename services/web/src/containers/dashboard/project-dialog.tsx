@@ -45,8 +45,10 @@ export default function CreateProjectDialog() {
         const currentStatus = res.data.item.status;
 
         if (currentStatus === 'running') {
-          setLoading(false);
-          window.location.href = `https://cloud.h1st.ai/project/${pId}/`;
+          setTimeout(() => {
+            setLoading(false);
+            window.location.href = `https://cloud.h1st.ai/project/${pId}/`;
+          }, 2000);
         } else {
           setTimeout(
             () => {

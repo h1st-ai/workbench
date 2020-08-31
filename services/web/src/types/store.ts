@@ -13,7 +13,7 @@ export interface IProject {
   author_name: string;
   name: string;
   workspace: string;
-  status: boolean;
+  status: string;
   collaborators?: IProjectCollaborator[];
   author_picture?: string;
   updated_at: Date;
