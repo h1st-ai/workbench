@@ -96,7 +96,7 @@ export function ProjectGridItem({
         poll(
           url,
           options,
-          interval + 2000,
+          interval,
           resultHandler,
           desiredValue,
           onFinsish,
@@ -104,7 +104,7 @@ export function ProjectGridItem({
       } else {
         if (onFinsish) onFinsish(result);
       }
-    });
+    }, interval);
   }
 
   async function start() {
@@ -125,7 +125,7 @@ export function ProjectGridItem({
         poll(
           `project/${id}`,
           { method: 'GET' },
-          3000,
+          1000,
           (e: any) => e.data.item.status,
           'running',
           () => {
@@ -161,31 +161,29 @@ export function ProjectGridItem({
         poll(
           `project/${id}`,
           { method: 'GET' },
-          3000,
+          1000,
           (e: any) => e.data.item.status,
           'stopped',
           () => {
-            // give some time for the renderer to work
-            setTimeout(() => {
-              dispatch(
-                updateProjectInfo({
-                  index,
-                  transformer: (input: IProject) => ({
-                    ...input,
-                    status: 'stopped',
-                  }),
+            dispatch(
+              updateProjectInfo({
+                index,
+                transformer: (input: IProject) => ({
+                  ...input,
+                  status: 'stopped',
                 }),
-              );
+              }),
+            );
 
-              setStopLoading(false);
-            }, 5000);
+            // give some time for the renderer to work
+            setTimeout(() => setStopLoading(false), 500);
           },
         );
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setStopLoading(false);
+      // setStopLoading(false);
     }
   }
 
