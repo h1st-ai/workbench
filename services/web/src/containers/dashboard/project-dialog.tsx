@@ -48,8 +48,8 @@ export default function CreateProjectDialog() {
           // dispatch(toggleCreateProjectDialog({ value: false }));
           setTimeout(() => {
             // setLoading(false);
-            window.location.href = `https://cloud.h1st.ai/project/${pId}/`;
-          }, 2000);
+            window.location.href = `https://cloud.h1st.ai/project/${pId}/#`;
+          }, 5000);
         } else {
           setTimeout(
             () => {
