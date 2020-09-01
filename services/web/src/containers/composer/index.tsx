@@ -34,26 +34,25 @@ function PrivateRoute({ children, authenticator, ...rest }: any) {
   );
 }
 
+function setAuthInfo(token: string) {
+  const dispatch = store.dispatch;
+  dispatch(authActions.setToken({ token }));
+  Cookies.set('token', token, { path: '/' });
+}
+
 function Authenticator({ auth }: any) {
   console.log('Authenticator ', auth, auth.authenticated);
-  const dispatch = useDispatch();
 
   if (auth.authenticated) {
-    dispatch(authActions.setToken({ token: auth.token }));
+    setAuthInfo(auth.token);
   }
 
   auth.onAuthSuccess = function () {
-    const token = auth.token;
-    console.log('auth success');
-    dispatch(authActions.setToken({ token }));
-    Cookies.set('token', token, { path: '/' });
+    setAuthInfo(auth.token);
   };
 
   auth.onAuthRefreshSuccess = function () {
-    const token = auth.token;
-    console.log('auth refresh success');
-    dispatch(authActions.setToken({ token }));
-    Cookies.set('token', token, { path: '/' });
+    setAuthInfo(auth.token);
   };
 
   return null;
