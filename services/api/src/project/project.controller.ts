@@ -49,11 +49,13 @@ export class ProjectController {
     const project_name = metaData.project_name;
 
     // generate valid file name from project_name
-    const workbench_name = `H1st${project_name
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-        return index === 0 ? word.toLowerCase() : word.toUpperCase();
-      })
-      .replace(/\s+/g, '')}`;
+    // const workbench_name = `${project_name
+    //   .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+    //     return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    //   })
+    //   .replace(/\s+/g, '')}`;
+
+    const workbench_name = project_name
 
     this.projectService
       .createNewProject({
