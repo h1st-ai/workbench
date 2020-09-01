@@ -93,14 +93,7 @@ export function ProjectGridItem({
       const processedResult = resultHandler(result);
 
       if (processedResult !== desiredValue) {
-        poll(
-          url,
-          options,
-          interval,
-          resultHandler,
-          desiredValue,
-          onFinsish,
-        );
+        poll(url, options, interval, resultHandler, desiredValue, onFinsish);
       } else {
         if (onFinsish) onFinsish(result);
       }
@@ -131,7 +124,7 @@ export function ProjectGridItem({
           () => {
             setTimeout(
               () =>
-                (window.location.href = `https://cloud.h1st.ai/project/${id}/`),
+                (window.location.href = `https://cloud.h1st.ai/project/${id}/#`),
               3000,
             );
           },
@@ -277,10 +270,10 @@ export function ProjectGridItem({
   }
 
   return (
-    <li className={styles.card}>
+    <li className={styles.card} key={id}>
       <div className={styles.innerContent}>
         <h4>
-          <a href={`https://cloud.h1st.ai/project/${id}/`} target="_blank">
+          <a href={`https://cloud.h1st.ai/project/${id}/#`} target="_blank">
             {name}
           </a>
         </h4>

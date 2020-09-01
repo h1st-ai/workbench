@@ -1,26 +1,20 @@
 import React from 'react';
 import { withKeycloak } from '@react-keycloak/web';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import { useDispatch, useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
 
 import store from 'stores';
 import { authActions } from 'reducers/auth';
 import Dashboard from 'containers/dashboard';
 
 function PrivateRoute({ children, authenticator, ...rest }: any) {
-  console.log('test', authenticator.keycloak.token);
-
-  const dispatch = useDispatch();
-
   if (!authenticator) {
     console.log('no authenticator');
     return null;
   }
-
-  dispatch(authActions.setToken({ token: authenticator.keycloak.token }));
 
   return (
     <Route
@@ -40,9 +34,35 @@ function PrivateRoute({ children, authenticator, ...rest }: any) {
   );
 }
 
+function Authenticator({ auth }: any) {
+  console.log('Authenticator ', auth, auth.authenticated);
+  const dispatch = useDispatch();
+
+  if (auth.authenticated) {
+    dispatch(authActions.setToken({ token: auth.token }));
+  }
+
+  auth.onAuthSuccess = function () {
+    const token = auth.token;
+    console.log('auth success');
+    dispatch(authActions.setToken({ token }));
+    Cookies.set('token', token, { path: '/' });
+  };
+
+  auth.onAuthRefreshSuccess = function () {
+    const token = auth.token;
+    console.log('auth refresh success');
+    dispatch(authActions.setToken({ token }));
+    Cookies.set('token', token, { path: '/' });
+  };
+
+  return null;
+}
+
 function Composer({ keycloak, keycloakInitialized }: any) {
   return (
     <Provider store={store}>
+      <Authenticator auth={keycloak} />
       <Router>
         <Switch>
           <Route path="/p/{test}">

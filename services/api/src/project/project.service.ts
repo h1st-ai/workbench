@@ -101,7 +101,7 @@ export class ProjectService {
           author_username: preferred_username,
           author_picture: picture,
           status: 'starting', // set starting by default
-          workspace: `https://cloud.h1st.ai/project/${remoteData.item.workbench_id}`,
+          workspace: `https://cloud.h1st.ai/project/${remoteData.item.workbench_id}/#`,
         });
 
         console.log('commitResult ', commitResult);
