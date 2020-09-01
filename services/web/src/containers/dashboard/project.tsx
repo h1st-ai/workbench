@@ -96,7 +96,7 @@ export function ProjectGridItem({
         poll(
           url,
           options,
-          interval + 1000,
+          interval + 2000,
           resultHandler,
           desiredValue,
           onFinsish,
@@ -165,18 +165,20 @@ export function ProjectGridItem({
           (e: any) => e.data.item.status,
           'stopped',
           () => {
-            dispatch(
-              updateProjectInfo({
-                index,
-                transformer: (input: IProject) => ({
-                  ...input,
-                  status: 'stopped',
-                }),
-              }),
-            );
-
             // give some time for the renderer to work
-            setTimeout(() => setStopLoading(false), 5000);
+            setTimeout(() => {
+              dispatch(
+                updateProjectInfo({
+                  index,
+                  transformer: (input: IProject) => ({
+                    ...input,
+                    status: 'stopped',
+                  }),
+                }),
+              );
+
+              setStopLoading(false);
+            }, 5000);
           },
         );
       }
