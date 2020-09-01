@@ -161,7 +161,7 @@ export function ProjectGridItem({
         poll(
           `project/${id}`,
           { method: 'GET' },
-          3000,
+          1000,
           (e: any) => e.data.item.status,
           'stopped',
           () => {
@@ -176,14 +176,14 @@ export function ProjectGridItem({
             );
 
             // give some time for the renderer to work
-            setTimeout(() => setStopLoading(false), 5000);
+            setTimeout(() => setStopLoading(false), 500);
           },
         );
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setStopLoading(false);
+      // setStopLoading(false);
     }
   }
 
