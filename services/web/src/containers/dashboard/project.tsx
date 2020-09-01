@@ -96,7 +96,7 @@ export function ProjectGridItem({
         poll(
           url,
           options,
-          interval + 100,
+          interval,
           resultHandler,
           desiredValue,
           onFinsish,
@@ -125,7 +125,7 @@ export function ProjectGridItem({
         poll(
           `project/${id}`,
           { method: 'GET' },
-          3000,
+          1000,
           (e: any) => e.data.item.status,
           'running',
           () => {
