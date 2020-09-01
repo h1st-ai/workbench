@@ -96,7 +96,7 @@ export function ProjectGridItem({
         poll(
           url,
           options,
-          interval + 1000,
+          interval + 100,
           resultHandler,
           desiredValue,
           onFinsish,
@@ -104,7 +104,7 @@ export function ProjectGridItem({
       } else {
         if (onFinsish) onFinsish(result);
       }
-    });
+    }, interval);
   }
 
   async function start() {
