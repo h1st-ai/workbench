@@ -73,7 +73,7 @@ export function ProjectGridItem({
     return status;
   }
 
-  function getProjectUrl(id) {
+  function getProjectUrl(id: string) {
     return `https://cloud.h1st.ai/project/${id}/#/home/project`
   }
 
