@@ -21,6 +21,7 @@ export default function CreateProjectDialog() {
   } = dashboardActions;
 
   const [value, setValue] = useState('');
+  const [error, setError] = useState('');
   const [projectId, setProjectId] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -59,6 +60,39 @@ export default function CreateProjectDialog() {
       });
   }
 
+  const createProject = async () => {
+    if (value == null || value == "") {
+      setError("Please enter a project name.")
+      return
+    } else if (value.match("^\d")) {
+      setError("Project name can not start with a number")
+      return
+    }
+
+    setError("")
+
+    setLoading(true);
+    dispatch(setCurrentProjectStatus({ status: 'creating' }));
+
+    const res = await axios.request(
+      makeApiParams({
+        url: 'project',
+        method: 'POST',
+        data: {
+          project_name: value,
+        },
+        token,
+      }),
+    );
+
+    console.log('res', res);
+    if (res.data.status === 'success') {
+      const { id } = res.data.item[0];
+      setProjectId(id);
+      setTimeout(() => poll(id), 1000);
+    }
+  }
+
   if (showCreateProjectDialog) {
     return (
       <div className="modal-wrapper">
@@ -79,32 +113,14 @@ export default function CreateProjectDialog() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
               />
+              {
+                error && <div>{error}</div>
+              }
               <div className="form-actions">
                 <button
                   disabled={!value}
                   className="btn primary"
-                  onClick={async () => {
-                    setLoading(true);
-                    dispatch(setCurrentProjectStatus({ status: 'creating' }));
-
-                    const res = await axios.request(
-                      makeApiParams({
-                        url: 'project',
-                        method: 'POST',
-                        data: {
-                          project_name: value,
-                        },
-                        token,
-                      }),
-                    );
-
-                    console.log('res', res);
-                    if (res.data.status === 'success') {
-                      const { id } = res.data.item[0];
-                      setProjectId(id);
-                      setTimeout(() => poll(id), 1000);
-                    }
-                  }}
+                  onClick={createProject}
                 >
                   CREATE
                 </button>
