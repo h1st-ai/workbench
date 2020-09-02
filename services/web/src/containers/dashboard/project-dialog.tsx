@@ -61,6 +61,8 @@ export default function CreateProjectDialog() {
   }
 
   const createProject = async () => {
+    console.log(value)
+
     if (value == null || value == "") {
       setError("Please enter a project name.")
       return
