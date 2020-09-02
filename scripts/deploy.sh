@@ -12,7 +12,7 @@ ssh ubuntu@13.52.242.238 << EOF
 
     (
         cd services/web
-        yarn build:prod
+        yarn install && yarn build:prod
         (sudo docker rm -f dashboard_web || true)
         sudo docker run -d --name dashboard_web --restart always -p 3000:80 -v \`pwd\`/build:/usr/share/nginx/html nginx
     )
