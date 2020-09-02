@@ -116,7 +116,7 @@ export default function CreateProjectDialog() {
                 onChange={(e) => setValue(e.target.value)}
               />
               {
-                error && <div style="color: red">{error}</div>
+                error && <div style={{"color": "red"}}>{error}</div>
               }
               <div className="form-actions">
                 <button
