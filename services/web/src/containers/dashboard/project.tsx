@@ -122,7 +122,7 @@ export function ProjectGridItem({
           (e: any) => e.data.item.status,
           'running',
           () => {
-            window.location.href = `https://cloud.h1st.ai/project/${id}/`;
+            window.location.href = `https://cloud.h1st.ai/project/${id}/#/home/project`;
           },
         );
       }
