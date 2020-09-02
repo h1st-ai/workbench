@@ -116,11 +116,10 @@ export default function CreateProjectDialog() {
                 onChange={(e) => setValue(e.target.value)}
               />
               {
-                error && <div>{error}</div>
+                error && <div style="color: red">{error}</div>
               }
               <div className="form-actions">
                 <button
-                  disabled={!value}
                   className="btn primary"
                   onClick={createProject}
                 >
@@ -128,9 +127,10 @@ export default function CreateProjectDialog() {
                 </button>
                 <button
                   className="btn"
-                  onClick={() =>
-                    dispatch(toggleCreateProjectDialog({ value: false }))
-                  }
+                  onClick={() => {
+                    setError("");
+                    dispatch(toggleCreateProjectDialog({ value: false }));
+                  }}
                 >
                   Cancel
                 </button>
