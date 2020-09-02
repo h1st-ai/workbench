@@ -66,7 +66,7 @@ export default function CreateProjectDialog() {
     if (value == null || value == "") {
       setError("Please enter a project name.")
       return
-    } else if (value.match("^\d")) {
+    } else if (value.match("^\\d")) {
       setError("Project name can not start with a number")
       return
     }
