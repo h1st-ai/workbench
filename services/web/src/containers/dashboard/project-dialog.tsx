@@ -61,13 +61,14 @@ export default function CreateProjectDialog() {
   }
 
   const createProject = async () => {
-    console.log(value)
-
     if (value == null || value == "") {
       setError("Please enter a project name.")
       return
-    } else if (value.match("^\\d")) {
-      setError("Project name can not start with a number")
+    } else if (!value.match(/^[a-zA-Z]/)) {
+      setError("Project name must start with a letter")
+      return
+    } else if (value.match(/[^a-zA-Z0-9\- _]/)) {
+      setError("Project name can not contain special character")
       return
     }
 
