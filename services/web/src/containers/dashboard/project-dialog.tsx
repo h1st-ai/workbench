@@ -70,6 +70,9 @@ export default function CreateProjectDialog() {
     } else if (value.match(/[^a-zA-Z0-9\- _]/)) {
       setError("Project name can not contain special character")
       return
+    } else if (value.length > 50) {
+      setError("Project name can not be longer than 50 characters")
+      return
     }
 
     setError("")
