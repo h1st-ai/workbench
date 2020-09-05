@@ -47,8 +47,9 @@ export default function CreateProjectDialog() {
 
         if (currentStatus === 'running') {
           // dispatch(toggleCreateProjectDialog({ value: false }));
-          // server makes sure that when status is running mean the container is accessible
-          window.location.href = `https://cloud.h1st.ai/project/${pId}/#/home/project`;
+          setTimeout(() => {
+            window.location.href = `https://cloud.h1st.ai/project/${pId}/#/home/project`;
+          }, 2000)
         } else {
           setTimeout(
             () => {

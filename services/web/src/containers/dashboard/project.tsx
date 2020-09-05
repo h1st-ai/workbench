@@ -126,7 +126,9 @@ export function ProjectGridItem({
           (e: any) => e.data.item.status,
           'running',
           () => {
-            window.location.href = getProjectUrl(id);
+            setTimeout(() => {
+              window.location.href = getProjectUrl(id);
+            }, 2000);
           },
         );
       }
