@@ -21,6 +21,7 @@ export default function CreateProjectDialog() {
   } = dashboardActions;
 
   const [value, setValue] = useState('');
+  const [error, setError] = useState('');
   const [projectId, setProjectId] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -47,9 +48,8 @@ export default function CreateProjectDialog() {
         if (currentStatus === 'running') {
           // dispatch(toggleCreateProjectDialog({ value: false }));
           setTimeout(() => {
-            // setLoading(false);
-            window.location.href = `https://cloud.h1st.ai/project/${pId}/#`;
-          }, 5000);
+            window.location.href = `https://cloud.h1st.ai/project/${pId}/#/home/project`;
+          }, 2000)
         } else {
           setTimeout(
             () => {
@@ -59,6 +59,45 @@ export default function CreateProjectDialog() {
           );
         }
       });
+  }
+
+  const createProject = async () => {
+    if (value == null || value == "") {
+      setError("Please enter a project name.")
+      return
+    } else if (!value.match(/^[a-zA-Z]/)) {
+      setError("Project name must start with a letter")
+      return
+    } else if (value.match(/[^a-zA-Z0-9\- _]/)) {
+      setError("Project name can not contain special character")
+      return
+    } else if (value.length > 50) {
+      setError("Project name can not be longer than 50 characters")
+      return
+    }
+
+    setError("")
+
+    setLoading(true);
+    dispatch(setCurrentProjectStatus({ status: 'creating' }));
+
+    const res = await axios.request(
+      makeApiParams({
+        url: 'project',
+        method: 'POST',
+        data: {
+          project_name: value,
+        },
+        token,
+      }),
+    );
+
+    console.log('res', res);
+    if (res.data.status === 'success') {
+      const { id } = res.data.item[0];
+      setProjectId(id);
+      setTimeout(() => poll(id), 1000);
+    }
   }
 
   if (showCreateProjectDialog) {
@@ -81,40 +120,22 @@ export default function CreateProjectDialog() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
               />
+              {
+                error && <div style={{"color": "red"}}>{error}</div>
+              }
               <div className="form-actions">
                 <button
-                  disabled={!value}
                   className="btn primary"
-                  onClick={async () => {
-                    setLoading(true);
-                    dispatch(setCurrentProjectStatus({ status: 'creating' }));
-
-                    const res = await axios.request(
-                      makeApiParams({
-                        url: 'project',
-                        method: 'POST',
-                        data: {
-                          project_name: value,
-                        },
-                        token,
-                      }),
-                    );
-
-                    console.log('res', res);
-                    if (res.data.status === 'success') {
-                      const { id } = res.data.item[0];
-                      setProjectId(id);
-                      setTimeout(() => poll(id), 1000);
-                    }
-                  }}
+                  onClick={createProject}
                 >
                   CREATE
                 </button>
                 <button
                   className="btn"
-                  onClick={() =>
-                    dispatch(toggleCreateProjectDialog({ value: false }))
-                  }
+                  onClick={() => {
+                    setError("");
+                    dispatch(toggleCreateProjectDialog({ value: false }));
+                  }}
                 >
                   Cancel
                 </button>
