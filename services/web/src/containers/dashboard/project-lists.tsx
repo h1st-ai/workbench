@@ -197,11 +197,10 @@ function ProjectLists(): any {
   }
 
   const projectList = projects.map((p: IProject, index: number) => {
-    console.log(p);
     if (viewMode === VIEW_MODE_LIST) {
       return <ProjectListItem {...p} index={index} />;
     } else if (viewMode === VIEW_MODE_GRID) {
-      return <ProjectGridItem {...p} index={index} />;
+      return <ProjectGridItem key={p.id} {...p} index={index} />;
     }
   });
 

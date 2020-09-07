@@ -193,9 +193,9 @@ function Icon({
           fill={fill}
         >
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-            clip-rule="evenodd"
+            clipRule="evenodd"
           />
         </svg>
       );
@@ -210,9 +210,9 @@ function Icon({
           fill={fill}
         >
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"
-            clip-rule="evenodd"
+            clipRule="evenodd"
           />
         </svg>
       );
