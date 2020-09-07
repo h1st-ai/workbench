@@ -254,3 +254,12 @@
 .innerContent {
   padding: 24px 24px 10px 24px;
 }
+
+.errorMessage {
+  color: red;
+  border: 1px solid #fba7a7;
+  padding: 12px 16px;
+  margin-top: 16px;
+  font-size: 14px;
+  border-radius: 3px;
+}

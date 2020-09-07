@@ -49,7 +49,7 @@ export default function CreateProjectDialog() {
           // dispatch(toggleCreateProjectDialog({ value: false }));
           setTimeout(() => {
             window.location.href = `https://cloud.h1st.ai/project/${pId}/#/home/project`;
-          }, 2000)
+          }, 2000);
         } else {
           setTimeout(
             () => {
@@ -62,21 +62,21 @@ export default function CreateProjectDialog() {
   }
 
   const createProject = async () => {
-    if (value == null || value == "") {
-      setError("Please enter a project name.")
-      return
+    if (value == null || value == '') {
+      setError('Please enter a project name.');
+      return;
     } else if (!value.match(/^[a-zA-Z]/)) {
-      setError("Project name must start with a letter")
-      return
+      setError('Project name must start with a letter');
+      return;
     } else if (value.match(/[^a-zA-Z0-9\- _]/)) {
-      setError("Project name can not contain special character")
-      return
+      setError('Project name can not contain special character');
+      return;
     } else if (value.length > 50) {
-      setError("Project name can not be longer than 50 characters")
-      return
+      setError('Project name can not be longer than 50 characters');
+      return;
     }
 
-    setError("")
+    setError('');
 
     setLoading(true);
     dispatch(setCurrentProjectStatus({ status: 'creating' }));
@@ -98,7 +98,7 @@ export default function CreateProjectDialog() {
       setProjectId(id);
       setTimeout(() => poll(id), 1000);
     }
-  }
+  };
 
   if (showCreateProjectDialog) {
     return (
@@ -119,21 +119,19 @@ export default function CreateProjectDialog() {
                 placeholder="Project Name"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) createProject();
+                }}
               />
-              {
-                error && <div style={{"color": "red"}}>{error}</div>
-              }
+              {error && <div className={styles.errorMessage}>{error}</div>}
               <div className="form-actions">
-                <button
-                  className="btn primary"
-                  onClick={createProject}
-                >
+                <button className="btn primary" onClick={createProject}>
                   CREATE
                 </button>
                 <button
                   className="btn"
                   onClick={() => {
-                    setError("");
+                    setError('');
                     dispatch(toggleCreateProjectDialog({ value: false }));
                   }}
                 >
