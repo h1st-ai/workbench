@@ -74,7 +74,7 @@ export function ProjectGridItem({
   }
 
   function getProjectUrl(id: string) {
-    return `https://cloud.h1st.ai/project/${id}/#/home/project`
+    return `https://cloud.h1st.ai/project/${id}/#/home/project`;
   }
 
   function poll(
@@ -275,9 +275,9 @@ export function ProjectGridItem({
     <li className={styles.card} key={id}>
       <div className={styles.innerContent}>
         <h4>
-          <a href={getProjectUrl(id)} target="_blank">
-            {name}
-          </a>
+          {status === 'running' && <a href={getProjectUrl(id)}>{name}</a>}
+
+          {status !== 'running' && name}
         </h4>
 
         <div className={styles.author}>
