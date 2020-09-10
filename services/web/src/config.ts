@@ -7,6 +7,15 @@ const dev = {
   },
 };
 
+const staging = {
+  API: {
+    URL: 'https://staging.h1st.ai/api',
+  },
+  AUTH: {
+    URL: 'https://staging.h1st.ai/auth',
+  },
+};
+
 const prod = {
   API: {
     URL: 'https://cloud.h1st.ai/api',
@@ -16,7 +25,13 @@ const prod = {
   },
 };
 
-const config = process.env.REACT_APP_STAGE === 'production' ? prod : dev;
+let config = dev;
+
+if (process.env.REACT_APP_STAGE === 'production') {
+  config = prod
+} else if (process.env.REACT_APP_STAGE === 'staging') {
+  config = staging
+}
 
 export default {
   ...config,

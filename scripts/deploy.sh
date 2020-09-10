@@ -1,6 +1,14 @@
 #!/bin/bash
 
-ssh ubuntu@13.52.242.238 << EOF
+if [[ "$1" == "PROD" ]]; then
+    HOST=13.52.242.238
+    REACT_APP_STAGE=production
+else
+    HOST=10.30.128.207
+    REACT_APP_STAGE=staging
+fi
+
+ssh -A ubuntu@$HOST << EOF
     set -ex
 
     . ~/.nvm/nvm.sh
@@ -12,7 +20,7 @@ ssh ubuntu@13.52.242.238 << EOF
 
     (
         cd services/web
-        yarn install && yarn build:prod
+        REACT_APP_STAGE=$REACT_APP_STAGE && yarn install && yarn run build
         (sudo docker rm -f dashboard_web || true)
         sudo docker run -d --name dashboard_web --restart always -p 3000:80 -v \`pwd\`/build:/usr/share/nginx/html nginx
     )
