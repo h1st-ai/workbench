@@ -1,7 +1,7 @@
 
 FROM theiaide/theia-python
 
-COPY ./docker/components/requirements.txt /tmp
+COPY ./docker/ide/components/requirements.txt /tmp
 RUN pip3 install --no-cache -r /tmp/requirements.txt
 RUN pip3 install git+https://github.com/h1st-ai/h1st@fix-prj-generator#egg=h1st\&v=20200906
 
@@ -23,25 +23,25 @@ WORKDIR /home/theia
 
 RUN rm -rf *
 
-COPY ./package.json   ./package.json
-COPY ./lerna.json   ./lerna.json
+COPY ./ide/package.json   ./package.json
+COPY ./ide/lerna.json   ./lerna.json
 
-COPY ./h1st/package.json ./h1st/package.json
-COPY ./h1st/tsconfig.json ./h1st/tsconfig.json
-COPY ./h1st/src ./h1st/src
+COPY ./ide/h1st/package.json ./h1st/package.json
+COPY ./ide/h1st/tsconfig.json ./h1st/tsconfig.json
+COPY ./ide/h1st/src ./h1st/src
 
-COPY ./browser-app/package.json ./browser-app/package.json
+COPY ./ide/browser-app/package.json ./browser-app/package.json
 
 RUN yarn global add @theia/cli@1.5.0 && yarn
 
 WORKDIR /home/theia/browser-app
 RUN NODE_OPTIONS="--max_old_space_size=4096" yarn run build:pro && yarn run download:plugins
 
-COPY ./docker/components/index.html ./src-gen/frontend/index.html
-COPY ./docker/components/index.html ./lib/index.html
+COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
+COPY ./docker/ide/components/index.html ./lib/index.html
 
 EXPOSE 3000
-COPY ./docker/entrypoint.sh ./docker/app.sh /
+COPY ./docker/ide/entrypoint.sh ./docker/ide/app.sh /
 
 ENV SHELL=/bin/bash \
   THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/browser-app/plugins 
