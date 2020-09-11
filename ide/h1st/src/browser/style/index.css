@@ -1,0 +1,99 @@
+:root {
+  --theia-ui-font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
+  --theia-private-menubar-height: 45px;
+}
+
+#h1st\:header\:widget {
+  position: absolute;
+  right: 0px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  color: var(--theia-sideBar-foreground);
+  opacity: 0.7;
+}
+
+#h1st\:header\:widget:hover {
+  opacity: 1;
+}
+
+#h1st\:header\:widget a {
+  color: var(--theia-sideBar-foreground);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0px 24px;
+}
+
+#h1st\:header\:widget a svg {
+  stroke: #f4364c;
+  margin-right: 8px;
+}
+
+.theia-icon {
+  background-color: var(--theia-activityBar-background);
+  background-image: var(--h1st-menu-logo);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 70%;
+  margin: 0px;
+  min-width: var(--theia-private-sidebar-tab-width);
+  max-width: var(--theia-private-sidebar-tab-width);
+  min-height: var(--theia-private-menubar-height);
+}
+
+.p-MenuBar-item {
+  padding: 0px 10px;
+}
+
+.p-Widget.p-MenuBar {
+  padding-left: 0px;
+}
+
+.theia-button,
+button.theia-button {
+  box-shadow: none;
+  padding: 10px;
+  border-radius: 5px;
+  letter-spacing: 1px;
+}
+.p-Widget .open-workspace-button {
+  padding: 6px 12px;
+  letter-spacing: 1px;
+}
+.theia-navigator-container {
+  padding: 14px;
+}
+
+#shell-tab-plugin-view-container\:test {
+  display: none !important;
+}
+
+#shell-tab-debug {
+  display: none;
+}
+
+.p-Widget.theia-sidebar-bottom-menu {
+  display: none;
+}
+
+.p-TabBar-toolbar #__more__ {
+  display: none;
+}
+
+li.p-Menu-item[data-command="__plugin.menu.action.python.debugtests"],
+li.p-Menu-item[data-command="__plugin.menu.action.python.runtests"],
+li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInteractive:0"] {
+  display: none;
+}
+
+.p-Menu-itemIcon {
+  width: 8px;
+}
+
+/* .theia-icon {
+  background-image: url("http://d2nowutmrjvedl.cloudfront.net/wbassets/h1st-light.svg") !important;
+} */

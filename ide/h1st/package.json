@@ -1,0 +1,34 @@
+{
+  "name": "h1st",
+  "keywords": [
+    "theia-extension"
+  ],
+  "version": "0.0.0",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "dependencies": {
+    "@theia/core": "1.5.0",
+    "@theia/filesystem": "1.5.0",
+    "@theia/workspace": "1.5.0",
+    "@theia/editor": "1.5.0",
+    "@theia/navigator": "1.5.0"
+  },
+  "devDependencies": {
+    "rimraf": "3.0.2",
+    "typescript": "4.1.0-dev.20200829"
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/h1st-frontend-module",
+      "backend": "lib/node/h1st-backend-module"
+    }
+  ]
+}

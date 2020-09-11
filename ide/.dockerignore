@@ -1,0 +1,7 @@
+node_modules
+.browser_modules
+
+# we don't need it now
+eletron-app
+browser-app/lib
+h1st/lib
