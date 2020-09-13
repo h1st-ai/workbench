@@ -19,8 +19,9 @@ ssh -A ubuntu@$HOST << EOF
     git pull
 
     (
+        export REACT_APP_STAGE=$REACT_APP_STAGE
         cd services/web
-        REACT_APP_STAGE=$REACT_APP_STAGE && yarn install && yarn run build
+        yarn install && yarn run build
         (sudo docker rm -f dashboard_web || true)
         sudo docker run -d --name dashboard_web --restart always -p 3000:80 -v \`pwd\`/build:/usr/share/nginx/html nginx
     )
