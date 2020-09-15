@@ -18,4 +18,8 @@ export class H1stNotebookEditorContribution extends EditorContribution {
     }
     return 0;
   }
+
+  open(uri: URI) {
+    console.log("openning", uri.toString());
+  }
 }
