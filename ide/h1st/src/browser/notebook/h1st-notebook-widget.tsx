@@ -16,7 +16,7 @@ import { injectable, postConstruct } from "inversify";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget {
-  // static readonly ID = "h1st:notebook:widget";
+  static readonly ID = "h1st:notebook:widget";
 
   // constructor() // readonly uri: URI
   // readonly editor: TextEditor,
@@ -49,11 +49,12 @@ export class H1stNotebookWidget extends ReactWidget {
   // }
 
   @postConstruct()
-  protected async init(): Promise<void> {
-    this.title.label = "Test TEst Label";
-    this.title.caption = "Test Test";
-    this.title.closable = true;
-    this.title.iconClass = "fa fa-info";
+  init(): void {
+    this.id = H1stNotebookWidget.ID;
+    this.title.caption = "Sample Unclosable View";
+    this.title.label = "Sample Unclosable View";
+    this.title.iconClass = "fa fa-window-maximize";
+    this.title.closable = false;
     this.update();
   }
 
@@ -62,6 +63,7 @@ export class H1stNotebookWidget extends ReactWidget {
   }
 
   protected render(): React.ReactNode {
+    alert("render");
     return <div>Notebook goes here</div>;
   }
 }
