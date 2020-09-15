@@ -48,7 +48,7 @@ export default function CreateProjectDialog() {
         if (currentStatus === 'running') {
           // dispatch(toggleCreateProjectDialog({ value: false }));
           setTimeout(() => {
-            window.location.href = `https://cloud.h1st.ai/project/${pId}/#/home/project`;
+            window.location.href = `/project/${pId}/#/home/project`;
           }, 2000);
         } else {
           setTimeout(
@@ -126,10 +126,10 @@ export default function CreateProjectDialog() {
               {error && <div className={styles.errorMessage}>{error}</div>}
               <div className="form-actions">
                 <button className="btn primary" onClick={createProject}>
-                  CREATE
+                  Create
                 </button>
                 <button
-                  className="btn"
+                  className="btn secondary empty"
                   onClick={() => {
                     setError('');
                     dispatch(toggleCreateProjectDialog({ value: false }));

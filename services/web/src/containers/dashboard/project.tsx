@@ -74,7 +74,7 @@ export function ProjectGridItem({
   }
 
   function getProjectUrl(id: string) {
-    return `https://cloud.h1st.ai/project/${id}/#/home/project`;
+    return `/project/${id}/#/home/project`;
   }
 
   function poll(
