@@ -39,9 +39,9 @@ services:
       - 8080:8080
     volumes:
       - keycloak_data:/var/vswb/keycloak
-      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/h1st:/opt/jboss/keycloak/themes
-      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
-      - /Users/khoama/Workspace/Arimo/vswb/services/auth/theme/standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
+      - ${H1ST_VSWB_PATH}/services/auth/theme/h1st:/opt/jboss/keycloak/themes
+      - ${H1ST_VSWB_PATH}/services/auth/theme/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+      - ${H1ST_VSWB_PATH}/services/auth/theme/standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
     environment:
       - DB_VENDOR=postgres
       - DB_ADDR=postgres

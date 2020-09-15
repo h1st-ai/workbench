@@ -144,6 +144,11 @@
   height: 48px;
   margin: auto;
   color: #fff;
+  appearance: none;
+  border-color:transparent;
+  font-size:14px;
+  letter-spacing: 110%;
+  font-weight:600;
 }
 
 .emptyState input {
