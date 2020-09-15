@@ -30,22 +30,21 @@ import { H1stAboutDialog } from "./style/about-dialog";
 import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
 import { H1stNotebookEditorContribution } from "./notebook/h1st-notebook-editor-contribution";
-import { H1stNotebookWidget } from "./notebook/h1st-notebook-widget";
+// import { H1stNotebookWidget } from "./notebook/h1st-notebook-widget";
+import { H1stNotebookWidgetFactory } from "./notebook/h1st-notebook-widget-factory";
 
 export default new ContainerModule((bind, unbind) => {
   bind(OpenHandler).to(H1stNotebookEditorContribution);
+  bind(H1stNotebookWidgetFactory)
+    .toSelf()
+    .inSingletonScope();
+  bind(WidgetFactory).toService(H1stNotebookWidgetFactory);
 
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
   bind(H1stHeaderWidget)
     .toSelf()
     .inSingletonScope();
-
-  bind(WidgetFactory).toDynamicValue((ctx) => ({
-    id: H1stNotebookWidget.ID,
-    createWidget: () =>
-      ctx.container.get<H1stNotebookWidget>(H1stNotebookWidget),
-  }));
 
   bind(WidgetFactory)
     .toDynamicValue((ctx) => ({

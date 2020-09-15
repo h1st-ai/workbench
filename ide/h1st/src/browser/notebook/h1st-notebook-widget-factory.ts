@@ -26,19 +26,16 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
   }
 
   protected async createEditor(uri: URI): Promise<H1stNotebookWidget> {
-    const textEditor = await this.editorProvider(uri);
-    const newNotebook = new H1stNotebookWidget(
-      textEditor,
-      this.selectionService
-    );
+    // const textEditor = await this.editorProvider(uri);
+    const newNotebook = new H1stNotebookWidget();
 
     this.setLabels(newNotebook, uri);
-    const labelListener = this.labelProvider.onDidChange((event) => {
-      if (event.affects(uri)) {
-        this.setLabels(newNotebook, uri);
-      }
-    });
-    newNotebook.onDispose(() => labelListener.dispose());
+    // const labelListener = this.labelProvider.onDidChange((event) => {
+    //   if (event.affects(uri)) {
+    //     this.setLabels(newNotebook, uri);
+    //   }
+    // });
+    // newNotebook.onDispose(() => labelListener.dispose());
 
     newNotebook.id = this.id + ":" + uri.toString();
     newNotebook.title.closable = true;
