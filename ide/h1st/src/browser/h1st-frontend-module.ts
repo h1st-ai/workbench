@@ -4,6 +4,7 @@ import {
   FrontendApplicationContribution,
   bindViewContribution,
   WidgetFactory,
+  OpenHandler,
   // bindViewContribution,
 } from "@theia/core/lib/browser";
 import { ContainerModule, injectable } from "inversify";
@@ -14,37 +15,31 @@ import {
   H1ST_BACKEND_PATH,
   H1ST_BACKEND_WITH_CLIENT_PATH,
 } from "../common/protocol";
-// import { FileNavigatorContribution } from "@theia/navigator/lib/browser/navigator-contribution";
+
 import {
   H1stCommandContribution,
   H1stMenuContribution,
-  // H1stFileNavigatorContribution,
 } from "./h1st-contribution";
-
-// import { H1stFrontendApplicationContribution } from "./h1st-frontend-contribution";
 
 import "./branding";
 
-// import { DebugFrontendApplicationContribution } from "@theia/debug/lib/browser/debug-frontend-application-contribution";
-
-// ../../src/browser is the root of this extension (theia magic)
 import "../../src/browser/style/index.css";
 import { H1stFrontendApplicationContribution } from "./h1st-frontend-contribution";
 import { H1stWorkspaceService } from "./h1st-workspace-contribution";
 import { H1stAboutDialog } from "./style/about-dialog";
 import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
+import { H1stNotebookEditorContribution } from "./notebook/h1st-notebook-editor-contribution";
 
 export default new ContainerModule((bind, unbind) => {
-  // bind(OpenHandler).to(H1stWidgetHandler);
-  // bindContributionProvider(bind, H1stWidgetHandler);
-  // bind(H1stFileNavigatorContribution).toService(FileNavigatorContribution);
-  // bindViewContribution(bind, H1stCommandContribution);
+  bind(OpenHandler).to(H1stNotebookEditorContribution);
+
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
   bind(H1stHeaderWidget)
     .toSelf()
     .inSingletonScope();
+
   bind(WidgetFactory)
     .toDynamicValue((ctx) => ({
       id: H1stHeaderWidget.ID,
