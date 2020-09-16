@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   Message,
+  NavigatableWidget,
   // NavigatableWidget,
   // Navigatable,
   ReactWidget,
@@ -9,21 +10,24 @@ import {
   // StatefulWidget,
 } from "@theia/core/lib/browser";
 import { injectable, postConstruct } from "inversify";
+import URI from "@theia/core/lib/common/uri";
+import { SelectionService } from "@theia/core";
 // import URI from "@theia/core/lib/common/uri";
 // import { Disposable, Event, SelectionService } from "@theia/core";
 // import { TextEditor } from "@theia/editor/lib/browser";
 // import URI from "@theia/core/lib/common/uri";
 
 @injectable()
-export class H1stNotebookWidget extends ReactWidget {
+export class H1stNotebookWidget extends ReactWidget
+  implements NavigatableWidget {
   static readonly ID = "h1st:notebook:widget";
 
-  // constructor() // readonly uri: URI
-  // readonly editor: TextEditor,
-  // protected readonly selectionService: SelectionService
-  // {
-  // super();
-  // }
+  constructor(
+    readonly uri: URI,
+    protected readonly selectionService: SelectionService //
+  ) {
+    super();
+  }
 
   // get onDispose(): Event<void> {
   //   return this.toDispose.onDispose;
@@ -41,12 +45,12 @@ export class H1stNotebookWidget extends ReactWidget {
   //   console.log("restoring state", oldState);
   // }
 
-  // getResourceUri(): URI | undefined {
-  //   return this.uri;
-  // }
-  // createMoveToUri(resourceUri: URI): URI | undefined {
-  //   return this.editor.createMoveToUri(resourceUri);
-  // }
+  getResourceUri(): URI | undefined {
+    return this.uri;
+  }
+  createMoveToUri(resourceUri: URI): URI | undefined {
+    return new URI("test2");
+  }
 
   @postConstruct()
   init(): void {
