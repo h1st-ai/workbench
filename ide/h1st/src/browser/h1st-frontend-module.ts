@@ -5,7 +5,6 @@ import {
   bindViewContribution,
   WidgetFactory,
   OpenHandler,
-  // bindViewContribution,
 } from "@theia/core/lib/browser";
 import { ContainerModule, injectable } from "inversify";
 import {
@@ -29,18 +28,14 @@ import { H1stWorkspaceService } from "./h1st-workspace-contribution";
 import { H1stAboutDialog } from "./style/about-dialog";
 import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
-// import { H1stNotebookEditorContribution } from "./notebook/h1st-notebook-editor-contribution";
-// import { H1stNotebookWidget } from "./notebook/h1st-notebook-widget";
+
 import { H1stNotebookWidgetFactory } from "./notebook/h1st-notebook-widget-factory";
 import { NotebookManager } from "./notebook/h1st-notebook-manager";
 
 export default new ContainerModule((bind, unbind) => {
-  bind(NotebookManager)
-    .toSelf()
-    .inSingletonScope();
+  bind(NotebookManager).toSelf();
   bind(OpenHandler).toService(NotebookManager);
 
-  // bind(OpenHandler).to(H1stNotebookEditorContribution);
   bind(H1stNotebookWidgetFactory)
     .toSelf()
     .inSingletonScope();
