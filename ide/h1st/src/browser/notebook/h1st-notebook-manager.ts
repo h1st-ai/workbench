@@ -19,7 +19,7 @@ export class NotebookManager extends NavigatableWidgetOpenHandler<
 > {
   readonly id = H1stNotebookWidgetFactory.ID;
 
-  readonly label = "Notebook Editor";
+  readonly label = "H1st Notebook Editor";
 
   protected readonly onActiveEditorChangedEmitter = new Emitter<
     H1stNotebookWidget | undefined
@@ -128,7 +128,7 @@ export class NotebookManager extends NavigatableWidgetOpenHandler<
 
   canHandle(uri: URI, options?: WidgetOpenerOptions): number {
     if (uri.path.ext.toLowerCase() === ".ipynb") {
-      console.log("can handle", uri.path.ext);
+      console.log("opening notebook editor", uri.path.ext);
       return 10000;
     }
     return 0;
@@ -140,12 +140,5 @@ export class NotebookManager extends NavigatableWidgetOpenHandler<
   ): Promise<H1stNotebookWidget> {
     const editor = await super.open(uri, options);
     return editor;
-
-    // console.log("openning", uri.toString(), options);
-
-    // const editor = await this.notebookWidgetFactory.createWidget({
-    //   kind: "navigatable",
-    //   uri: uri.toString(),
-    // });
   }
 }

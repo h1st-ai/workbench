@@ -8,8 +8,9 @@ import {
   // Saveable,
   // SaveableSource,
   // StatefulWidget,
+  // ReactRenderer,
 } from "@theia/core/lib/browser";
-import { injectable, postConstruct } from "inversify";
+import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
 import { SelectionService } from "@theia/core";
 // import URI from "@theia/core/lib/common/uri";
@@ -52,22 +53,21 @@ export class H1stNotebookWidget extends ReactWidget
     return new URI("test2");
   }
 
-  @postConstruct()
-  init(): void {
-    this.id = H1stNotebookWidget.ID;
-    this.title.caption = "Sample Unclosable View";
-    this.title.label = "Sample Unclosable View";
-    this.title.iconClass = "fa fa-window-maximize";
-    this.title.closable = false;
+  protected onAfterAttach(msg: Message): void {
     this.update();
+    super.onAfterAttach(msg);
   }
 
   protected onActivateRequest(msg: Message) {
-    console.log("activated", msg);
+    console.log("activated", msg, this.uri);
+    super.onActivateRequest(msg);
   }
 
   protected render(): React.ReactNode {
-    alert("render");
-    return <div>Notebook goes here</div>;
+    return (
+      <React.Fragment>
+        <div>Notebook goes here {this.uri.toString()}</div>
+      </React.Fragment>
+    );
   }
 }
