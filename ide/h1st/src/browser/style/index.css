@@ -94,6 +94,6 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   width: 8px;
 }
 
-/* .theia-icon {
-  background-image: url("http://d2nowutmrjvedl.cloudfront.net/wbassets/h1st-light.svg") !important;
-} */
+.notebook-toolbar {
+  border: 1px solid red;
+}

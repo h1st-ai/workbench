@@ -6,6 +6,7 @@ import {
 } from "@theia/core/lib/browser";
 import URI from "@theia/core/lib/common/uri";
 import { TextEditorProvider } from "@theia/editor/lib/browser";
+import { FileService } from "@theia/filesystem/lib/browser/file-service";
 import { injectable, inject } from "inversify";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
 
@@ -19,6 +20,8 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
   protected readonly editorProvider: TextEditorProvider;
   @inject(SelectionService)
   protected readonly selectionService: SelectionService;
+  @inject(FileService)
+  protected readonly fileService: FileService;
 
   createWidget(options: NavigatableWidgetOptions): Promise<H1stNotebookWidget> {
     const uri = new URI(options.uri);
@@ -27,7 +30,11 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
 
   protected async createEditor(uri: URI): Promise<H1stNotebookWidget> {
     // const textEditor = await this.editorProvider(uri);
-    const newNotebook = new H1stNotebookWidget(uri, this.selectionService);
+    const newNotebook = new H1stNotebookWidget(
+      uri,
+      this.selectionService,
+      this.fileService
+    );
 
     this.setLabels(newNotebook, uri);
     // const labelListener = this.labelProvider.onDidChange((event) => {

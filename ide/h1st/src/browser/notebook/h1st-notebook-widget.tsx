@@ -13,10 +13,9 @@ import {
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
 import { SelectionService } from "@theia/core";
-// import URI from "@theia/core/lib/common/uri";
-// import { Disposable, Event, SelectionService } from "@theia/core";
-// import { TextEditor } from "@theia/editor/lib/browser";
-// import URI from "@theia/core/lib/common/uri";
+import { FileService } from "@theia/filesystem/lib/browser/file-service";
+
+import Icon from "./components/icon";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -25,7 +24,8 @@ export class H1stNotebookWidget extends ReactWidget
 
   constructor(
     readonly uri: URI,
-    protected readonly selectionService: SelectionService //
+    protected readonly selectionService: SelectionService,
+    protected readonly fileService: FileService
   ) {
     super();
   }
@@ -53,7 +53,10 @@ export class H1stNotebookWidget extends ReactWidget
     return new URI("test2");
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected async onAfterAttach(msg: Message): Promise<void> {
+    const content = await this.fileService.readFile(this.uri);
+    console.log(content.value);
+
     this.update();
     super.onAfterAttach(msg);
   }
@@ -63,9 +66,22 @@ export class H1stNotebookWidget extends ReactWidget
     super.onActivateRequest(msg);
   }
 
+  protected renderToolbar(): React.ReactNode {
+    return (
+      <div className="notebook-toolbar">
+        <ul>
+          <li>
+            <Icon icon="fast-forward" width={16} height={16} />
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
   protected render(): React.ReactNode {
     return (
       <React.Fragment>
+        {this.renderToolbar()}
         <div>Notebook goes here {this.uri.toString()}</div>
       </React.Fragment>
     );
