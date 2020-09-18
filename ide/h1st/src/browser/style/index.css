@@ -97,3 +97,71 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .notebook-toolbar {
   border: 1px solid red;
 }
+
+.h1st-ntb-steps {
+  display: flex;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.h1st-btn--step {
+  background: none;
+  outline: none;
+  border: none;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  color: var(--theia-foreground);
+  background: rgba(0, 0, 0, 0);
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.h1st-btn--step:last-child {
+  border-right: none;
+}
+
+.h1st-btn--step:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.h1st-btn--step svg {
+  margin-right: 8px;
+  transition: all 200ms;
+}
+
+.h1st-btn--step:hover svg {
+  transform: scale(1.2);
+}
+
+.toolbar {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.toolbar ul {
+  list-style: none;
+  padding: 8px 16px;
+  margin: 0px;
+  display: flex;
+}
+
+.toolbar ul li button {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  outline: none;
+}
+
+.toolbar ul li svg {
+  transition: all 200ms;
+}
+
+.toolbar ul li:hover svg {
+  transform: scale(1.5);
+}
