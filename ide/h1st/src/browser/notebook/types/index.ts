@@ -1,10 +1,9 @@
 export interface ICell {
-  input: {
-    code: string;
-  };
-  output: {
-    value: string;
-  };
+  cell_type: string;
+  execution_count: number | null;
+  metadata: any;
+  source: string[];
+  outputs: string[];
 }
 
 export interface INotebook {

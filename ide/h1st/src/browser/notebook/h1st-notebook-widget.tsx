@@ -21,12 +21,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import Notebook from "./components/notebook";
 import Icon from "./components/icon";
 import reducer from "./reducers";
+import { notebookActions } from "./reducers/notebook";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
   implements NavigatableWidget {
   static readonly ID = "h1st:notebook:widget";
   private readonly store: any;
+  private _content: any;
 
   constructor(
     readonly uri: URI,
@@ -62,8 +64,9 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async onAfterAttach(msg: Message): Promise<void> {
     const content = await this.fileService.readFile(this.uri);
-    console.log(content.value);
-
+    this._content = JSON.parse(content.value.toString());
+    const { setCells } = notebookActions;
+    this.store.dispatch(setCells({ cells: this._content.cells }));
     this.update();
     super.onAfterAttach(msg);
   }
@@ -86,10 +89,12 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected render(): React.ReactNode {
+    // console.log(this._content);
+
     return (
       <React.Fragment>
         <Provider store={this.store}>
-          <Notebook uri={this.uri} />
+          <Notebook uri={this.uri} source={this._content} />
         </Provider>
       </React.Fragment>
     );
