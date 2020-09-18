@@ -15,12 +15,18 @@ import URI from "@theia/core/lib/common/uri";
 import { SelectionService } from "@theia/core";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+
+import Notebook from "./components/notebook";
 import Icon from "./components/icon";
+import reducer from "./reducers";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
   implements NavigatableWidget {
   static readonly ID = "h1st:notebook:widget";
+  private readonly store: any;
 
   constructor(
     readonly uri: URI,
@@ -28,6 +34,7 @@ export class H1stNotebookWidget extends ReactWidget
     protected readonly fileService: FileService
   ) {
     super();
+    this.store = configureStore({ reducer, devTools: true });
   }
 
   // get onDispose(): Event<void> {
@@ -81,8 +88,9 @@ export class H1stNotebookWidget extends ReactWidget
   protected render(): React.ReactNode {
     return (
       <React.Fragment>
-        {this.renderToolbar()}
-        <div>Notebook goes here {this.uri.toString()}</div>
+        <Provider store={this.store}>
+          <Notebook uri={this.uri} />
+        </Provider>
       </React.Fragment>
     );
   }

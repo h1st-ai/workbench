@@ -9,13 +9,15 @@
     "src"
   ],
   "dependencies": {
-    "@reduxjs/toolkit": "^1.4.0",
+    "@reduxjs/toolkit": "1.4.0",
     "@theia/core": "1.5.0",
     "@theia/editor": "1.5.0",
     "@theia/filesystem": "1.5.0",
     "@theia/navigator": "1.5.0",
     "@theia/workspace": "1.5.0",
-    "redux": "^4.0.5"
+    "@types/react-redux": "^7.1.9",
+    "react-redux": "7.2.1",
+    "redux": "4.0.5"
   },
   "devDependencies": {
     "rimraf": "3.0.2",

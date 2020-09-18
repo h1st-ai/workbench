@@ -798,7 +798,7 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/runtime@^7.10.0", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.10.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.11.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
   integrity sha512-TeWkU52so0mPtDcaCTxNBI/IHiz0pZgr8VEFqXFtZWpYD08ZB6FaSwVAS8MKRQAP3bYKiVjwysOJgMFY28o6Tw==
@@ -962,7 +962,7 @@
   dependencies:
     prop-types "^15.6.1"
 
-"@reduxjs/toolkit@^1.4.0":
+"@reduxjs/toolkit@1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.4.0.tgz#ee2e2384cc3d1d76780d844b9c2da3580d32710d"
   integrity sha512-hkxQwVx4BNVRsYdxjNF6cAseRmtrkpSlcgJRr3kLUcHPIAMZAmMJkXmHh/eUEGTMqPzsYpJLM7NN2w9fxQDuGw==
@@ -1670,6 +1670,14 @@
   resolved "https://registry.yarnpkg.com/@types/highlight.js/-/highlight.js-9.12.4.tgz#8c3496bd1b50cc04aeefd691140aa571d4dbfa34"
   integrity sha512-t2szdkwmg2JJyuCM20e8kR2X59WCE5Zkl4bzm1u1Oukjm79zpbiAv+QjnwLnuuV0WHEcX2NgUItu0pAMKuOPww==
 
+"@types/hoist-non-react-statics@^3.3.0":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
+  integrity sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
+  dependencies:
+    "@types/react" "*"
+    hoist-non-react-statics "^3.3.0"
+
 "@types/json-schema@^7.0.4":
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.5.tgz#dcce4430e64b443ba8945f0290fb564ad5bac6dd"
@@ -1809,6 +1817,16 @@
   integrity sha512-ykkPQ+5nFknnlU6lDd947WbQ6TE3NNzbQAkInC2EKY1qeYdTKp7onFusmYZb+ityzx2YviqT6BXSu+LyWWJwcA==
   dependencies:
     "@types/react" "*"
+
+"@types/react-redux@^7.1.9":
+  version "7.1.9"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.9.tgz#280c13565c9f13ceb727ec21e767abe0e9b4aec3"
+  integrity sha512-mpC0jqxhP4mhmOl3P4ipRsgTgbNofMRXJb08Ms6gekViLj61v1hOZEKWDCyWsdONr6EjEA6ZHXC446wdywDe0w==
+  dependencies:
+    "@types/hoist-non-react-statics" "^3.3.0"
+    "@types/react" "*"
+    hoist-non-react-statics "^3.3.0"
+    redux "^4.0.0"
 
 "@types/react-virtualized@^9.18.3":
   version "9.21.10"
@@ -6541,6 +6559,13 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
+hoist-non-react-statics@^3.3.0:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
+  integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
+  dependencies:
+    react-is "^16.7.0"
+
 home-or-tmp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/home-or-tmp/-/home-or-tmp-2.0.0.tgz#e36c3f2d2cae7d746a857e38d18d5f32a7882db8"
@@ -9893,7 +9918,7 @@ react-dom@^16.8.0:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-react-is@^16.8.1:
+react-is@^16.7.0, react-is@^16.8.1, react-is@^16.9.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -9910,6 +9935,17 @@ react-perfect-scrollbar@^1.5.3:
   dependencies:
     perfect-scrollbar "^1.5.0"
     prop-types "^15.6.1"
+
+react-redux@7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.1.tgz#8dedf784901014db2feca1ab633864dee68ad985"
+  integrity sha512-T+VfD/bvgGTUA74iW9d2i5THrDQWbweXP0AVNI8tNd1Rk5ch1rnMiJkDD67ejw7YBKM4+REvcvqRuWJb7BLuEg==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+    hoist-non-react-statics "^3.3.0"
+    loose-envify "^1.4.0"
+    prop-types "^15.7.2"
+    react-is "^16.9.0"
 
 react-virtualized@^9.20.0:
   version "9.22.2"
@@ -10159,7 +10195,7 @@ redux-thunk@^2.3.0:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
-redux@^4.0.0, redux@^4.0.5:
+redux@4.0.5, redux@^4.0.0:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
   integrity sha512-VSz1uMAH24DM6MF72vcojpYPtrTUu3ByVWfPL1nPfVRb5mZVTve5GnNCUV53QM/BZ66xfWrm0CTWoM+Xlz8V1w==
