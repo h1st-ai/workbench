@@ -1,28 +1,35 @@
 import * as React from "react";
+import { useSelector } from "react-redux";
 import URI from "@theia/core/lib/common/uri";
 import NotebookSteps from "./step-panel";
 import Toolbar from "./toolbar";
-// import { notebookActions } from "../reducers/notebook";
+// import { selectNotebook } from "../reducers/notebook";
+import { NotebookCell } from "./cell";
+import { ICell, IStore } from "../types";
 
-const { useEffect } = React;
+// const { useEffect } = React;
 
 export default function(props: any) {
-  console.log(props.source);
+  console.log(props.model);
   const uri: URI = props.uri;
-  const content = props.source;
+  const content = props.model;
+  const { cells } = useSelector((store: IStore) => store.notebook);
 
-  useEffect(() => {
-    console.log("test");
-    // const { setCells } = notebookActions;
-    // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   console.log("test");
+  //   // const { setCells } = notebookActions;
+  //   // const dispatch = useDispatch();
 
-    // dispatch(setCells(props.source.cells));
-  });
+  //   // dispatch(setCells(props.model.cells));
+  // });
+
+  const codeCells = cells.map((c: ICell) => <NotebookCell model={c} />);
 
   return (
     <React.Fragment>
       <NotebookSteps />
       <Toolbar />
+      {codeCells}
       <p>{uri.toString()}</p>
       <p>{JSON.stringify(content, null, 2)}</p>
     </React.Fragment>

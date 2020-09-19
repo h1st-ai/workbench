@@ -9,6 +9,7 @@
     "src"
   ],
   "dependencies": {
+    "@nteract/presentational-components": "^3.4.2",
     "@reduxjs/toolkit": "1.4.0",
     "@theia/core": "1.5.0",
     "@theia/editor": "1.5.0",
@@ -16,8 +17,10 @@
     "@theia/navigator": "1.5.0",
     "@theia/workspace": "1.5.0",
     "@types/react-redux": "^7.1.9",
+    "react-id-generator": "^3.0.1",
     "react-redux": "7.2.1",
-    "redux": "4.0.5"
+    "redux": "4.0.5",
+    "styled-components": "^5.2.0"
   },
   "devDependencies": {
     "rimraf": "3.0.2",

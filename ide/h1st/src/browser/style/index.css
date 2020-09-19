@@ -165,3 +165,17 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .toolbar ul li:hover svg {
   transform: scale(1.5);
 }
+
+.cell-wrapper {
+  display: flex;
+}
+
+.cell-wrapper:hover .cell-controls {
+  visibility: visible;
+}
+
+.cell-controls {
+  position: relative;
+  width: 32px;
+  visibility: hidden;
+}

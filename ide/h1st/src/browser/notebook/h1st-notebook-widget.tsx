@@ -64,7 +64,13 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async onAfterAttach(msg: Message): Promise<void> {
     const content = await this.fileService.readFile(this.uri);
-    this._content = JSON.parse(content.value.toString());
+
+    try {
+      this._content = JSON.parse(content.value.toString());
+    } catch (ex) {
+      this._content = defaultNotebookModel;
+    }
+
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._content.cells }));
     this.update();
@@ -94,9 +100,42 @@ export class H1stNotebookWidget extends ReactWidget
     return (
       <React.Fragment>
         <Provider store={this.store}>
-          <Notebook uri={this.uri} source={this._content} />
+          <Notebook uri={this.uri} model={this._content} />
         </Provider>
       </React.Fragment>
     );
   }
 }
+
+const defaultNotebookModel = {
+  cells: [
+    {
+      cell_type: "code",
+      execution_count: null,
+      metadata: {},
+      outputs: [],
+      source: [],
+    },
+  ],
+  metadata: {
+    language_info: {
+      codemirror_mode: {
+        name: "ipython",
+        version: 3,
+      },
+      file_extension: ".py",
+      mimetype: "text/x-python",
+      name: "python",
+      nbconvert_exporter: "python",
+      pygments_lexer: "ipython3",
+      version: "3.7.7-final",
+    },
+    orig_nbformat: 2,
+    kernelspec: {
+      name: "",
+      display_name: "",
+    },
+  },
+  nbformat: 4,
+  nbformat_minor: 2,
+};
