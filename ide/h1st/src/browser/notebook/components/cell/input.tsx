@@ -16,7 +16,7 @@ export default function CellInput({ model, width, height }: any) {
   const wrapperRef = useRef<HTMLHeadingElement>(null);
   const [currentLineCount, setCurrentLineCount] = useState(-1);
   const [editor, setEditor] = useState<any>();
-  const [currentWidth, setWidth] = useState(width);
+  // const [currentWidth, setWidth] = useState(width);
   // const [currentHeight, setHeight] = useState(height);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function CellInput({ model, width, height }: any) {
   }, []);
 
   function updateEditorSize() {
-    console.log("updating editor size", width, currentWidth);
+    console.log("updating editor size", width);
 
     if (wrapperRef.current) {
       if (width !== wrapperRef.current.offsetWidth) {
@@ -38,7 +38,7 @@ export default function CellInput({ model, width, height }: any) {
         // editor.layout({ inputWidth });
 
         if (editor) {
-          console.log("update width", editor, width, currentWidth);
+          console.log("width changed detected. Updating width", editor, width);
           editor.layout();
         }
       }
@@ -164,10 +164,54 @@ export default function CellInput({ model, width, height }: any) {
     );
   }
 
+  function renderCodeInput() {
+    return (
+      <Editor
+        language="python"
+        value={model.source.join("")}
+        options={{
+          glyphMargin: true,
+          wordWrap: "on",
+          scrollBeyondLastLine: false,
+          lightbulb: { enabled: true },
+          fixedOverflowWidgets: true,
+          automaticLayout: true,
+          minimap: {
+            enabled: false,
+          },
+          lineNumbers: "off",
+          scrollbar: {
+            vertical: "hidden",
+            horizontal: "hidden",
+            verticalScrollbarSize: 0,
+            horizontalScrollbarSize: 0,
+            alwaysConsumeMouseWheel: false,
+          },
+          renderLineHighlight: "none",
+          highlightActiveIndentGuide: false,
+          renderIndentGuides: false,
+          overviewRulerBorder: false,
+          overviewRulerLanes: 0,
+          hideCursorInOverviewRuler: true,
+          folding: false,
+          occurrencesHighlight: false,
+          selectionHighlight: false,
+          lineDecorationsWidth: 0,
+          contextmenu: false,
+          matchBrackets: "always",
+        }}
+        editorDidMount={handleEditorDidMount}
+      />
+    );
+  }
+
   function renderInput() {
     switch (model.cell_type) {
       case "markdown":
         return renderMarkdownInput();
+
+      case "code":
+        return renderCodeInput();
 
       default:
         return null;
