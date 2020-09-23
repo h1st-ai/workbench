@@ -181,7 +181,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-wrapper {
   display: flex;
-  min-height: 70px;
+  min-height: 56px;
   margin: 8px 16px 8px 0px;
 }
 
@@ -210,7 +210,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-controls button.cell-btn-down {
   left: 0px;
-  top: 24px;
+  top: 16px;
 }
 
 .cell-controls button.cell-btn-plus {
@@ -259,6 +259,13 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   );
 }
 
+.cell-wrapper .monaco-editor .margin,
+.cell-wrapper .monaco-editor,
+.cell-wrapper .monaco-editor-background,
+.cell-wrapper .monaco-editor .inputarea.ime-input {
+  background: var(--theia-tab-inactiveBackground);
+}
+
 .cell-content {
   border-left: 8px solid transparent;
   display: flex;
@@ -302,12 +309,17 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   clip-rule: evenodd !important;
 }
 
+.cell-input-spacing {
+  padding: 8px 0px 5px 0px;
+  background: var(--theia-tab-inactiveBackground);
+}
+
 .cell-input {
   flex: 1;
 }
 
 .cell-editor-wrapper {
   /* min-height: 29px; */
-  padding: 8px 0px;
+  padding: 0px 0px;
   height: auto;
 }

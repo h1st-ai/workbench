@@ -80,10 +80,7 @@ export default function CellInput({ model }: any) {
     // const contentHeight = editor.getModel().getLineCount() * lineHeight;
     const contentHeight = editor.getContentHeight();
     const { horizontalScrollbarHeight, width } = editor.getLayoutInfo();
-    const height = Math.max(
-      LINE_HEIGHT,
-      contentHeight + horizontalScrollbarHeight
-    );
+    const height = Math.max(LINE_HEIGHT, contentHeight);
 
     console.log(
       "updating height",
@@ -186,8 +183,10 @@ export default function CellInput({ model }: any) {
   }
 
   return (
-    <div className="cell-editor-wrapper" ref={wrapperRef}>
-      {renderInput()}
+    <div className="cell-input-spacing">
+      <div className="cell-editor-wrapper" ref={wrapperRef}>
+        {renderInput()}
+      </div>
     </div>
   );
 }
