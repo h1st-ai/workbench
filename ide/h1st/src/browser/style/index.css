@@ -1,6 +1,11 @@
 :root {
   --theia-ui-font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
   --theia-private-menubar-height: 45px;
+  --code-font-family: Menlo, Monaco, "Courier New", monospace;
+}
+
+button {
+  cursor: pointer;
 }
 
 #h1st\:header\:widget {
@@ -152,22 +157,32 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   background: none;
   display: flex;
   align-items: center;
-  width: 24px;
-  height: 24px;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   outline: none;
 }
 
 .toolbar ul li svg {
   transition: all 200ms;
+  fill: var(--theia-foreground);
 }
 
 .toolbar ul li:hover svg {
   transform: scale(1.5);
 }
 
+.toolbar ul li button.btn-toolbar-stop svg {
+  fill: #f48771 !important;
+  fill-rule: evenodd !important;
+  clip-rule: evenodd !important;
+}
+
 .cell-wrapper {
   display: flex;
+  min-height: 70px;
+  margin: 8px 16px 8px 0px;
 }
 
 .cell-wrapper:hover .cell-controls {
@@ -176,6 +191,102 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-controls {
   position: relative;
-  width: 32px;
+  min-width: 32px;
   visibility: hidden;
+}
+
+.cell-controls button {
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background: none;
+  position: absolute;
+}
+
+.cell-controls button.cell-btn-up {
+  left: 0px;
+  top: 0px;
+}
+
+.cell-controls button.cell-btn-down {
+  left: 0px;
+  top: 24px;
+}
+
+.cell-controls button.cell-btn-plus {
+  left: 0px;
+  bottom: 0px;
+}
+
+.cell-controls svg {
+  fill: var(--theia-foreground);
+}
+
+.cell-prompt {
+  width: 34px;
+  min-width: 34px;
+  padding-left: 4px;
+  padding-right: 4px;
+  display: block;
+}
+
+.cell-prompt .execution-count {
+  color: var(--vscode-descriptionForeground);
+  font-family: var(--code-font-family);
+}
+/* var(--vscode-notifications-background) */
+.cell-wrapper:hover .cell-content {
+  border-left-color: var(--theia-tab-inactiveBackground);
+}
+
+.cell-wrapper.active .cell-content,
+.cell-wrapper.active:hover .cell-content {
+  border-left-color: var(--theia-inputValidation-infoBorder);
+}
+
+.cell-content {
+  border-left: 8px solid transparent;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.input-header {
+  padding: 4px 8px;
+  display: flex;
+  justify-content: space-between;
+  background: var(--theia-tab-inactiveBackground);
+  margin-bottom: 1px;
+}
+
+.input-header button {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.input-header svg {
+  fill: var(--theia-foreground);
+}
+
+.input-header button.btn-cell-play svg {
+  fill: #388a34 !important;
+  fill-rule: evenodd !important;
+  clip-rule: evenodd !important;
+}
+
+.input-header button.btn-cell-toggle {
+  fill: var(--theia-foreground) !important;
+  fill-rule: evenodd !important;
+  clip-rule: evenodd !important;
+}
+
+.input-header button.btn-cell-delete svg {
+  fill: var(--theia-foreground) !important;
+  fill-rule: evenodd !important;
+  clip-rule: evenodd !important;
+}
+
+.cell-input {
+  flex: 1;
 }

@@ -8,6 +8,8 @@ import { INotebook, IStore } from "../types";
 
 const initialState: INotebook = {
   cells: [],
+  selectedCell: null,
+  activeCell: null,
 };
 
 export const NotebookSlice = createSlice({
@@ -16,6 +18,12 @@ export const NotebookSlice = createSlice({
   reducers: {
     setCells: (state, { payload }): void => {
       state.cells = payload.cells;
+    },
+    setSelectedCell: (state, { payload }): void => {
+      state.selectedCell = payload.id;
+    },
+    setActiveCell: (state, { payload }): void => {
+      state.activeCell = payload.id;
     },
   },
 });

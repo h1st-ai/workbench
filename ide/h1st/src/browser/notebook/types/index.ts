@@ -1,4 +1,5 @@
 export interface ICell {
+  id?: string;
   cell_type: string;
   execution_count: number | null;
   metadata: any;
@@ -8,6 +9,8 @@ export interface ICell {
 
 export interface INotebook {
   cells: ICell[];
+  selectedCell: string | null;
+  activeCell: string | null;
 }
 
 export interface IKernel {

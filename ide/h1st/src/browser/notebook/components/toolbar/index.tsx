@@ -29,7 +29,7 @@ export default function Toolbar() {
         </li>
 
         <li>
-          <button>
+          <button className="btn-toolbar-stop">
             <Icon width={16} height={16} icon="stop" />
           </button>
         </li>

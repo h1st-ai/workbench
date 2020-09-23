@@ -14,6 +14,7 @@ import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
 import { SelectionService } from "@theia/core";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
+import nextId from "react-id-generator";
 
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -22,6 +23,7 @@ import Notebook from "./components/notebook";
 import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
+import { ICell } from "./types";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -66,7 +68,10 @@ export class H1stNotebookWidget extends ReactWidget
     const content = await this.fileService.readFile(this.uri);
 
     try {
-      this._content = JSON.parse(content.value.toString());
+      const _content = JSON.parse(content.value.toString());
+      _content.cells.map((c: ICell) => (c.id = nextId("h1st")));
+
+      this._content = _content;
     } catch (ex) {
       this._content = defaultNotebookModel;
     }
@@ -110,6 +115,7 @@ export class H1stNotebookWidget extends ReactWidget
 const defaultNotebookModel = {
   cells: [
     {
+      id: nextId("h1st"),
       cell_type: "code",
       execution_count: null,
       metadata: {},
