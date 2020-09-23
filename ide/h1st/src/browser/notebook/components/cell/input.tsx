@@ -4,50 +4,86 @@ import { useDispatch, useSelector } from "react-redux";
 import { IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 
-// let lastResizedLineCount = 0;
+const LINE_HEIGHT = 18;
 
 export default function CellInput({ model }: any) {
-  const { useRef } = React;
+  const { useRef, useState, useEffect } = React;
 
   const dispatch = useDispatch();
   const { setActiveCell } = notebookActions;
   const { activeCell } = useSelector((store: IStore) => store.notebook);
   const editorRef = useRef();
   const wrapperRef = useRef<HTMLHeadingElement>(null);
+  const [currentLineCount, setCurrentLineCount] = useState(-1);
+  const [editor, setEditor] = useState<any>();
 
-  function handleEditorDidMount(_: any, editor: any) {
-    editorRef.current = editor;
-    // updateEditorHeight(editor);
+  useEffect(() => {
+    window.addEventListener("resize", updateEditorSize);
 
-    // Now you can use the instance of monaco editor
-    // in this component whenever you want
-    editor.onDidChangeModelContent((ev: any) => {
+    return () => {
+      window.removeEventListener("resize", updateEditorSize);
+    };
+  }, []);
+
+  function updateEditorSize() {
+    console.log("updating editor size");
+    updateEditorHeight(editor);
+
+    // TODO update editor width
+  }
+
+  // Monaco editor is ready to use
+  function handleEditorDidMount(_: any, monacoEditor: any) {
+    console.log("editor did mount", monacoEditor);
+    editorRef.current = monacoEditor;
+    setEditor(monacoEditor);
+
+    setTimeout(() => updateEditorHeight(monacoEditor), 0);
+
+    monacoEditor.onDidChangeModelContent((ev: any) => {
       console.log(ev);
-      console.log(editor.getValue());
-      updateEditorHeight(editor);
+      console.log(monacoEditor.getValue());
+      updateEditorHeight(monacoEditor);
+    });
+
+    monacoEditor.onMouseWheel((ev: any) => {
+      console.log("mouse wheel", ev);
+      ev.preventDefault();
     });
 
     console.log(dispatch, setActiveCell);
-    console.log(editor);
+
     // editor.onDidFocusEditor(() => {
     //   dispatch(setActiveCell({ id: model.id }));
     // });
   }
 
   function updateEditorHeight(editor: any) {
-    // let lineCount = editor.getModel().getLineCount();
-    // Do not invalidate layout if the line count hasn't changed, as this method
-    // will be called for every keypress and layouts are too expensive.
-    // if (lineCount == lastResizedLineCount) {
-    //   return;
-    // }
-    // lastResizedLineCount = lineCount;
+    console.log("updating editor height", editor);
+    if (!editor) return;
 
-    const lineHeight = editor.getOption(monaco.editor.EditorOption.lineHeight);
-    const contentHeight = Math.min(lineHeight, editor.getContentHeight());
+    const editorDomNode = editor.getDomNode();
 
+    if (!editorDomNode) return;
+
+    const container = editorDomNode.getElementsByClassName(
+      "view-lines"
+    )[0] as HTMLElement;
+
+    const currLineCount = container.childElementCount;
+    if (currentLineCount === currLineCount) {
+      return;
+    }
+
+    // const lineHeight = computeLineHeight(editor);
+    // console.log(lineHeight);
+    // const contentHeight = editor.getModel().getLineCount() * lineHeight;
+    const contentHeight = editor.getContentHeight();
     const { horizontalScrollbarHeight, width } = editor.getLayoutInfo();
-    const height = contentHeight + horizontalScrollbarHeight;
+    const height = Math.max(
+      LINE_HEIGHT,
+      contentHeight + horizontalScrollbarHeight
+    );
 
     console.log(
       "updating height",
@@ -63,17 +99,23 @@ export default function CellInput({ model }: any) {
       wrapperRef.current.style.height = `${height}px`;
       editor.layout({ width, height });
     }
+
+    if (container.childElementCount !== currLineCount) {
+      updateEditorHeight(editor);
+    } else {
+      setCurrentLineCount(currLineCount);
+    }
   }
 
   function renderMarkdownInput() {
     return (
       <Editor
-        // height={200}
+        width="100%"
+        height="auto"
         language="markdown"
         value={model.source.join("")}
         options={{
-          isSimpleWidget: true,
-          glyphMargin: false,
+          glyphMargin: true,
           wordWrap: "on",
           scrollBeyondLastLine: false,
           lightbulb: { enabled: true },
@@ -86,6 +128,9 @@ export default function CellInput({ model }: any) {
           scrollbar: {
             vertical: "hidden",
             horizontal: "hidden",
+            verticalScrollbarSize: 0,
+            horizontalScrollbarSize: 0,
+            alwaysConsumeMouseWheel: false,
           },
           renderLineHighlight: "none",
           highlightActiveIndentGuide: false,
@@ -98,12 +143,37 @@ export default function CellInput({ model }: any) {
           selectionHighlight: false,
           lineDecorationsWidth: 0,
           contextmenu: false,
-          matchBrackets: false,
+          matchBrackets: "always",
         }}
         editorDidMount={handleEditorDidMount}
       />
     );
   }
+
+  // function computeLineHeight(editor: any): number {
+  //   // const editor = editorRef.current;
+
+  //   if (editor) {
+  //     const editorDomNode = editor.getDomNode();
+  //     if (editorDomNode) {
+  //       const container = editorDomNode.getElementsByClassName(
+  //         "view-lines"
+  //       )[0] as HTMLElement;
+  //       if (
+  //         container.firstChild &&
+  //         (container.firstChild as HTMLElement).style.height
+  //       ) {
+  //         const lineHeightPx = (container.firstChild as HTMLElement).style
+  //           .height;
+  //         return parseInt(lineHeightPx, 10);
+  //       } else {
+  //         return LINE_HEIGHT;
+  //       }
+  //     }
+  //   }
+
+  //   return LINE_HEIGHT;
+  // }
 
   function renderInput() {
     switch (model.cell_type) {

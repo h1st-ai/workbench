@@ -245,7 +245,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-wrapper.selected .cell-focusbar,
 .cell-wrapper.selected:hover .cell-focusbar {
-  background: var(--jp-brand-color0);
+  background: var(--theia-inputValidation-infoBorder);
 }
 
 .cell-wrapper.active .cell-focusbar,
@@ -254,8 +254,8 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
     -45deg,
     transparent,
     transparent 3px,
-    var(--jp-accent-color0) 3px,
-    var(--jp-accent-color0) 6px
+    var(--theia-inputValidation-infoBorder) 3px,
+    var(--theia-inputValidation-infoBorder) 6px
   );
 }
 
