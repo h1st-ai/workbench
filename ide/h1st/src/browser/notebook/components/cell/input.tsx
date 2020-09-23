@@ -16,6 +16,8 @@ export default function CellInput({ model, width, height }: any) {
   const wrapperRef = useRef<HTMLHeadingElement>(null);
   const [currentLineCount, setCurrentLineCount] = useState(-1);
   const [editor, setEditor] = useState<any>();
+  const [currentWidth, setWidth] = useState(width);
+  // const [currentHeight, setHeight] = useState(height);
 
   useEffect(() => {
     window.addEventListener("resize", updateEditorSize);
@@ -26,9 +28,23 @@ export default function CellInput({ model, width, height }: any) {
   }, []);
 
   function updateEditorSize() {
-    console.log("updating editor size");
-    updateEditorHeight(editor);
+    console.log("updating editor size", width, currentWidth);
 
+    if (wrapperRef.current) {
+      if (width !== wrapperRef.current.offsetWidth) {
+        // real width of input = width minus other component width
+        const inputWidth = width - 42 - 8 - 32 - 20;
+        wrapperRef.current.style.width = `${inputWidth}px`;
+        // editor.layout({ inputWidth });
+
+        if (editor) {
+          console.log("update width", editor, width, currentWidth);
+          editor.layout();
+        }
+      }
+    }
+
+    // updateEditorHeight(editor);
     // TODO update editor width
   }
 
@@ -38,7 +54,10 @@ export default function CellInput({ model, width, height }: any) {
     editorRef.current = monacoEditor;
     setEditor(monacoEditor);
 
-    setTimeout(() => updateEditorHeight(monacoEditor), 0);
+    setTimeout(() => {
+      updateEditorHeight(monacoEditor);
+      updateEditorSize();
+    }, 0);
 
     monacoEditor.onDidChangeModelContent((ev: any) => {
       console.log(ev);
@@ -145,31 +164,6 @@ export default function CellInput({ model, width, height }: any) {
     );
   }
 
-  // function computeLineHeight(editor: any): number {
-  //   // const editor = editorRef.current;
-
-  //   if (editor) {
-  //     const editorDomNode = editor.getDomNode();
-  //     if (editorDomNode) {
-  //       const container = editorDomNode.getElementsByClassName(
-  //         "view-lines"
-  //       )[0] as HTMLElement;
-  //       if (
-  //         container.firstChild &&
-  //         (container.firstChild as HTMLElement).style.height
-  //       ) {
-  //         const lineHeightPx = (container.firstChild as HTMLElement).style
-  //           .height;
-  //         return parseInt(lineHeightPx, 10);
-  //       } else {
-  //         return LINE_HEIGHT;
-  //       }
-  //     }
-  //   }
-
-  //   return LINE_HEIGHT;
-  // }
-
   function renderInput() {
     switch (model.cell_type) {
       case "markdown":
@@ -179,6 +173,9 @@ export default function CellInput({ model, width, height }: any) {
         return null;
     }
   }
+
+  // update editor size
+  updateEditorSize();
 
   return (
     <div className="cell-input-spacing">

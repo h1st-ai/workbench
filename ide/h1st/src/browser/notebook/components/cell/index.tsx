@@ -110,7 +110,7 @@ export function NotebookCell(props: any) {
             <div className="execution-count">[*]</div>
           </div>
           <div className="cell-input">
-            {renderInputHeader()} {props.width} {props.height}
+            {renderInputHeader()}
             <CellInput
               model={model}
               width={props.width}
