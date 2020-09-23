@@ -3,8 +3,9 @@ import Icon from "../icon";
 import { notebookActions } from "../../reducers/notebook";
 import klass from "classnames";
 import { useDispatch, useSelector } from "react-redux";
-import { IStore } from "../../types";
+import { ICellModel, IStore } from "../../types";
 import CellInput from "./input";
+import CellOuput from "./output";
 // import {
 //   Input,
 //   Prompt,
@@ -16,7 +17,13 @@ import CellInput from "./input";
 const CELL_CODE = "code";
 const CELL_MD = "markdown";
 
-export function NotebookCell(props: any) {
+interface INotebookProps {
+  model: ICellModel;
+  width?: number;
+  height?: number;
+}
+
+export function NotebookCell(props: INotebookProps) {
   const { model } = props;
 
   if (!model) {
@@ -78,6 +85,29 @@ export function NotebookCell(props: any) {
     );
   }
 
+  function renderPrompt() {
+    switch (cellType) {
+      case CELL_CODE:
+        return (
+          <div className="cell-prompt">
+            <div className="execution-count">
+              [{model.execution_count || 0}]
+            </div>
+          </div>
+        );
+
+      case CELL_MD:
+        return (
+          <div className="cell-prompt">
+            <div className="execution-count"></div>
+          </div>
+        );
+
+      default:
+        break;
+    }
+  }
+
   function _setSelectedCell() {
     if (selectedCell !== model.id) {
       dispatch(setSelectedCell({ id: model.id }));
@@ -87,7 +117,7 @@ export function NotebookCell(props: any) {
   return (
     <React.Fragment>
       <div
-        className={klass("cell-wrapper", {
+        className={klass("cell-wrapper", `${model.cell_type}-cell`, {
           active: activeCell === model.id,
           selected: selectedCell === model.id,
         })}
@@ -106,19 +136,20 @@ export function NotebookCell(props: any) {
         </div>
         <div className="cell-content">
           <div className="cell-focusbar" />
-          <div className="cell-prompt">
-            <div className="execution-count">[*]</div>
+          {renderPrompt()}
+          <div className="cell-form">
+            <div className="cell-input">
+              {renderInputHeader()}
+              <CellInput
+                model={model}
+                width={props.width}
+                height={props.height}
+              />
+            </div>
+            <div className="cell-output">
+              <CellOuput model={model} />
+            </div>
           </div>
-          <div className="cell-input">
-            {renderInputHeader()}
-            <CellInput
-              model={model}
-              width={props.width}
-              height={props.height}
-            />
-            {/* <pre>{model.source.join("")}</pre> */}
-          </div>
-          <div className="cell-output"></div>
         </div>
       </div>
       <pre>{JSON.stringify(model, null, 2)}</pre>

@@ -10,7 +10,10 @@
   ],
   "dependencies": {
     "@monaco-editor/react": "^3.6.3",
+    "@nteract/markdown": "^4.5.2",
+    "@nteract/outputs": "^3.0.11",
     "@nteract/presentational-components": "^3.4.2",
+    "@nteract/stateful-components": "^1.7.0",
     "@reduxjs/toolkit": "1.4.0",
     "@theia/core": "1.5.0",
     "@theia/editor": "1.5.0",

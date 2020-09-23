@@ -65,10 +65,10 @@ export default function CellInput({ model, width, height }: any) {
       updateEditorHeight(monacoEditor);
     });
 
-    monacoEditor.onMouseWheel((ev: any) => {
-      console.log("mouse wheel", ev);
-      ev.preventDefault();
-    });
+    // monacoEditor.onMouseWheel((ev: any) => {
+    //   console.log("mouse wheel", ev);
+    //   ev.preventDefault();
+    // });
 
     console.log(dispatch, setActiveCell);
 
@@ -124,85 +124,92 @@ export default function CellInput({ model, width, height }: any) {
   }
 
   function renderMarkdownInput() {
-    return (
-      <Editor
-        language="markdown"
-        value={model.source.join("")}
-        options={{
-          glyphMargin: true,
-          wordWrap: "on",
-          scrollBeyondLastLine: false,
-          lightbulb: { enabled: true },
-          fixedOverflowWidgets: true,
-          automaticLayout: true,
-          minimap: {
-            enabled: false,
-          },
-          lineNumbers: "off",
-          scrollbar: {
-            vertical: "hidden",
-            horizontal: "hidden",
-            verticalScrollbarSize: 0,
-            horizontalScrollbarSize: 0,
-            alwaysConsumeMouseWheel: false,
-          },
-          renderLineHighlight: "none",
-          highlightActiveIndentGuide: false,
-          renderIndentGuides: false,
-          overviewRulerBorder: false,
-          overviewRulerLanes: 0,
-          hideCursorInOverviewRuler: true,
-          folding: false,
-          occurrencesHighlight: false,
-          selectionHighlight: false,
-          lineDecorationsWidth: 0,
-          contextmenu: false,
-          matchBrackets: "always",
-        }}
-        editorDidMount={handleEditorDidMount}
-      />
-    );
+    if (activeCell === model.id) {
+      return (
+        <div className="cell-input-spacing">
+          <div className="cell-editor-wrapper" ref={wrapperRef}>
+            <Editor
+              language="markdown"
+              value={model.source.join("")}
+              options={{
+                glyphMargin: true,
+                wordWrap: "on",
+                scrollBeyondLastLine: false,
+                lightbulb: { enabled: true },
+                fixedOverflowWidgets: true,
+                minimap: {
+                  enabled: false,
+                },
+                lineNumbers: "off",
+                scrollbar: {
+                  vertical: "hidden",
+                  horizontal: "hidden",
+                  verticalScrollbarSize: 0,
+                  horizontalScrollbarSize: 0,
+                  alwaysConsumeMouseWheel: false,
+                },
+                renderLineHighlight: "none",
+                highlightActiveIndentGuide: false,
+                renderIndentGuides: false,
+                overviewRulerBorder: false,
+                overviewRulerLanes: 0,
+                hideCursorInOverviewRuler: true,
+                folding: false,
+                occurrencesHighlight: false,
+                selectionHighlight: false,
+                lineDecorationsWidth: 0,
+                contextmenu: false,
+                matchBrackets: "always",
+              }}
+              editorDidMount={handleEditorDidMount}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    return null;
   }
 
   function renderCodeInput() {
-    return (
-      <Editor
-        language="python"
-        value={model.source.join("")}
-        options={{
-          glyphMargin: true,
-          wordWrap: "on",
-          scrollBeyondLastLine: false,
-          lightbulb: { enabled: true },
-          fixedOverflowWidgets: true,
-          automaticLayout: true,
-          minimap: {
-            enabled: false,
-          },
-          lineNumbers: "off",
-          scrollbar: {
-            vertical: "hidden",
-            horizontal: "hidden",
-            verticalScrollbarSize: 0,
-            horizontalScrollbarSize: 0,
-            alwaysConsumeMouseWheel: false,
-          },
-          renderLineHighlight: "none",
-          highlightActiveIndentGuide: false,
-          renderIndentGuides: false,
-          overviewRulerBorder: false,
-          overviewRulerLanes: 0,
-          hideCursorInOverviewRuler: true,
-          folding: false,
-          occurrencesHighlight: false,
-          selectionHighlight: false,
-          lineDecorationsWidth: 0,
-          contextmenu: false,
-          matchBrackets: "always",
-        }}
-        editorDidMount={handleEditorDidMount}
-      />
-    );
+    return <p>{model.source.join("")}</p>;
+    // return (
+    //   <Editor
+    //     language="python"
+    //     value={model.source.join("")}
+    //     options={{
+    //       glyphMargin: true,
+    //       wordWrap: "on",
+    //       scrollBeyondLastLine: false,
+    //       lightbulb: { enabled: true },
+    //       fixedOverflowWidgets: true,
+    //       minimap: {
+    //         enabled: false,
+    //       },
+    //       lineNumbers: "off",
+    //       scrollbar: {
+    //         vertical: "hidden",
+    //         horizontal: "hidden",
+    //         verticalScrollbarSize: 0,
+    //         horizontalScrollbarSize: 0,
+    //         alwaysConsumeMouseWheel: false,
+    //       },
+    //       renderLineHighlight: "none",
+    //       highlightActiveIndentGuide: false,
+    //       renderIndentGuides: false,
+    //       overviewRulerBorder: false,
+    //       overviewRulerLanes: 0,
+    //       hideCursorInOverviewRuler: true,
+    //       folding: false,
+    //       occurrencesHighlight: false,
+    //       selectionHighlight: false,
+    //       lineDecorationsWidth: 0,
+    //       contextmenu: false,
+    //       matchBrackets: "always",
+    //     }}
+    //     editorDidMount={handleEditorDidMount}
+    //   />
+    // );
   }
 
   function renderInput() {
@@ -211,21 +218,21 @@ export default function CellInput({ model, width, height }: any) {
         return renderMarkdownInput();
 
       case "code":
-        return renderCodeInput();
+        return (
+          <div className="cell-input-spacing">
+            <div className="cell-editor-wrapper" ref={wrapperRef}>
+              {renderCodeInput()}
+            </div>
+          </div>
+        );
 
       default:
-        return null;
+        return <p>{model.source.join("")}</p>;
     }
   }
 
   // update editor size
   updateEditorSize();
 
-  return (
-    <div className="cell-input-spacing">
-      <div className="cell-editor-wrapper" ref={wrapperRef}>
-        {renderInput()}
-      </div>
-    </div>
-  );
+  return renderInput();
 }

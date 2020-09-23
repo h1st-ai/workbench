@@ -1,14 +1,7 @@
-export interface ICell {
-  id?: string;
-  cell_type: string;
-  execution_count: number | null;
-  metadata: any;
-  source: string[];
-  outputs: string[];
-}
+export interface ICell {}
 
 export interface INotebook {
-  cells: ICell[];
+  cells: ICellModel[];
   selectedCell: string | null;
   activeCell: string | null;
 }
@@ -28,4 +21,24 @@ export interface IStore {
   kernel: IKernel;
   notebook: INotebook;
   widget: INotebookWidget;
+}
+
+export interface ICellOutputError {
+  output_type: string;
+  ename: string;
+  evalue: string;
+  traceback: string[];
+}
+
+export interface ICellModel {
+  source: string[];
+  cell_type: "markdown" | "code" | "raw";
+  metadata: any;
+  id?: string;
+  outputs: any[];
+  execution_count?: number;
+}
+
+export interface ICellOutputProps {
+  model: ICellModel;
 }

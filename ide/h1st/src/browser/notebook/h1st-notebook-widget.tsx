@@ -24,7 +24,7 @@ import Notebook from "./components/notebook";
 import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
-import { ICell } from "./types";
+import { ICellModel } from "./types";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -85,7 +85,7 @@ export class H1stNotebookWidget extends ReactWidget
 
     try {
       const _content = JSON.parse(content.value.toString());
-      _content.cells.map((c: ICell) => (c.id = nextId("h1st")));
+      _content.cells.map((c: ICellModel) => (c.id = nextId("h1st")));
 
       this._content = _content;
     } catch (ex) {

@@ -266,6 +266,16 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   background: var(--theia-tab-inactiveBackground);
 }
 
+.cell-wrapper.markdown-cell .cell-input {
+  visibility: hidden;
+}
+
+.cell-wrapper.markdown-cell.selected .cell-input,
+.cell-wrapper.markdown-cell.active .cell-input,
+.cell-wrapper.markdown-cell:hover .cell-input {
+  visibility: visible;
+}
+
 .cell-content {
   border-left: 8px solid transparent;
   display: flex;
@@ -315,6 +325,9 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-input {
+}
+
+.cell-form {
   flex: 1;
 }
 

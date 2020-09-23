@@ -5,7 +5,7 @@ import NotebookSteps from "./step-panel";
 import Toolbar from "./toolbar";
 // import { selectNotebook } from "../reducers/notebook";
 import { NotebookCell } from "./cell";
-import { ICell, IStore } from "../types";
+import { ICellModel, IStore } from "../types";
 
 // const { useEffect } = React;
 
@@ -23,7 +23,7 @@ export default function(props: any) {
   //   // dispatch(setCells(props.model.cells));
   // });
 
-  const codeCells = cells.map((c: ICell) => (
+  const codeCells = cells.map((c: ICellModel) => (
     <NotebookCell
       key={c.id}
       model={c}
