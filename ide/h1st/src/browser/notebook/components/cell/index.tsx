@@ -4,6 +4,7 @@ import { notebookActions } from "../../reducers/notebook";
 import klass from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { IStore } from "../../types";
+import CellInput from "./input";
 // import {
 //   Input,
 //   Prompt,
@@ -26,7 +27,9 @@ export function NotebookCell(props: any) {
   const { setSelectedCell } = notebookActions;
   const dispatch = useDispatch();
 
-  const { selectedCell } = useSelector((store: IStore) => store.notebook);
+  const { selectedCell, activeCell } = useSelector(
+    (store: IStore) => store.notebook
+  );
 
   function renderCodeCellHeaderControl(): React.ReactNode {
     return (
@@ -82,32 +85,39 @@ export function NotebookCell(props: any) {
   }
 
   return (
-    <div
-      className={klass("cell-wrapper", { active: selectedCell === model.id })}
-      onClick={_setSelectedCell}
-    >
-      <div className="cell-controls">
-        <button className="cell-btn-up">
-          <Icon icon="cell-up" />
-        </button>
-        <button className="cell-btn-down">
-          <Icon icon="cell-down" />
-        </button>
-        <button className="cell-btn-plus">
-          <Icon icon="plus" />
-        </button>
-      </div>
-      <div className="cell-content">
-        <div className="cell-prompt">
-          <div className="execution-count">[*]</div>
+    <React.Fragment>
+      <div
+        className={klass("cell-wrapper", {
+          active: activeCell === model.id,
+          selected: selectedCell === model.id,
+        })}
+        onClick={_setSelectedCell}
+      >
+        <div className="cell-controls">
+          <button className="cell-btn-up">
+            <Icon icon="cell-up" />
+          </button>
+          <button className="cell-btn-down">
+            <Icon icon="cell-down" />
+          </button>
+          <button className="cell-btn-plus">
+            <Icon icon="plus" />
+          </button>
         </div>
-        <div className="cell-input">
-          {renderInputHeader()}
-          <pre>{model.source.join("")}</pre>
+        <div className="cell-content">
+          <div className="cell-focusbar" />
+          <div className="cell-prompt">
+            <div className="execution-count">[*]</div>
+          </div>
+          <div className="cell-input">
+            {renderInputHeader()}
+            <CellInput model={model} />
+            {/* <pre>{model.source.join("")}</pre> */}
+          </div>
+          <div className="cell-output"></div>
         </div>
-        <div className="cell-output"></div>
       </div>
       <pre>{JSON.stringify(model, null, 2)}</pre>
-    </div>
+    </React.Fragment>
   );
 }
