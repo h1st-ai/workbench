@@ -6,7 +6,7 @@ import { notebookActions } from "../../reducers/notebook";
 
 const LINE_HEIGHT = 18;
 
-export default function CellInput({ model }: any) {
+export default function CellInput({ model, width, height }: any) {
   const { useRef, useState, useEffect } = React;
 
   const dispatch = useDispatch();
@@ -79,7 +79,7 @@ export default function CellInput({ model }: any) {
     // console.log(lineHeight);
     // const contentHeight = editor.getModel().getLineCount() * lineHeight;
     const contentHeight = editor.getContentHeight();
-    const { horizontalScrollbarHeight, width } = editor.getLayoutInfo();
+    const { horizontalScrollbarHeight } = editor.getLayoutInfo();
     const height = Math.max(LINE_HEIGHT, contentHeight);
 
     console.log(
@@ -107,8 +107,6 @@ export default function CellInput({ model }: any) {
   function renderMarkdownInput() {
     return (
       <Editor
-        width="100%"
-        height="auto"
         language="markdown"
         value={model.source.join("")}
         options={{

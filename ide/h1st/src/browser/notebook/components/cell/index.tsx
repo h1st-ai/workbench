@@ -110,8 +110,12 @@ export function NotebookCell(props: any) {
             <div className="execution-count">[*]</div>
           </div>
           <div className="cell-input">
-            {renderInputHeader()}
-            <CellInput model={model} />
+            {renderInputHeader()} {props.width} {props.height}
+            <CellInput
+              model={model}
+              width={props.width}
+              height={props.height}
+            />
             {/* <pre>{model.source.join("")}</pre> */}
           </div>
           <div className="cell-output"></div>

@@ -13,6 +13,11 @@ export interface INotebook {
   activeCell: string | null;
 }
 
+export interface INotebookWidget {
+  width: number | null;
+  height: number | null;
+}
+
 export interface IKernel {
   currentKernel: string | undefined;
   connectionStatus: string;
@@ -22,4 +27,5 @@ export interface IKernel {
 export interface IStore {
   kernel: IKernel;
   notebook: INotebook;
+  widget: INotebookWidget;
 }

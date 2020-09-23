@@ -5,6 +5,7 @@ import {
   // NavigatableWidget,
   // Navigatable,
   ReactWidget,
+  Widget,
   // Saveable,
   // SaveableSource,
   // StatefulWidget,
@@ -31,6 +32,8 @@ export class H1stNotebookWidget extends ReactWidget
   static readonly ID = "h1st:notebook:widget";
   private readonly store: any;
   private _content: any;
+  private _width: number;
+  private _height: number;
 
   constructor(
     readonly uri: URI,
@@ -62,6 +65,19 @@ export class H1stNotebookWidget extends ReactWidget
   }
   createMoveToUri(resourceUri: URI): URI | undefined {
     return new URI("test2");
+  }
+
+  protected onResize(msg: Widget.ResizeMessage): void {
+    // if (msg.width < 0 || msg.height < 0) {
+    //     this.editor.resizeToFit();
+    // } else {
+    //     this.editor.setSize(msg);
+    // }
+    console.log("widget resize", msg);
+    const { width, height } = msg;
+    this._width = width;
+    this._height = height;
+    this.update();
   }
 
   protected async onAfterAttach(msg: Message): Promise<void> {
@@ -105,7 +121,12 @@ export class H1stNotebookWidget extends ReactWidget
     return (
       <React.Fragment>
         <Provider store={this.store}>
-          <Notebook uri={this.uri} model={this._content} />
+          <Notebook
+            uri={this.uri}
+            model={this._content}
+            width={this._width}
+            height={this._height}
+          />
         </Provider>
       </React.Fragment>
     );

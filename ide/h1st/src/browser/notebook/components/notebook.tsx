@@ -24,7 +24,12 @@ export default function(props: any) {
   // });
 
   const codeCells = cells.map((c: ICell) => (
-    <NotebookCell key={c.id} model={c} />
+    <NotebookCell
+      key={c.id}
+      model={c}
+      width={props.width}
+      height={props.height}
+    />
   ));
 
   return (
