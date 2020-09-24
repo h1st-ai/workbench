@@ -226,7 +226,7 @@ export default function CellInput({ model, width, height }: any) {
   }
 
   // update editor size
-  updateEditorSize();
+  // updateEditorSize();
 
   return renderInput();
 }
