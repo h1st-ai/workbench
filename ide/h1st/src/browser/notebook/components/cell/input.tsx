@@ -1,5 +1,6 @@
 import * as React from "react";
-import Editor from "@monaco-editor/react";
+// import Editor from "@monaco-editor/react";
+import Editor from "./monaco-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
@@ -20,6 +21,7 @@ export default function CellInput({ model, width, height }: any) {
   // const [currentHeight, setHeight] = useState(height);
 
   useEffect(() => {
+    updateEditorSize();
     window.addEventListener("resize", updateEditorSize);
 
     return () => {
@@ -28,7 +30,7 @@ export default function CellInput({ model, width, height }: any) {
   }, []);
 
   function updateEditorSize() {
-    console.log("updating editor size", width);
+    console.log(`Cell ${model.id}: updating editor size`, width);
 
     if (wrapperRef.current) {
       if (width !== wrapperRef.current.offsetWidth) {
@@ -38,7 +40,11 @@ export default function CellInput({ model, width, height }: any) {
         // editor.layout({ inputWidth });
 
         if (editor) {
-          console.log("width changed detected. Updating width", editor, width);
+          console.log(
+            `Cell ${model.id}: width changed detected. Updating width`,
+            editor,
+            width
+          );
           editor.layout();
         }
       }
@@ -131,36 +137,6 @@ export default function CellInput({ model, width, height }: any) {
             <Editor
               language="markdown"
               value={model.source.join("")}
-              options={{
-                glyphMargin: true,
-                wordWrap: "on",
-                scrollBeyondLastLine: false,
-                lightbulb: { enabled: true },
-                fixedOverflowWidgets: true,
-                minimap: {
-                  enabled: false,
-                },
-                lineNumbers: "off",
-                scrollbar: {
-                  vertical: "hidden",
-                  horizontal: "hidden",
-                  verticalScrollbarSize: 0,
-                  horizontalScrollbarSize: 0,
-                  alwaysConsumeMouseWheel: false,
-                },
-                renderLineHighlight: "none",
-                highlightActiveIndentGuide: false,
-                renderIndentGuides: false,
-                overviewRulerBorder: false,
-                overviewRulerLanes: 0,
-                hideCursorInOverviewRuler: true,
-                folding: false,
-                occurrencesHighlight: false,
-                selectionHighlight: false,
-                lineDecorationsWidth: 0,
-                contextmenu: false,
-                matchBrackets: "always",
-              }}
               editorDidMount={handleEditorDidMount}
             />
           </div>
@@ -172,44 +148,44 @@ export default function CellInput({ model, width, height }: any) {
   }
 
   function renderCodeInput() {
-    return <p>{model.source.join("")}</p>;
-    // return (
-    //   <Editor
-    //     language="python"
-    //     value={model.source.join("")}
-    //     options={{
-    //       glyphMargin: true,
-    //       wordWrap: "on",
-    //       scrollBeyondLastLine: false,
-    //       lightbulb: { enabled: true },
-    //       fixedOverflowWidgets: true,
-    //       minimap: {
-    //         enabled: false,
-    //       },
-    //       lineNumbers: "off",
-    //       scrollbar: {
-    //         vertical: "hidden",
-    //         horizontal: "hidden",
-    //         verticalScrollbarSize: 0,
-    //         horizontalScrollbarSize: 0,
-    //         alwaysConsumeMouseWheel: false,
-    //       },
-    //       renderLineHighlight: "none",
-    //       highlightActiveIndentGuide: false,
-    //       renderIndentGuides: false,
-    //       overviewRulerBorder: false,
-    //       overviewRulerLanes: 0,
-    //       hideCursorInOverviewRuler: true,
-    //       folding: false,
-    //       occurrencesHighlight: false,
-    //       selectionHighlight: false,
-    //       lineDecorationsWidth: 0,
-    //       contextmenu: false,
-    //       matchBrackets: "always",
-    //     }}
-    //     editorDidMount={handleEditorDidMount}
-    //   />
-    // );
+    // return <p>{model.source.join("")}</p>;
+    return (
+      <Editor
+        language="python"
+        value={model.source.join("")}
+        options={{
+          glyphMargin: true,
+          wordWrap: "on",
+          scrollBeyondLastLine: false,
+          lightbulb: { enabled: true },
+          fixedOverflowWidgets: true,
+          minimap: {
+            enabled: false,
+          },
+          lineNumbers: "off",
+          scrollbar: {
+            vertical: "hidden",
+            horizontal: "hidden",
+            verticalScrollbarSize: 0,
+            horizontalScrollbarSize: 0,
+            alwaysConsumeMouseWheel: false,
+          },
+          renderLineHighlight: "none",
+          highlightActiveIndentGuide: false,
+          renderIndentGuides: false,
+          overviewRulerBorder: false,
+          overviewRulerLanes: 0,
+          hideCursorInOverviewRuler: true,
+          folding: false,
+          occurrencesHighlight: false,
+          selectionHighlight: false,
+          lineDecorationsWidth: 0,
+          contextmenu: false,
+          matchBrackets: "always",
+        }}
+        editorDidMount={handleEditorDidMount}
+      />
+    );
   }
 
   function renderInput() {

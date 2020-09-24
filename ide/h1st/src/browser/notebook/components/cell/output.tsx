@@ -1,7 +1,8 @@
 // import {Markdown} from "@nteract/presentational-components/lib/components/outputs";
 import * as React from "react";
 import Markdown from "@nteract/outputs/lib/components/media/markdown";
-import { ICellOutputProps } from "../../types";
+import { ICellOutputProps, IStore } from "../../types";
+import { useSelector } from "react-redux";
 // import MarkdownRender from '@nteract/markdown'
 
 // import {
@@ -14,13 +15,19 @@ import { ICellOutputProps } from "../../types";
 
 export default function CellOuput(props: ICellOutputProps) {
   const { model } = props;
+  const { activeCell } = useSelector((store: IStore) => store.notebook);
 
   function renderMedia() {
     let output;
 
     switch (model.cell_type) {
       case "markdown":
-        output = renderMarkdown(model.source.join(""));
+        if (activeCell !== model.id) {
+          output = renderMarkdown(model.source.join(""));
+        } else {
+          output = null;
+        }
+
         break;
 
       default:
