@@ -1,8 +1,9 @@
 // import {Markdown} from "@nteract/presentational-components/lib/components/outputs";
 import * as React from "react";
 import Markdown from "@nteract/outputs/lib/components/media/markdown";
-import { ICellOutputProps, IStore } from "../../types";
+import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
+import { KernelOutputError } from "@nteract/outputs";
 // import MarkdownRender from '@nteract/markdown'
 
 // import {
@@ -21,13 +22,16 @@ export default function CellOuput(props: ICellOutputProps) {
     let output;
 
     switch (model.cell_type) {
-      case "markdown":
+      case CELL_TYPE.MD:
         if (activeCell !== model.id) {
           output = renderMarkdown(model.source.join(""));
         } else {
           output = null;
         }
+        break;
 
+      case CELL_TYPE.CODE:
+        output = renderCodeOutput(model.outputs);
         break;
 
       default:
@@ -36,6 +40,20 @@ export default function CellOuput(props: ICellOutputProps) {
     }
 
     return output;
+  }
+
+  function renderCodeOutput(data: any[]) {
+    const outputs = data.map((output) => {
+      switch (output.output_type) {
+        case "error":
+          return <KernelOutputError output={output} />;
+
+        default:
+          return null;
+      }
+    });
+
+    return outputs;
   }
 
   function renderMarkdown(data: string) {
