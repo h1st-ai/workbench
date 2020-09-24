@@ -3,16 +3,16 @@ import * as React from "react";
 import Markdown from "@nteract/outputs/lib/components/media/markdown";
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
-import { KernelOutputError } from "@nteract/outputs";
-// import MarkdownRender from '@nteract/markdown'
+import { ExecuteResult, KernelOutputError, StreamText } from "@nteract/outputs";
 
-// import {
-//   Input,
-//   Prompt,
-//   Source,
-//   Outputs,
-//   Cell,
-// } from "@nteract/presentational-components";
+enum CELL_OUTPUT_TYPE {
+  ERROR = "error",
+  EXECUTION_RESULT = "execute_result",
+  DISPLAY_DATA = "display_data",
+  UPDATE_DISPLAY_DATA = "update_display_data",
+  INSPECT_REPLY = "inspect_reply",
+  STREAM = "stream",
+}
 
 export default function CellOuput(props: ICellOutputProps) {
   const { model } = props;
@@ -43,13 +43,37 @@ export default function CellOuput(props: ICellOutputProps) {
   }
 
   function renderCodeOutput(data: any[]) {
+    if (!data) return null;
+
     const outputs = data.map((output) => {
       switch (output.output_type) {
-        case "error":
-          return <KernelOutputError output={output} />;
+        case CELL_OUTPUT_TYPE.ERROR:
+          return (
+            <div className="output output-error">
+              <KernelOutputError output={output} />
+            </div>
+          );
+
+        case CELL_OUTPUT_TYPE.STREAM:
+          return (
+            <div className="output output-data stream">
+              <StreamText output={output} />
+            </div>
+          );
+
+        case CELL_OUTPUT_TYPE.EXECUTION_RESULT:
+          return (
+            <div className="output output-data execution_result">
+              <ExecuteResult output={output} />
+            </div>
+          );
 
         default:
-          return null;
+          return (
+            <div className={`output output-data ${output.output_type}`}>
+              <KernelOutputError output={output} />
+            </div>
+          );
       }
     });
 

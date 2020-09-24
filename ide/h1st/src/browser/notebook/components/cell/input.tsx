@@ -84,15 +84,13 @@ export default function CellInput({ model, width, height }: any) {
     });
 
     monacoEditor.onDidBlurEditorText((ev: any) => {
-      console.log("blur", ev);
-
-      if (model.cell_type === "markdown") {
-        dispatch(setActiveCell({ id: null }));
-      }
+      dispatch(setActiveCell({ id: null }));
     });
 
     monacoEditor.onDidFocusEditorText((ev: any) => {
-      console.log("focus", ev);
+      if (model.cell_type === CELL_TYPE.CODE) {
+        dispatch(setActiveCell({ id: model.id }));
+      }
     });
 
     console.log(dispatch, setActiveCell);
