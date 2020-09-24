@@ -3,7 +3,7 @@ import Icon from "../icon";
 import { notebookActions } from "../../reducers/notebook";
 import klass from "classnames";
 import { useDispatch, useSelector } from "react-redux";
-import { ICellModel, IStore } from "../../types";
+import { CELL_TYPE, ICellModel, IStore } from "../../types";
 import CellInput from "./input";
 import CellOuput from "./output";
 // import {
@@ -167,7 +167,9 @@ export function NotebookCell(props: INotebookProps) {
           </div>
         </div>
       </div>
-      <pre>{JSON.stringify(model, null, 2)}</pre>
+      {model.cell_type !== CELL_TYPE.MD && (
+        <pre>{JSON.stringify(model, null, 2)}</pre>
+      )}
     </React.Fragment>
   );
 }

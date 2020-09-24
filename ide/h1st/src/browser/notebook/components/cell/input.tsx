@@ -30,7 +30,7 @@ export default function CellInput({ model, width, height }: any) {
   }, []);
 
   useEffect(() => {
-    setTimeout(updateEditorSize, 0);
+    // setTimeout(updateEditorSize, 0);
 
     if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
       console.log("focusing", model.id, editor);

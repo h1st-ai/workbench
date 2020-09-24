@@ -3,7 +3,16 @@ import * as React from "react";
 import Markdown from "@nteract/outputs/lib/components/media/markdown";
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
-import { ExecuteResult, KernelOutputError, StreamText } from "@nteract/outputs";
+import {
+  // ExecuteResult,
+  KernelOutputError,
+  StreamText,
+  Media,
+  RichMedia,
+} from "@nteract/outputs";
+import ErrorBoundary from "./error";
+// import { SVG } from "@nteract/outputs/lib/components/media";
+// import { JavaScript } from "@nteract/outputs/lib/components/media";
 
 enum CELL_OUTPUT_TYPE {
   ERROR = "error",
@@ -44,8 +53,20 @@ export default function CellOuput(props: ICellOutputProps) {
 
   function renderCodeOutput(data: any[]) {
     if (!data) return null;
+    // console.log(StreamText);
 
     const outputs = data.map((output) => {
+      // need to transform the output to be compatible with the display component
+      const tData = { ...output.data };
+
+      if (tData) {
+        Object.keys(tData).forEach((mediaType) => {
+          if (Array.isArray(tData[mediaType])) {
+            tData[mediaType] = tData[mediaType].join("");
+          }
+        });
+      }
+
       switch (output.output_type) {
         case CELL_OUTPUT_TYPE.ERROR:
           return (
@@ -57,23 +78,39 @@ export default function CellOuput(props: ICellOutputProps) {
         case CELL_OUTPUT_TYPE.STREAM:
           return (
             <div className="output output-data stream">
-              <StreamText output={output} />
+              <ErrorBoundary>
+                <StreamText
+                  output={{ ...output, text: output.text.join("") }}
+                />
+              </ErrorBoundary>
             </div>
           );
 
-        case CELL_OUTPUT_TYPE.EXECUTION_RESULT:
-          return (
-            <div className="output output-data execution_result">
-              <ExecuteResult output={output} />
-            </div>
-          );
+        // case CELL_OUTPUT_TYPE.EXECUTION_RESULT:
+        //   return (
+        //     <div className="output output-data execution_result">
+        //       <ExecuteResult output={output} />
+        //     </div>
+        //   );
 
         default:
           return (
-            <div className={`output output-data ${output.output_type}`}>
-              <KernelOutputError output={output} />
+            <div className="output output-data rich_media">
+              <RichMedia data={tData}>
+                <Media.HTML />
+                <ImageMedia />
+                <Media.Json />
+                <Media.LaTeX />
+                <Media.Markdown />
+                <Plain />
+              </RichMedia>
+              {/* <DisplayData>
+                <Plain />
+                <ImageMedia />
+              </DisplayData> */}
             </div>
           );
+        // return <p>{JSON.stringify(output, null, 2)}</p>;
       }
     });
 
@@ -82,9 +119,19 @@ export default function CellOuput(props: ICellOutputProps) {
 
   function renderMarkdown(data: string) {
     return <Markdown data={data} />;
-    // return <p>{data}</p>;
-    // return <MarkdownRender source={data} />
   }
 
   return <div className="cell-output-wrapper">{renderMedia()}</div>;
 }
+
+const Plain = (props: any) => <pre>{props.data}</pre>;
+Plain.defaultProps = {
+  mediaType: "text/plain",
+};
+
+const ImageMedia = (props: any) => (
+  <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
+);
+ImageMedia.defaultProps = {
+  mediaType: "image/png",
+};
