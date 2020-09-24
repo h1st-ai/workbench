@@ -6,11 +6,11 @@ import { useSelector } from "react-redux";
 import {
   // ExecuteResult,
   KernelOutputError,
-  StreamText,
+  // StreamText,
   Media,
   RichMedia,
 } from "@nteract/outputs";
-import ErrorBoundary from "./error";
+// import ErrorBoundary from "./error";
 // import { SVG } from "@nteract/outputs/lib/components/media";
 // import { JavaScript } from "@nteract/outputs/lib/components/media";
 
@@ -57,15 +57,15 @@ export default function CellOuput(props: ICellOutputProps) {
 
     const outputs = data.map((output) => {
       // need to transform the output to be compatible with the display component
-      const tData = { ...output.data };
+      // const tData = { ...output.data };
 
-      if (tData) {
-        Object.keys(tData).forEach((mediaType) => {
-          if (Array.isArray(tData[mediaType])) {
-            tData[mediaType] = tData[mediaType].join("");
-          }
-        });
-      }
+      // if (tData) {
+      //   Object.keys(tData).forEach((mediaType) => {
+      //     if (Array.isArray(tData[mediaType])) {
+      //       tData[mediaType] = tData[mediaType].join("");
+      //     }
+      //   });
+      // }
 
       switch (output.output_type) {
         case CELL_OUTPUT_TYPE.ERROR:
@@ -77,12 +77,11 @@ export default function CellOuput(props: ICellOutputProps) {
 
         case CELL_OUTPUT_TYPE.STREAM:
           return (
-            <div className="output output-data stream">
-              <ErrorBoundary>
-                <StreamText
+            <div className={`output output-data stream ${output.name}`}>
+              <pre>{output.text.join("")}</pre>
+              {/* <StreamText
                   output={{ ...output, text: output.text.join("") }}
-                />
-              </ErrorBoundary>
+                /> */}
             </div>
           );
 
@@ -96,9 +95,13 @@ export default function CellOuput(props: ICellOutputProps) {
         default:
           return (
             <div className="output output-data rich_media">
-              <RichMedia data={tData}>
-                <Media.HTML />
-                <ImageMedia />
+              <RichMedia data={output.data}>
+                <MediaJavascript />
+                <MediaHTML />
+                <MediaSVG />
+                <MediaPNG />
+                <MediaJPG />
+                <MediaGIF />
                 <Media.Json />
                 <Media.LaTeX />
                 <Media.Markdown />
@@ -106,7 +109,7 @@ export default function CellOuput(props: ICellOutputProps) {
               </RichMedia>
               {/* <DisplayData>
                 <Plain />
-                <ImageMedia />
+                <MediaPNG />
               </DisplayData> */}
             </div>
           );
@@ -124,14 +127,58 @@ export default function CellOuput(props: ICellOutputProps) {
   return <div className="cell-output-wrapper">{renderMedia()}</div>;
 }
 
-const Plain = (props: any) => <pre>{props.data}</pre>;
+const Plain = (props: any) => <pre>{props.data.join("")}</pre>;
 Plain.defaultProps = {
   mediaType: "text/plain",
 };
 
-const ImageMedia = (props: any) => (
+const MediaPNG = (props: any) => (
   <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
 );
-ImageMedia.defaultProps = {
+MediaPNG.defaultProps = {
   mediaType: "image/png",
+};
+
+const MediaJPG = (props: any) => (
+  <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
+);
+MediaJPG.defaultProps = {
+  mediaType: "image/jpeg",
+};
+
+const MediaGIF = (props: any) => (
+  <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
+);
+MediaGIF.defaultProps = {
+  mediaType: "image/gif",
+};
+
+const MediaSVG = (props: any) => (
+  <div
+    className="output-svg"
+    dangerouslySetInnerHTML={{ __html: props.data.join("") }}
+  />
+);
+MediaSVG.defaultProps = {
+  mediaType: "image/svg+xml",
+};
+
+const MediaHTML = (props: any) => (
+  <div
+    className="output-html"
+    dangerouslySetInnerHTML={{ __html: props.data.join("") }}
+  />
+);
+MediaHTML.defaultProps = {
+  mediaType: "text/html",
+};
+
+const MediaJavascript = (props: any) => (
+  <script
+    type="text/javascript"
+    dangerouslySetInnerHTML={{ __html: props.data.join("") }}
+  />
+);
+MediaJavascript.defaultProps = {
+  mediaType: "text/javascript",
 };

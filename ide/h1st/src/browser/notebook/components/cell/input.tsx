@@ -176,6 +176,7 @@ export default function CellInput({ model, width, height }: any) {
           scrollBeyondLastLine: false,
           lightbulb: { enabled: true },
           fixedOverflowWidgets: true,
+          automaticLayout: true,
           minimap: {
             enabled: false,
           },
