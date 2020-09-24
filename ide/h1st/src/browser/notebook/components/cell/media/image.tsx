@@ -2,17 +2,12 @@ import * as React from "react";
 
 export const MediaPNG = (props: any) => {
   console.log("rendering png");
-  const img = (
-    <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
+
+  return (
+    <div className="cell-output-plot-background">
+      <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
+    </div>
   );
-
-  if (props.metadata) {
-    if (props.metadata.needs_background) {
-      return <div className="cell-output-plot-background">{img}</div>;
-    }
-  }
-
-  return <div className="cell-output-plot-background">{img}</div>;
 };
 
 MediaPNG.defaultProps = {
