@@ -21,13 +21,16 @@ export default function CellInput({ model, width, height }: any) {
   // const [currentHeight, setHeight] = useState(height);
 
   useEffect(() => {
-    updateEditorSize();
     window.addEventListener("resize", updateEditorSize);
 
     return () => {
       window.removeEventListener("resize", updateEditorSize);
     };
   }, []);
+
+  useEffect(() => {
+    setTimeout(updateEditorSize, 0);
+  });
 
   function updateEditorSize() {
     console.log(`Cell ${model.id}: updating editor size`, width);
@@ -71,10 +74,17 @@ export default function CellInput({ model, width, height }: any) {
       updateEditorHeight(monacoEditor);
     });
 
-    // monacoEditor.onMouseWheel((ev: any) => {
-    //   console.log("mouse wheel", ev);
-    //   ev.preventDefault();
-    // });
+    monacoEditor.onDidBlurEditorText((ev: any) => {
+      console.log("blur", ev);
+
+      if (model.cell_type === "markdown") {
+        dispatch(setActiveCell({ id: null }));
+      }
+    });
+
+    monacoEditor.onDidFocusEditorText((ev: any) => {
+      console.log("focus", ev);
+    });
 
     console.log(dispatch, setActiveCell);
 
