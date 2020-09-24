@@ -340,3 +340,9 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .cell-output-wrapper {
   padding: 8px 0px;
 }
+
+.cell-output-plot-background {
+  background: #fff;
+  display: inline-block;
+  margin: 3px;
+}

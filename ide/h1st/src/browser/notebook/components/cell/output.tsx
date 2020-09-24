@@ -3,6 +3,7 @@ import * as React from "react";
 import Markdown from "@nteract/outputs/lib/components/media/markdown";
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
+import * as Plotly from "plotly.js";
 import {
   // ExecuteResult,
   KernelOutputError,
@@ -78,7 +79,11 @@ export default function CellOuput(props: ICellOutputProps) {
         case CELL_OUTPUT_TYPE.STREAM:
           return (
             <div className={`output output-data stream ${output.name}`}>
-              <pre>{output.text.join("")}</pre>
+              <pre>
+                {Array.isArray(output.text)
+                  ? output.text.join("")
+                  : output.text}
+              </pre>
               {/* <StreamText
                   output={{ ...output, text: output.text.join("") }}
                 /> */}
@@ -96,6 +101,7 @@ export default function CellOuput(props: ICellOutputProps) {
           return (
             <div className="output output-data rich_media">
               <RichMedia data={output.data}>
+                <MediaPlotly />
                 <MediaJavascript />
                 <MediaHTML />
                 <MediaSVG />
@@ -132,9 +138,18 @@ Plain.defaultProps = {
   mediaType: "text/plain",
 };
 
-const MediaPNG = (props: any) => (
-  <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
-);
+const MediaPNG = (props: any) => {
+  const img = (
+    <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />
+  );
+  if (props.metadata) {
+    if (props.metadata.needs_background) {
+      return <div className="cell-output-plot-background">{img}</div>;
+    }
+  }
+
+  return img;
+};
 MediaPNG.defaultProps = {
   mediaType: "image/png",
 };
@@ -163,12 +178,24 @@ MediaSVG.defaultProps = {
   mediaType: "image/svg+xml",
 };
 
-const MediaHTML = (props: any) => (
-  <div
-    className="output-html"
-    dangerouslySetInnerHTML={{ __html: props.data.join("") }}
-  />
-);
+const MediaHTML = (props: any) => {
+  const divRef = React.useRef<any>();
+
+  React.useEffect(() => {
+    if (divRef && divRef.current) {
+      divRef.current.innerHTML = props.data.join("");
+    }
+  }, []);
+
+  return (
+    <div
+      ref={divRef}
+      className="output-html"
+      // dangerouslySetInnerHTML={{ __html: props.data.join("") }}
+    />
+  );
+};
+
 MediaHTML.defaultProps = {
   mediaType: "text/html",
 };
@@ -181,4 +208,29 @@ const MediaJavascript = (props: any) => (
 );
 MediaJavascript.defaultProps = {
   mediaType: "text/javascript",
+};
+
+function MediaPlotly(props: any) {
+  const divRef = React.useRef<any>();
+  alert("render plotly 1" + divRef);
+
+  React.useEffect(() => {
+    alert("render plotly" + divRef);
+    if (divRef && divRef.current) {
+      alert("rendering plotly");
+      Plotly.newPlot(divRef.current, props.data);
+    }
+  });
+
+  return (
+    <div
+      ref={divRef}
+      className="output-plotly"
+      // dangerouslySetInnerHTML={{ __html: "plotly goes here" }}
+    />
+  );
+}
+
+MediaPlotly.defaultProps = {
+  mediaType: "application/vnd.plotly.v1+json",
 };

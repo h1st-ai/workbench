@@ -132,7 +132,7 @@ export function NotebookCell(props: INotebookProps) {
   function renderOutput() {
     return (
       <div className="cell-output">
-        <CellOuput model={model} />
+        <CellOuput key={model.id} model={model} />
       </div>
     );
   }
