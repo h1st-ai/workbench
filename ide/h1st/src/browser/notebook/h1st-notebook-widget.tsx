@@ -21,7 +21,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
 import Notebook from "./components/notebook";
-import Icon from "./components/icon";
+// import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
 import { ICellModel } from "./types";
@@ -101,23 +101,22 @@ export class H1stNotebookWidget extends ReactWidget
   protected onActivateRequest(msg: Message) {
     console.log("activated", msg, this.uri);
     super.onActivateRequest(msg);
+    this.update();
   }
 
-  protected renderToolbar(): React.ReactNode {
-    return (
-      <div className="notebook-toolbar">
-        <ul>
-          <li>
-            <Icon icon="fast-forward" width={16} height={16} />
-          </li>
-        </ul>
-      </div>
-    );
-  }
+  // protected renderToolbar(): React.ReactNode {
+  //   return (
+  //     <div className="notebook-toolbar">
+  //       <ul>
+  //         <li>
+  //           <Icon icon="fast-forward" width={16} height={16} />
+  //         </li>
+  //       </ul>
+  //     </div>
+  //   );
+  // }
 
   protected render(): React.ReactNode {
-    // console.log(this._content);
-
     return (
       <React.Fragment>
         <Provider store={this.store}>

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export const MediaPNG = (props: any) => {
+const PNG = (props: any) => {
   console.log("rendering png");
 
   return (
@@ -10,9 +10,11 @@ export const MediaPNG = (props: any) => {
   );
 };
 
-MediaPNG.defaultProps = {
+PNG.defaultProps = {
   mediaType: "image/png",
 };
+
+export const MediaPNG = React.memo(PNG);
 
 export const MediaJPG = (props: any) => (
   <img alt="" src={`data:${props.mediatype};base64,${props.data}`} />

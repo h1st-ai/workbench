@@ -1,20 +1,23 @@
 import * as React from "react";
-const Plotly = require("plotly.js-dist");
+const PlotlyAPI = require("plotly.js-dist");
 
-export const MediaPlotly = (props: any) => {
+const Plotly = (props: any) => {
   const divRef = React.useRef<any>();
 
   React.useEffect(() => {
     if (divRef && divRef.current) {
+      console.log(`rendering plotly chart`);
       // data is read only so we need to clone it
       const data = JSON.parse(JSON.stringify(props.data));
-      Plotly.plot(divRef.current, data);
+      PlotlyAPI.plot(divRef.current, data);
     }
   });
 
   return <div ref={divRef} className="output-plotly" />;
 };
 
-MediaPlotly.defaultProps = {
+Plotly.defaultProps = {
   mediaType: "application/vnd.plotly.v1+json",
 };
+
+export const MediaPlotly = React.memo(Plotly);
