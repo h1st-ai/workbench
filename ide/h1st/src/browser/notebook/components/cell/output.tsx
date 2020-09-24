@@ -214,13 +214,12 @@ MediaJavascript.defaultProps = {
 
 function MediaPlotly(props: any) {
   const divRef = React.useRef<any>();
-  alert("render plotly 1" + divRef);
 
   React.useEffect(() => {
-    alert("render plotly" + divRef);
     if (divRef && divRef.current) {
-      alert("rendering plotly");
-      Plotly.newPlot(divRef.current, props.data);
+      console.log("rendering plotly");
+      const data = JSON.parse(JSON.stringify(props.data));
+      Plotly.plot(divRef.current, data);
     }
   });
 
