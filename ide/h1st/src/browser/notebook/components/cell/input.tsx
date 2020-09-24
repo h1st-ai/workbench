@@ -2,7 +2,7 @@ import * as React from "react";
 // import Editor from "@monaco-editor/react";
 import Editor from "./monaco-editor";
 import { useDispatch, useSelector } from "react-redux";
-import { IStore } from "../../types";
+import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 
 const LINE_HEIGHT = 18;
@@ -21,6 +21,7 @@ export default function CellInput({ model, width, height }: any) {
   // const [currentHeight, setHeight] = useState(height);
 
   useEffect(() => {
+    console.log("Initialize window event handler");
     window.addEventListener("resize", updateEditorSize);
 
     return () => {
@@ -30,6 +31,14 @@ export default function CellInput({ model, width, height }: any) {
 
   useEffect(() => {
     setTimeout(updateEditorSize, 0);
+
+    if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
+      console.log("focusing", model.id, editor);
+
+      if (editor) {
+        editor.focus();
+      }
+    }
   });
 
   function updateEditorSize() {
@@ -59,7 +68,7 @@ export default function CellInput({ model, width, height }: any) {
 
   // Monaco editor is ready to use
   function handleEditorDidMount(_: any, monacoEditor: any) {
-    console.log("editor did mount", monacoEditor);
+    console.log(`${model.id} editor did mount`, monacoEditor);
     editorRef.current = monacoEditor;
     setEditor(monacoEditor);
 

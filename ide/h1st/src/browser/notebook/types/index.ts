@@ -42,3 +42,9 @@ export interface ICellModel {
 export interface ICellOutputProps {
   model: ICellModel;
 }
+
+export enum CELL_TYPE {
+  MD = "markdown",
+  CODE = "code",
+  RAW = "raw",
+}
