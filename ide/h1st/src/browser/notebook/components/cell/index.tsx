@@ -31,7 +31,7 @@ export function NotebookCell(props: INotebookProps) {
   }
 
   const cellType = model.cell_type;
-  const { setSelectedCell } = notebookActions;
+  const { setSelectedCell, setActiveCell } = notebookActions;
   const dispatch = useDispatch();
 
   const { selectedCell, activeCell } = useSelector(
@@ -114,6 +114,29 @@ export function NotebookCell(props: INotebookProps) {
     }
   }
 
+  function _handleDoubleClick() {
+    if (cellType === CELL_MD) {
+      dispatch(setActiveCell({ id: model.id }));
+    }
+  }
+
+  function renderInput() {
+    return (
+      <div className="cell-input">
+        {renderInputHeader()}
+        <CellInput model={model} width={props.width} height={props.height} />
+      </div>
+    );
+  }
+
+  function renderOutput() {
+    return (
+      <div className="cell-output">
+        <CellOuput model={model} />
+      </div>
+    );
+  }
+
   return (
     <React.Fragment>
       <div
@@ -122,6 +145,7 @@ export function NotebookCell(props: INotebookProps) {
           selected: selectedCell === model.id,
         })}
         onClick={_setSelectedCell}
+        onDoubleClick={_handleDoubleClick}
       >
         <div className="cell-controls">
           <button className="cell-btn-up">
@@ -138,17 +162,8 @@ export function NotebookCell(props: INotebookProps) {
           <div className="cell-focusbar" />
           {renderPrompt()}
           <div className="cell-form">
-            <div className="cell-input">
-              {renderInputHeader()}
-              <CellInput
-                model={model}
-                width={props.width}
-                height={props.height}
-              />
-            </div>
-            <div className="cell-output">
-              <CellOuput model={model} />
-            </div>
+            {renderInput()}
+            {renderOutput()}
           </div>
         </div>
       </div>
