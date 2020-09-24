@@ -3,7 +3,7 @@ import * as React from "react";
 import Markdown from "@nteract/outputs/lib/components/media/markdown";
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
-import * as Plotly from "plotly.js";
+// import * as Plotly from "plotly.js-dist";
 import {
   // ExecuteResult,
   KernelOutputError,
@@ -14,6 +14,8 @@ import {
 // import ErrorBoundary from "./error";
 // import { SVG } from "@nteract/outputs/lib/components/media";
 // import { JavaScript } from "@nteract/outputs/lib/components/media";
+
+const Plotly = require("plotly.js-dist");
 
 enum CELL_OUTPUT_TYPE {
   ERROR = "error",
