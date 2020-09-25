@@ -21,7 +21,7 @@ export class H1stBackendWithClientServiceImpl
             const dirs: string[] = readdirSync(WORKSPACE_PATH).filter(
               (f: string) => {
                 const file = statSync(join(WORKSPACE_PATH, f));
-                return file.isDirectory();
+                return !f.startsWith(".") && file.isDirectory();
               }
             );
 
@@ -103,6 +103,7 @@ export class H1stBackendWithClientServiceImpl
   dispose(): void {
     // do nothing
   }
+
   setClient(client: BackendClient): void {
     this.client = client;
   }
