@@ -32,7 +32,7 @@ export class H1stTelemetryService implements FrontendApplicationContribution {
     /* Track a custom event */
     this.GA.track("fileChanged", {
       category: "Workbench - File Operation",
-      label: "Fall Campaign",
+      label: "Workbench Active Hours",
       value: 42,
     });
   }
