@@ -9,11 +9,13 @@
     "src"
   ],
   "dependencies": {
+    "@analytics/google-analytics": "^0.5.0",
     "@theia/core": "1.5.0",
-    "@theia/filesystem": "1.5.0",
-    "@theia/workspace": "1.5.0",
     "@theia/editor": "1.5.0",
-    "@theia/navigator": "1.5.0"
+    "@theia/filesystem": "1.5.0",
+    "@theia/navigator": "1.5.0",
+    "@theia/workspace": "1.5.0",
+    "analytics": "^0.5.5"
   },
   "devDependencies": {
     "rimraf": "3.0.2",

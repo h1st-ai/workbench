@@ -45,6 +45,16 @@ export class H1stBackendWithClientServiceImpl
     });
   }
 
+  getConfig(name: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.client
+        ? this.client.getName().then(() => {
+            resolve(process.env[name]);
+          })
+        : reject("No Client");
+    });
+  }
+
   getDefaultWorkspaceSettings(): Promise<IDefaultLayout> {
     const root = this.doGetProjectPath();
 
