@@ -3,7 +3,7 @@ FROM theiaide/theia-python
 
 COPY ./docker/ide/components/requirements.txt /tmp
 RUN pip3 install --no-cache -r /tmp/requirements.txt
-RUN pip3 install git+https://github.com/h1st-ai/h1st@fix-prj-generator#egg=h1st\&v=20200906
+RUN pip3 install git+https://github.com/h1st-ai/h1st
 
 # switch to py3 as default
 RUN PYTHON_PATH=`which python` && \
@@ -23,6 +23,7 @@ WORKDIR /home/theia
 
 RUN rm -rf *
 
+COPY ./ide/yarn.lock ./yarn.lock
 COPY ./ide/package.json   ./package.json
 COPY ./ide/lerna.json   ./lerna.json
 
