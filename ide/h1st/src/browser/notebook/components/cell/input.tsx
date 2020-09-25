@@ -4,36 +4,23 @@ import Editor from "./monaco-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
+// import { editor } from "monaco-editor";
 
 const LINE_HEIGHT = 18;
 
 export default function CellInput({ model, width, height }: any) {
   const { useRef, useEffect } = React;
-  let editor: monaco.editor.IStandaloneCodeEditor;
   let editorHeight: number;
-  let editorWidth: number;
 
   const dispatch = useDispatch();
   const { setActiveCell } = notebookActions;
   const { activeCell } = useSelector((store: IStore) => store.notebook);
-  const editorRef = useRef();
-  const wrapperRef = useRef<HTMLHeadingElement>(null);
-  // const [currentLineCount, setCurrentLineCount] = useState(-1);
-  // const [editorHeight, setEditorHeight] = useState(LINE_HEIGHT);
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    console.log(`${model.id} Initialize window event handler`);
-    window.addEventListener("resize", updateEditorWidth);
-
-    return () => {
-      window.removeEventListener("resize", updateEditorWidth);
-    };
-  }, []);
-
-  // if the user double click on a markdown cell, set focus to the
-  // editor
   useEffect(() => {
     if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
+      const editor = editorRef.current;
       if (editor) {
         editor.focus();
       }
@@ -41,20 +28,22 @@ export default function CellInput({ model, width, height }: any) {
   });
 
   // update input width when the widget size change
-  useEffect(() => {
-    setTimeout(updateEditorWidth, 0);
-  }, [width]);
+  // useEffect(() => {
+  //   if (editorRef.current) {
+  //     editorRef.current.layout();
+  //   }
+  // }, [width]);
 
   // Monaco editor is ready to use
   function handleEditorDidMount(_: any, monacoEditor: any) {
     console.log(`${model.id} editor did mount`, monacoEditor);
     editorRef.current = monacoEditor;
     // setEditor(monacoEditor);
-    editor = monacoEditor;
+    // editor = monacoEditor;
 
     setTimeout(() => {
       updateEditorHeight();
-      updateEditorWidth();
+      // updateEditorWidth();
     }, 0);
 
     monacoEditor.onDidChangeModelContent((ev: any) => {
@@ -72,37 +61,43 @@ export default function CellInput({ model, width, height }: any) {
     });
   }
 
-  function updateEditorWidth() {
-    if (!width) return;
+  // function updateEditorWidth() {
+  //   if (!width) return;
 
-    console.log(
-      "should width updated",
-      wrapperRef.current,
-      width,
-      editorWidth,
-      editor
-    );
-    if (wrapperRef.current) {
-      // real width of input = width minus other component width
-      const inputWidth = Math.max(100, width - 42 - 8 - 32 - 20);
-      wrapperRef.current.style.width = `${inputWidth}px`;
+  //   const editor = editorRef.current;
 
-      if (editor && editorWidth !== inputWidth) {
-        console.log(
-          `${model.id}: width changed detected. Updating width`,
-          editor,
-          width
-        );
-        alert("width change");
-        setTimeout(() => {
-          editor.layout({ height: editorHeight, width: editorWidth });
-          editorWidth = inputWidth;
-        }, 0);
-      }
-    }
-  }
+  //   console.log(
+  //     "should width updated",
+  //     wrapperRef.current,
+  //     width,
+  //     editorWidth,
+  //     editor
+  //   );
+  //   if (wrapperRef.current) {
+  //     // real width of input = width minus other component width
+  //     const inputWidth = Math.max(100, width - 42 - 8 - 32 - 20);
+  //     const wrapper = wrapperRef.current;
+
+  //     wrapper.style.width = `${inputWidth}px`;
+
+  //     if (editor && editorWidth !== inputWidth) {
+  //       console.log(
+  //         `${model.id}: width changed detected. Updating width from`,
+  //         inputWidth,
+  //         width
+  //       );
+  //       // alert("width change");
+  //       setTimeout(() => {
+  //         // editor.layout({ height: editorHeight, width: inputWidth });
+  //         // editor.layout();
+  //         editorWidth = inputWidth;
+  //       }, 0);
+  //     }
+  //   }
+  // }
 
   function updateEditorHeight() {
+    const editor = editorRef.current;
     if (!editor) return;
 
     const editorDomNode = editor.getDomNode();
@@ -165,7 +160,6 @@ export default function CellInput({ model, width, height }: any) {
   }
 
   function renderCodeInput() {
-    // return <p>{model.source.join("")}</p>;
     return (
       <Editor
         language="python"
@@ -228,10 +222,5 @@ export default function CellInput({ model, width, height }: any) {
   // update editor size
   // updateEditorWidth();
 
-  return (
-    <div>
-      {width}
-      {renderInput()}
-    </div>
-  );
+  return renderInput();
 }

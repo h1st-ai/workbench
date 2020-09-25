@@ -24,7 +24,7 @@ interface INotebookProps {
 }
 
 export function NotebookCell(props: INotebookProps) {
-  const { model } = props;
+  const { model, width, height } = props;
 
   if (!model) {
     return null;
@@ -33,10 +33,30 @@ export function NotebookCell(props: INotebookProps) {
   const cellType = model.cell_type;
   const { setSelectedCell, setActiveCell } = notebookActions;
   const dispatch = useDispatch();
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const controlRef = React.useRef<HTMLDivElement>(null);
+  const focusRef = React.useRef<HTMLDivElement>(null);
+  const promptRef = React.useRef<HTMLDivElement>(null);
 
   const { selectedCell, activeCell } = useSelector(
     (store: IStore) => store.notebook
   );
+
+  React.useEffect(() => {
+    if (
+      width &&
+      wrapperRef.current &&
+      controlRef.current &&
+      focusRef.current &&
+      promptRef.current
+    ) {
+      wrapperRef.current.style.width = `${width -
+        controlRef.current?.offsetWidth -
+        focusRef.current?.offsetWidth -
+        promptRef.current?.offsetWidth -
+        24}px`;
+    }
+  }, [width]);
 
   function renderCodeCellHeaderControl(): React.ReactNode {
     return (
@@ -89,7 +109,7 @@ export function NotebookCell(props: INotebookProps) {
     switch (cellType) {
       case CELL_CODE:
         return (
-          <div className="cell-prompt">
+          <div className="cell-prompt" ref={promptRef}>
             <div className="execution-count">
               [{model.execution_count || 0}]
             </div>
@@ -98,7 +118,7 @@ export function NotebookCell(props: INotebookProps) {
 
       case CELL_MD:
         return (
-          <div className="cell-prompt">
+          <div className="cell-prompt" ref={promptRef}>
             <div className="execution-count"></div>
           </div>
         );
@@ -124,7 +144,7 @@ export function NotebookCell(props: INotebookProps) {
     return (
       <div className="cell-input">
         {renderInputHeader()}
-        <CellInput model={model} width={props.width} height={props.height} />
+        <CellInput model={model} width={width} height={height} />
       </div>
     );
   }
@@ -147,7 +167,7 @@ export function NotebookCell(props: INotebookProps) {
         onClick={_setSelectedCell}
         onDoubleClick={_handleDoubleClick}
       >
-        <div className="cell-controls">
+        <div className="cell-controls" ref={controlRef}>
           <button className="cell-btn-up">
             <Icon icon="cell-up" />
           </button>
@@ -159,9 +179,9 @@ export function NotebookCell(props: INotebookProps) {
           </button>
         </div>
         <div className="cell-content">
-          <div className="cell-focusbar" />
+          <div className="cell-focusbar" ref={focusRef} />
           {renderPrompt()}
-          <div className="cell-form">
+          <div className="cell-form" ref={wrapperRef}>
             {renderInput()}
             {renderOutput()}
           </div>

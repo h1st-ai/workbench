@@ -71,6 +71,7 @@ export default function MonacoEditor(props: IEditorProps) {
         scrollBeyondLastLine: false,
         lightbulb: { enabled: true },
         fixedOverflowWidgets: true,
+        automaticLayout: true,
         minimap: {
           enabled: false,
         },
