@@ -34,14 +34,16 @@ import { H1stWorkspaceService } from "./h1st-workspace-contribution";
 import { H1stAboutDialog } from "./style/about-dialog";
 import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
+import { H1stTelemetryService } from "./h1st-telemetry-service";
 
 export default new ContainerModule((bind, unbind) => {
-  // bind(OpenHandler).to(H1stWidgetHandler);
-  // bindContributionProvider(bind, H1stWidgetHandler);
-  // bind(H1stFileNavigatorContribution).toService(FileNavigatorContribution);
-  // bindViewContribution(bind, H1stCommandContribution);
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
+  bind(FrontendApplicationContribution).toService(H1stTelemetryService);
+  bind(H1stTelemetryService)
+    .toSelf()
+    .inSingletonScope();
+
   bind(H1stHeaderWidget)
     .toSelf()
     .inSingletonScope();

@@ -10,6 +10,7 @@ import // FrontendApplication,
 // SaveableWidget,
 "@theia/core/lib/browser";
 import { EditorManager } from "@theia/editor/lib/browser";
+import { H1stTelemetryService } from "./h1st-telemetry-service";
 // import { Saveable, setDirty } from "@theia/core/lib/browser";
 // import { H1stDeleteLabelProviderContribution } from "./h1st-label-contribution";
 // import { WidgetFactory } from "@theia/core/lib/browser";
@@ -25,6 +26,8 @@ export class H1stWorkspaceService extends WorkspaceService {
   protected readonly editorManager: EditorManager;
   @inject(FileNavigatorContribution)
   protected readonly fileNavigatorContribution: FileNavigatorContribution;
+  @inject(H1stTelemetryService)
+  protected readonly telemetryService: H1stTelemetryService;
 
   constructor() {
     super();
@@ -33,8 +36,8 @@ export class H1stWorkspaceService extends WorkspaceService {
   protected async init(): Promise<void> {
     super.init();
 
-    this.fileService.onDidFilesChange(() => {
-      console.log("file changes");
+    this.fileService.onDidFilesChange((e) => {
+      this.telemetryService.logFileChangedEvent();
       this.fileNavigatorContribution.refreshWorkspace();
     });
   }

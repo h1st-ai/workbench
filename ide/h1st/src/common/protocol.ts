@@ -16,6 +16,7 @@ export interface H1stBackendWithClientService
   getWorkspaceName(): Promise<string>;
   getWorkspacePath(): Promise<string>;
   getDefaultWorkspaceSettings(): Promise<IDefaultLayout>;
+  getConfig(name: string): Promise<string>;
 }
 export const BackendClient = Symbol("BackendClient");
 export interface BackendClient {

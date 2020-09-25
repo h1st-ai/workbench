@@ -41,7 +41,7 @@
     "start": "yarn copy:asset && theia start --plugins=local-dir:plugins ",
     "watch": "yarn copy:asset && theia build --watch --mode development ",
     "download:plugins": "theia download:plugins",
-    "copy:asset": "cp ../docker/components/index.html ./lib/index.html"
+    "copy:asset": "cp ../../docker/ide/components/index.html ./lib/index.html"
   },
   "theia": {
     "target": "browser",
