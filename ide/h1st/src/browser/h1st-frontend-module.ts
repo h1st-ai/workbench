@@ -28,6 +28,7 @@ import { H1stWorkspaceService } from "./h1st-workspace-contribution";
 import { H1stAboutDialog } from "./style/about-dialog";
 import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
+import { H1stTelemetryService } from "./h1st-telemetry-service";
 
 import { H1stNotebookWidgetFactory } from "./notebook/h1st-notebook-widget-factory";
 import { NotebookManager } from "./notebook/h1st-notebook-manager";
@@ -43,6 +44,11 @@ export default new ContainerModule((bind, unbind) => {
 
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
+  bind(FrontendApplicationContribution).toService(H1stTelemetryService);
+  bind(H1stTelemetryService)
+    .toSelf()
+    .inSingletonScope();
+
   bind(H1stHeaderWidget)
     .toSelf()
     .inSingletonScope();
