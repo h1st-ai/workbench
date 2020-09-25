@@ -112,7 +112,7 @@ export class H1stBackendWithClientServiceImpl
     const { WORKSPACE_PATH, WORKBENCH_NAME } = process.env;
 
     const dirs: string[] = readdirSync(WORKSPACE_PATH).filter((f: string) =>
-      statSync(join(WORKSPACE_PATH, f)).isDirectory()
+      !f.startsWith(".") && statSync(join(WORKSPACE_PATH, f)).isDirectory()
     );
 
     console.log("pre filtered dir", dirs);
