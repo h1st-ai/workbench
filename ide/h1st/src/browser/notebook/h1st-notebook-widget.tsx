@@ -19,6 +19,7 @@ import nextId from "react-id-generator";
 
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import { KernelManager } from "@jupyterlab/services";
 
 import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
@@ -81,7 +82,51 @@ export class H1stNotebookWidget extends ReactWidget
     this.update();
   }
 
+  protected async initializeKernel(): Promise<void> {
+    let FETCH: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
+    let HEADERS: typeof Headers;
+    let REQUEST: typeof Request;
+    let WEBSOCKET: typeof WebSocket;
+
+    FETCH = fetch;
+    REQUEST = Request;
+    HEADERS = Headers;
+    WEBSOCKET = WebSocket;
+
+    console.log("start");
+    const kernelManager = new KernelManager({
+      serverSettings: {
+        baseUrl: "http://localhost:8888",
+        appUrl: "http://localhost:8888",
+        wsUrl: "ws://localhost:8888",
+        token: "abc",
+        init: { cache: "no-store", credentials: "same-origin" },
+        fetch: FETCH,
+        Headers: HEADERS,
+        Request: REQUEST,
+        WebSocket: WEBSOCKET,
+      },
+    });
+    const kernel = await kernelManager.startNew({ name: "python" });
+
+    kernel.statusChanged.connect((_, status) => {
+      console.log(`Kernal status: ${status}`);
+    });
+
+    console.log("Executing code");
+    const future = kernel.requestExecute({ code: "a = 1" });
+    // Handle iopub messages
+    future.onIOPub = (msg) => {
+      if (msg.header.msg_type !== "status") {
+        console.log(msg.content);
+      }
+    };
+    await future.done;
+    console.log("Execution is done");
+  }
+
   protected async onAfterAttach(msg: Message): Promise<void> {
+    await this.initializeKernel();
     const content = await this.fileService.readFile(this.uri);
 
     try {

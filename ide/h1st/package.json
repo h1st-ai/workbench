@@ -9,26 +9,27 @@
     "src"
   ],
   "dependencies": {
+    "@analytics/google-analytics": "0.5.0",
+    "@jupyterlab/services": "^5.2.4",
     "@monaco-editor/react": "3.6.3",
     "@nteract/markdown": "4.5.2",
     "@nteract/outputs": "3.0.11",
     "@nteract/presentational-components": "3.4.2",
     "@nteract/stateful-components": "1.7.0",
     "@reduxjs/toolkit": "1.4.0",
-    "@analytics/google-analytics": "0.5.0",
     "@theia/core": "1.5.0",
     "@theia/editor": "1.5.0",
     "@theia/filesystem": "1.5.0",
     "@theia/navigator": "1.5.0",
     "@theia/workspace": "1.5.0",
+    "analytics": "0.5.5",
     "classnames": "2.2.6",
     "monaco-editor": "0.20.0",
     "plotly.js-dist": "1.55.2",
     "react-id-generator": "3.0.1",
     "react-redux": "7.2.1",
     "redux": "4.0.5",
-    "styled-components": "5.2.0",
-    "analytics": "0.5.5"
+    "styled-components": "5.2.0"
   },
   "devDependencies": {
     "@types/classnames": "2.2.10",
