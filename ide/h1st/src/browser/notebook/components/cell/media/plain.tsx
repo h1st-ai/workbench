@@ -5,7 +5,7 @@ export const Plain = (props: any) => {
 
   React.useEffect(() => {
     if (ref.current) {
-      ref.current.innerHTML = `data:${props.mediatype};base64,${props.data}`;
+      ref.current.innerText = props.data;
     }
   }, [props.data]);
 
