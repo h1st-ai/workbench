@@ -13,13 +13,21 @@ import {
 } from "@theia/core/lib/browser";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
-import { SelectionService } from "@theia/core";
+import { MessageService, SelectionService } from "@theia/core";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 import nextId from "react-id-generator";
+import {
+  KernelAPI,
+  KernelManager,
+  KernelMessage,
+  // SessionManager,
+  // Session,
+  // SessionAPI,
+  ServerConnection,
+} from "@jupyterlab/services";
 
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { KernelManager } from "@jupyterlab/services";
 
 import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
@@ -41,7 +49,8 @@ export class H1stNotebookWidget extends ReactWidget
     readonly uri: URI,
     protected readonly selectionService: SelectionService,
     protected readonly fileService: FileService,
-    protected readonly themeService: ThemeService
+    protected readonly themeService: ThemeService,
+    protected readonly messageService: MessageService
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
@@ -93,36 +102,140 @@ export class H1stNotebookWidget extends ReactWidget
     HEADERS = Headers;
     WEBSOCKET = WebSocket;
 
-    console.log("start");
-    const kernelManager = new KernelManager({
-      serverSettings: {
-        baseUrl: "http://localhost:8888",
-        appUrl: "http://localhost:8888",
-        wsUrl: "ws://localhost:8888",
-        token: "abc",
-        init: { cache: "no-store", credentials: "same-origin" },
-        fetch: FETCH,
-        Headers: HEADERS,
-        Request: REQUEST,
-        WebSocket: WEBSOCKET,
-      },
-    });
+    console.log(KernelAPI);
+
+    this.messageService.info("Initialize Kernel. Retrieving kernels");
+
+    const serverSettings: ServerConnection.ISettings = {
+      baseUrl: "http://localhost:8888",
+      appUrl: "http://localhost:8888",
+      wsUrl: "ws://localhost:8888",
+      token: "abc",
+      init: { cache: "no-store", credentials: "same-origin" },
+      fetch: FETCH,
+      Headers: HEADERS,
+      Request: REQUEST,
+      WebSocket: WEBSOCKET,
+    };
+
+    const kernelManager = new KernelManager({ serverSettings });
     const kernel = await kernelManager.startNew({ name: "python" });
 
+    // Register a callback for when the kernel changes state.
     kernel.statusChanged.connect((_, status) => {
-      console.log(`Kernal status: ${status}`);
+      this.messageService.warn(`Kernel Status Changed: ${status}`);
     });
 
     console.log("Executing code");
-    const future = kernel.requestExecute({ code: "a = 1" });
+    const future = kernel.requestExecute({
+      code: "thisisme = 1\nprint(thisisme)",
+    });
+
     // Handle iopub messages
     future.onIOPub = (msg) => {
       if (msg.header.msg_type !== "status") {
-        console.log(msg.content);
+        console.log(JSON.stringify(msg, null, 2));
       }
     };
     await future.done;
     console.log("Execution is done");
+
+    console.log("Send an inspect message");
+    const request: KernelMessage.IInspectRequestMsg["content"] = {
+      code: "thisisme",
+      cursor_pos: 5,
+      detail_level: 0,
+    };
+    const inspectReply = await kernel.requestInspect(request);
+    console.log("Looking at reply");
+    if (inspectReply.content.status === "ok") {
+      console.log(
+        "Inspect reply:",
+        JSON.stringify(inspectReply.content.data, null, 2)
+      );
+    }
+
+    // const kernelManager = new KernelManager({
+    //   serverSettings,
+    // });
+
+    // const sessionManager = new SessionManager({ kernelManager });
+
+    // console.log("Start a new session");
+
+    // const notebookPath = this.uri.path.toString();
+    // const sessionOptions: Session.ISessionOptions = {
+    //   kernel: {
+    //     name: "python",
+    //   },
+    //   path: notebookPath,
+    //   type: "notebook",
+    //   name: "foo.ipynb",
+    // };
+    // const sessionConnectionOptions: Session.ISessionConnection.IOptions = {
+    //   model: {
+    //     id: notebookPath,
+    //     kernel: {
+    //       name: "python",
+    //     },
+    //     path: notebookPath,
+    //     type: "notebook",
+    //     name: "foo.ipynb",
+    //   },
+    //   kernelConnectionOptions: 'serverSettings'
+    // }
+
+    // const sessionConnection = await sessionManager.startNew(sessionOptions);
+    // await sessionConnection.setPath(notebookPath);
+
+    // if (sessionConnection.kernel) {
+    //   console.log('Execute "a=1"');
+    //   const future = sessionConnection.kernel.requestExecute({ code: "a = 1" });
+    //   future.onReply = (reply) => {
+    //     console.log(
+    //       `Got execute reply with status ${JSON.stringify(reply, null, 4)}`
+    //     );
+    //   };
+    //   await future.done;
+
+    //   console.log("Shut down session");
+    //   await sessionConnection.shutdown();
+
+    //   console.log(
+    //     "Get a list of session models and connect to one if any exist"
+    //   );
+    //   const sessionModels = await SessionAPI.listRunning();
+    //   if (sessionModels.length > 0) {
+    //     const session = sessionManager.connectTo({ model: sessionModels[0] });
+    //     console.log(`Connected to ${session.kernel?.name}`);
+    //   }
+    // }
+
+    // console.log("Finding all existing kernels");
+
+    // const kernelModels = await KernelAPI.listRunning();
+    // console.log("Available Kernels", kernelModels);
+    // if (kernelModels.length > 0) {
+    //   console.log(`Connecting to ${kernelModels[0].name}`);
+    //   kernelManager.connectTo({ model: kernelModels[0] });
+    // }
+
+    // const kernel = await kernelManager.startNew({ name: "python" });
+
+    // kernel.statusChanged.connect((_, status) => {
+    //   console.log(`Kernal status: ${status}`);
+    // });
+
+    // console.log("Executing code");
+    // const future = kernel.requestExecute({ code: "a = 1\nprint(a)" });
+    // // Handle iopub messages
+    // future.onIOPub = (msg) => {
+    //   if (msg.header.msg_type !== "status") {
+    //     console.log("message from server", msg);
+    //   }
+    // };
+    // await future.done;
+    // console.log("Execution is done");
   }
 
   protected async onAfterAttach(msg: Message): Promise<void> {

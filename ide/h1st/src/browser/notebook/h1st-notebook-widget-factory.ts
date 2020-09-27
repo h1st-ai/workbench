@@ -1,4 +1,4 @@
-import { SelectionService } from "@theia/core";
+import { MessageService, SelectionService } from "@theia/core";
 import {
   LabelProvider,
   NavigatableWidgetOptions,
@@ -24,6 +24,7 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
   @inject(FileService)
   protected readonly fileService: FileService;
   @inject(ThemeService) protected readonly themeService: ThemeService;
+  @inject(MessageService) protected readonly messageService: MessageService;
 
   createWidget(options: NavigatableWidgetOptions): Promise<H1stNotebookWidget> {
     const uri = new URI(options.uri);
@@ -36,7 +37,8 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
       uri,
       this.selectionService,
       this.fileService,
-      this.themeService
+      this.themeService,
+      this.messageService
     );
 
     this.setLabels(newNotebook, uri);

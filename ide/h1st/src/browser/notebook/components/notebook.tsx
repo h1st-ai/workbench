@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
-// import URI from "@theia/core/lib/common/uri";
+
 import NotebookSteps from "./step-panel";
 import Toolbar from "./toolbar";
 // import { selectNotebook } from "../reducers/notebook";
@@ -15,13 +15,7 @@ export default function(props: any) {
   // const content = props.model;
   const { cells } = useSelector((store: IStore) => store.notebook);
 
-  // useEffect(() => {
-  //   console.log("test");
-  //   // const { setCells } = notebookActions;
-  //   // const dispatch = useDispatch();
-
-  //   // dispatch(setCells(props.model.cells));
-  // });
+  React.useEffect(() => {});
 
   const codeCells = cells.map((c: ICellModel) => (
     <NotebookCell
