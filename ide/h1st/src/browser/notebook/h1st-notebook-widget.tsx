@@ -19,10 +19,10 @@ import nextId from "react-id-generator";
 import {
   KernelAPI,
   KernelManager,
-  KernelMessage,
-  Kernel,
-  // SessionManager,
-  // Session,
+  // KernelMessage,
+  // Kernel,
+  SessionManager,
+  Session,
   // SessionAPI,
   ServerConnection,
 } from "@jupyterlab/services";
@@ -34,7 +34,7 @@ import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
-import { kernelActions } from "./reducers/kernel";
+// import { kernelActions } from "./reducers/kernel";
 import { ICellModel } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
@@ -43,17 +43,47 @@ type INotebookContext = {
   saveNotebook: Function;
 };
 
+type INotebookContent = {
+  cells: any[];
+  metadata: {
+    session_id?: string;
+    kernelspec: {
+      display_name: string;
+      language: string;
+      name: string;
+    };
+    language_info: {
+      codemirror_mode: {
+        name: string;
+        version: number;
+      };
+      file_extension: string;
+      mimetype: string;
+      name: string;
+      nbconvert_exporter: string;
+      pygments_lexer: string;
+      version: string;
+    };
+  };
+  nbformat: number;
+  nbformat_minor: number;
+};
+
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
   implements NavigatableWidget {
   static readonly ID = "h1st:notebook:widget";
   private readonly store: any;
-  private _content: any;
+  private _notebookFileContent: INotebookContent;
   private _width: number;
   private _height: number;
-  private _kernel: Kernel.IKernelConnection;
+  // private _kernel: Kernel.IKernelConnection;
   private _context: React.Context<INotebookContext>;
   private _defaultContextValue: INotebookContext;
+  private _kernelManager: KernelManager;
+  private _session: Session.ISessionConnection;
+  private _sessionManager: SessionManager;
+  private _serverSettings: ServerConnection.ISettings;
 
   constructor(
     readonly uri: URI,
@@ -102,11 +132,11 @@ export class H1stNotebookWidget extends ReactWidget
     );
   }
 
-  private setCurrentKernelStatus(status: string) {
-    const { setKernelStatus } = kernelActions;
+  // private setCurrentKernelStatus(status: string) {
+  //   const { setKernelStatus } = kernelActions;
 
-    this.store.dispatch(setKernelStatus(status));
-  }
+  //   this.store.dispatch(setKernelStatus(status));
+  // }
 
   // get onDispose(): Event<void> {
   //   return this.toDispose.onDispose;
@@ -138,7 +168,8 @@ export class H1stNotebookWidget extends ReactWidget
     this.update();
   }
 
-  protected async initializeKernel(): Promise<void> {
+  protected async initializeServerSettings(): Promise<void> {
+    console.log("Initializing server settings");
     let FETCH: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
     let HEADERS: typeof Headers;
     let REQUEST: typeof Request;
@@ -149,12 +180,11 @@ export class H1stNotebookWidget extends ReactWidget
     HEADERS = Headers;
     WEBSOCKET = WebSocket;
 
-    console.log(KernelAPI);
+    // get the server config from the backend
     const serverConfig = await this.h1stBackendClient.getNotebookServerConfig();
 
-    this.messageService.info("Initialize Kernel. Retrieving kernels");
-
-    const serverSettings: ServerConnection.ISettings = {
+    // intialize jupyter server settings
+    this._serverSettings = {
       ...serverConfig,
       init: { cache: "no-store", credentials: "same-origin" },
       fetch: FETCH,
@@ -162,53 +192,116 @@ export class H1stNotebookWidget extends ReactWidget
       Request: REQUEST,
       WebSocket: WEBSOCKET,
     };
+  }
 
-    const kernelManager = new KernelManager({ serverSettings });
-    this._kernel = await kernelManager.startNew({ name: "python" });
-
-    console.log("Current Kernel", this._kernel);
-
-    // Register a callback for when the kernel changes state.
-    this._kernel.statusChanged.connect((_, status) => {
-      this.setCurrentKernelStatus(status);
+  protected async initializeKernelManager(): Promise<void> {
+    this._kernelManager = new KernelManager({
+      serverSettings: this._serverSettings,
     });
 
-    // Register a callback for when the kernel changes state.
-    this._kernel.statusChanged.disconnect((_, status) => {
-      this.setCurrentKernelStatus(status);
-      this.messageService.warn(`Kernel disconnect: ${status}`);
+    const kernelModels = await KernelAPI.listRunning(this._serverSettings);
+    console.log("Available Kernels", kernelModels);
+  }
+
+  protected async initializeSessionManager(): Promise<void> {
+    this._sessionManager = new SessionManager({
+      kernelManager: this._kernelManager,
     });
+  }
 
-    console.log("Executing code");
+  protected async initializeKernelEventHandler(): Promise<void> {
+    // this._sessionManager.kernel.statusChanged.connect((_, status) => {
+    //   this.setCurrentKernelStatus(status);
+    // });
+    // // Register a callback for when the kernel changes state.
+    // this._sessionManager.kernel.statusChanged.disconnect((_, status) => {
+    //   this.setCurrentKernelStatus(status);
+    //   this.messageService.warn(`Kernel disconnect: ${status}`);
+    // });
+  }
 
-    const currentCode = "! pip install seaborn";
+  protected async initializeNewSession(): Promise<Session.ISessionConnection> {
+    const options: Session.ISessionOptions = {
+      kernel: {
+        name: "python",
+      },
+      path: this.uri.path.toString(),
+      type: "notebook",
+      name: this.uri.path.base,
+    };
 
-    const future = this._kernel.requestExecute({
-      code: currentCode,
-    });
+    return await this._sessionManager.startNew(options);
+  }
 
-    // Handle iopub messages
-    future.onIOPub = (msg) => {
-      if (msg.header.msg_type !== "status") {
-        console.log(JSON.stringify(msg, null, 2));
+  protected async createOrRestoreJupyterSession(): Promise<void> {
+    try {
+      const sessionId = this._notebookFileContent.metadata.session_id;
+      if (sessionId) {
+        const sessionModel = await this._sessionManager.findById(sessionId);
+
+        if (sessionModel) {
+          this._session = this._sessionManager.connectTo({
+            model: sessionModel,
+          });
+        } else {
+          this._session = await this.initializeNewSession();
+        }
+      } else {
+        this._session = await this.initializeNewSession();
       }
-    };
-    await future.done;
-    console.log("Execution is done");
 
-    console.log("Send an inspect message");
-    const request: KernelMessage.ICompleteRequestMsg["content"] = {
-      code: "matplotlib",
-      cursor_pos: 5,
-    };
-    const inspectReply = await this._kernel.requestComplete(request);
-    console.log("Looking at reply");
-    if (inspectReply.content.status === "ok") {
-      console.log(
-        "Inspect reply:",
-        JSON.stringify(inspectReply.content, null, 2)
-      );
+      this.messageService.info(`Connected to ${this._session.kernel?.name}`);
+    } catch (ex) {
+      this.messageService.warn("Cannot initialize kernel");
+      console.log("Cannot initialize kernel", ex);
     }
+  }
+
+  protected async initNotebookServices(): Promise<void> {
+    await this.initializeServerSettings();
+    await this.initializeKernelManager();
+    await this.initializeSessionManager();
+
+    await this.initializeKernelEventHandler();
+    // this._kernel = await kernelManager.startNew({ name: this.uri.toString() });
+
+    // console.log("Current Session Manager", this._sessionManager);
+    // // Register a callback for when the kernel changes state.
+
+    // console.log("Listing all session", this._serverSettings);
+    // const sessionModels = await SessionAPI.listRunning();
+    // console.log("All session", sessionModels);
+
+    // console.log("Executing code");
+
+    // const currentCode = "! pip install seaborn";
+
+    // const future = this._kernel.requestExecute({
+    //   code: currentCode,
+    // });
+
+    // // Handle iopub messages
+    // future.onIOPub = (msg) => {
+    //   if (msg.header.msg_type !== "status") {
+    //     console.log(JSON.stringify(msg, null, 2));
+    //   }
+    // };
+    // await future.done;
+    // console.log("Execution is done");
+
+    // console.log("Send an inspect message");
+    // const request: KernelMessage.ICompleteRequestMsg["content"] = {
+    //   code: "matplotlib",
+    //   cursor_pos: 5,
+    // };
+    // const inspectReply = await this._kernel.requestComplete(request);
+    // console.log("Looking at reply");
+    // if (inspectReply.content.status === "ok") {
+    //   console.log(
+    //     "Inspect reply:",
+    //     JSON.stringify(inspectReply.content, null, 2)
+    //   );
+    // }
 
     // const kernelManager = new KernelManager({
     //   serverSettings,
@@ -294,20 +387,24 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected async onAfterAttach(msg: Message): Promise<void> {
-    await this.initializeKernel();
+    await this.initNotebookServices();
     const content = await this.fileService.readFile(this.uri);
 
     try {
-      const _content = JSON.parse(content.value.toString());
-      _content.cells.map((c: ICellModel) => (c.id = nextId("h1st")));
+      const _notebookFileContent = JSON.parse(content.value.toString());
+      _notebookFileContent.cells.map(
+        (c: ICellModel) => (c.id = nextId("h1st"))
+      );
 
-      this._content = _content;
+      this._notebookFileContent = _notebookFileContent;
     } catch (ex) {
-      this._content = defaultNotebookModel;
+      this._notebookFileContent = defaultNotebookModel;
     }
 
+    this.createOrRestoreJupyterSession();
+
     const { setCells } = notebookActions;
-    this.store.dispatch(setCells({ cells: this._content.cells }));
+    this.store.dispatch(setCells({ cells: this._notebookFileContent.cells }));
 
     this.update();
     super.onAfterAttach(msg);
@@ -338,7 +435,7 @@ export class H1stNotebookWidget extends ReactWidget
         <Provider store={this.store}>
           <Notebook
             uri={this.uri}
-            model={this._content}
+            model={this._notebookFileContent}
             width={this._width}
             height={this._height}
           />
@@ -376,6 +473,7 @@ const defaultNotebookModel = {
     kernelspec: {
       name: "",
       display_name: "",
+      language: "python",
     },
   },
   nbformat: 4,
