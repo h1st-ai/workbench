@@ -23,6 +23,7 @@ WORKDIR /home/theia
 
 RUN rm -rf *
 
+COPY ./ide/yarn.lock ./yarn.lock
 COPY ./ide/package.json   ./package.json
 COPY ./ide/lerna.json   ./lerna.json
 
