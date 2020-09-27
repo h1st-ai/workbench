@@ -356,9 +356,13 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   margin: 3px;
 }
 
-.cell-ouput-wrapper .output-error {
+.cell-output-wrapper .output-error {
   background: #fff;
   padding: 8px 16px;
+}
+
+.cell-output-wrapper .output-error ::selection {
+  background: #ddd;
 }
 
 .cell-output-wrapper .execute_result .csieaG {
