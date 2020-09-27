@@ -15,6 +15,7 @@ import {
   MediaSVG,
   Plain,
 } from "./media";
+import { MediaUnsupported } from "./media/wildcard";
 
 export enum CELL_OUTPUT_TYPE {
   ERROR = "error",
@@ -94,6 +95,7 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
                 <Media.LaTeX />
                 <Media.Markdown />
                 <Plain />
+                <MediaUnsupported />
               </RichMedia>
             </div>
           );
