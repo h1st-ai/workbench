@@ -341,6 +341,15 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   padding: 8px 0px;
 }
 
+.cell-output-wrapper pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
 .cell-output-plot-background {
   background: #fff;
   display: inline-block;

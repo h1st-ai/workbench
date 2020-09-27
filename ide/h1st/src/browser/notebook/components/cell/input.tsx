@@ -190,7 +190,7 @@ export default function CellInput({ model, width, height }: any) {
           selectionHighlight: false,
           lineDecorationsWidth: 0,
           contextmenu: false,
-          matchBrackets: "always",
+          matchBrackets: "near",
         }}
         editorDidMount={handleEditorDidMount}
       />
