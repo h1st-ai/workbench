@@ -127,8 +127,11 @@ export class H1stNotebookWidget extends ReactWidget
     });
 
     console.log("Executing code");
+
+    const currentCode = "! pip install seaborn";
+
     const future = kernel.requestExecute({
-      code: "helloworld = 1\nprint(helloworld)",
+      code: currentCode,
     });
 
     // Handle iopub messages
@@ -142,7 +145,7 @@ export class H1stNotebookWidget extends ReactWidget
 
     console.log("Send an inspect message");
     const request: KernelMessage.ICompleteRequestMsg["content"] = {
-      code: "helloworld",
+      code: "matplotlib",
       cursor_pos: 5,
     };
     const inspectReply = await kernel.requestComplete(request);
