@@ -5,17 +5,13 @@ export const MediaHTML = (props: any) => {
 
   React.useEffect(() => {
     if (divRef && divRef.current) {
-      divRef.current.innerHTML = props.data.join("");
+      divRef.current.innerHTML = Array.isArray(props.data)
+        ? props.data.join("")
+        : props.data;
     }
-  }, []);
+  }, [props.data]);
 
-  return (
-    <div
-      ref={divRef}
-      className="output-html"
-      // dangerouslySetInnerHTML={{ __html: props.data.join("") }}
-    />
-  );
+  return <div ref={divRef} className="output-html" />;
 };
 
 MediaHTML.defaultProps = {

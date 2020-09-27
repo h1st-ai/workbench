@@ -1,7 +1,7 @@
 import * as React from "react";
 const PlotlyAPI = require("plotly.js-dist");
 
-const Plotly = (props: any) => {
+export const MediaPlotly = (props: any) => {
   const divRef = React.useRef<any>();
 
   React.useEffect(() => {
@@ -11,13 +11,11 @@ const Plotly = (props: any) => {
       const data = JSON.parse(JSON.stringify(props.data));
       PlotlyAPI.plot(divRef.current, data);
     }
-  });
+  }, [props.data]);
 
   return <div ref={divRef} className="output-plotly" />;
 };
 
-Plotly.defaultProps = {
+MediaPlotly.defaultProps = {
   mediaType: "application/vnd.plotly.v1+json",
 };
-
-export const MediaPlotly = React.memo(Plotly);

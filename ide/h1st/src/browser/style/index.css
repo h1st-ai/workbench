@@ -355,3 +355,12 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   display: inline-block;
   margin: 3px;
 }
+
+.cell-ouput-wrapper .output-error {
+  background: #fff;
+  padding: 8px 16px;
+}
+
+.cell-output-wrapper .execute-result .csieaG {
+  color: var(--theia-foreground);
+}

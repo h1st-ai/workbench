@@ -4,7 +4,7 @@ export const MediaJavascript = (props: any) => {
   React.useEffect(() => {
     const vScript = new Function(props.data);
     vScript();
-  }, []);
+  }, [props.data]);
 
   return null;
   // <script
@@ -13,5 +13,5 @@ export const MediaJavascript = (props: any) => {
   // />
 };
 MediaJavascript.defaultProps = {
-  mediaType: "text/javascript",
+  mediaType: "application/javascript",
 };
