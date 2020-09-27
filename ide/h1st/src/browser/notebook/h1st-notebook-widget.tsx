@@ -194,16 +194,13 @@ export class H1stNotebookWidget extends ReactWidget
     };
   }
 
-  protected async initializeKernelManager(): Promise<void> {
+  protected initializeKernelManager(): void {
     this._kernelManager = new KernelManager({
       serverSettings: this._serverSettings,
     });
-
-    const kernelModels = await KernelAPI.listRunning(this._serverSettings);
-    console.log("Available Kernels", kernelModels);
   }
 
-  protected async initializeSessionManager(): Promise<void> {
+  protected initializeSessionManager(): void {
     this._sessionManager = new SessionManager({
       kernelManager: this._kernelManager,
     });
@@ -221,6 +218,9 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected async initializeNewSession(): Promise<Session.ISessionConnection> {
+    const kernelModels = await KernelAPI.listRunning(this._serverSettings);
+    console.log("Available Kernels", kernelModels);
+
     const options: Session.ISessionOptions = {
       kernel: {
         name: "python",
@@ -259,8 +259,8 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async initNotebookServices(): Promise<void> {
     await this.initializeServerSettings();
-    await this.initializeKernelManager();
-    await this.initializeSessionManager();
+    this.initializeKernelManager();
+    this.initializeSessionManager();
 
     await this.initializeKernelEventHandler();
     // this._kernel = await kernelManager.startNew({ name: this.uri.toString() });
@@ -406,7 +406,10 @@ export class H1stNotebookWidget extends ReactWidget
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._notebookFileContent.cells }));
 
-    this.update();
+    if (this.isVisible) {
+      this.update();
+    }
+
     super.onAfterAttach(msg);
   }
 
@@ -415,18 +418,6 @@ export class H1stNotebookWidget extends ReactWidget
     super.onActivateRequest(msg);
     this.update();
   }
-
-  // protected renderToolbar(): React.ReactNode {
-  //   return (
-  //     <div className="notebook-toolbar">
-  //       <ul>
-  //         <li>
-  //           <Icon icon="fast-forward" width={16} height={16} />
-  //         </li>
-  //       </ul>
-  //     </div>
-  //   );
-  // }
 
   protected render(): React.ReactNode {
     const NotebookContext = this._context;
