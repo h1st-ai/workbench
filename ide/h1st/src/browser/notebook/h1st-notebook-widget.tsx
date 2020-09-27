@@ -128,7 +128,7 @@ export class H1stNotebookWidget extends ReactWidget
 
     console.log("Executing code");
     const future = kernel.requestExecute({
-      code: "thisisme = 1\nprint(thisisme)",
+      code: "helloworld = 1\nprint(helloworld)",
     });
 
     // Handle iopub messages
@@ -141,17 +141,16 @@ export class H1stNotebookWidget extends ReactWidget
     console.log("Execution is done");
 
     console.log("Send an inspect message");
-    const request: KernelMessage.IInspectRequestMsg["content"] = {
-      code: "thisisme",
+    const request: KernelMessage.ICompleteRequestMsg["content"] = {
+      code: "helloworld",
       cursor_pos: 5,
-      detail_level: 0,
     };
-    const inspectReply = await kernel.requestInspect(request);
+    const inspectReply = await kernel.requestComplete(request);
     console.log("Looking at reply");
     if (inspectReply.content.status === "ok") {
       console.log(
         "Inspect reply:",
-        JSON.stringify(inspectReply.content.data, null, 2)
+        JSON.stringify(inspectReply.content, null, 2)
       );
     }
 
