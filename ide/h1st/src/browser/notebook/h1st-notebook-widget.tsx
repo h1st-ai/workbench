@@ -84,6 +84,7 @@ export class H1stNotebookWidget extends ReactWidget
   private _session: Session.ISessionConnection;
   private _sessionManager: SessionManager;
   private _serverSettings: ServerConnection.ISettings;
+  private _initialized: Boolean = false;
 
   constructor(
     readonly uri: URI,
@@ -386,7 +387,7 @@ export class H1stNotebookWidget extends ReactWidget
     // console.log("Execution is done");
   }
 
-  protected async onAfterAttach(msg: Message): Promise<void> {
+  protected async init() {
     await this.initNotebookServices();
     const content = await this.fileService.readFile(this.uri);
 
@@ -401,13 +402,19 @@ export class H1stNotebookWidget extends ReactWidget
       this._notebookFileContent = defaultNotebookModel;
     }
 
-    this.createOrRestoreJupyterSession();
-
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._notebookFileContent.cells }));
+    this.createOrRestoreJupyterSession();
 
-    if (this.isVisible) {
-      this.update();
+    // mark this widget as initialized
+    this._initialized = true;
+
+    this.update();
+  }
+
+  protected async onAfterAttach(msg: Message): Promise<void> {
+    if (this.isVisible && !this._initialized) {
+      await this.init();
     }
 
     super.onAfterAttach(msg);
@@ -415,6 +422,11 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected onActivateRequest(msg: Message) {
     console.log("activated", msg, this.uri);
+
+    if (!this._initialized) {
+      this.init();
+    }
+
     super.onActivateRequest(msg);
     this.update();
   }
