@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IDefaultLayout } from "../common/types";
+import { IDefaultLayout, INotebookServerConfig } from "../common/types";
 import {
   BackendClient,
   H1stBackendWithClientService,
@@ -100,6 +100,24 @@ export class H1stBackendWithClientServiceImpl
     });
   }
 
+  getNotebookServerConfig(): Promise<INotebookServerConfig> {
+    const result: INotebookServerConfig = {
+      baseUrl: process.env.JUPYTER_BASE_URL || "http://localhost:8888",
+      appUrl: process.env.JUPYTER_APP_URL || "http://localhost:8888",
+      wsUrl: process.env.JUPYTER_WS_URL || "ws://localhost:8888",
+      token: process.env.JUPYTER_TOKEN || "abc",
+      init: { cache: "no-store", credentials: "same-origin" },
+    };
+
+    return new Promise<INotebookServerConfig>((resolve, reject) => {
+      this.client
+        ? this.client.getName().then(() => {
+            resolve(result);
+          })
+        : reject("No Client");
+    });
+  }
+
   dispose(): void {
     // do nothing
   }
@@ -111,8 +129,9 @@ export class H1stBackendWithClientServiceImpl
   private doGetProjectPath(): string {
     const { WORKSPACE_PATH, WORKBENCH_NAME } = process.env;
 
-    const dirs: string[] = readdirSync(WORKSPACE_PATH).filter((f: string) =>
-      !f.startsWith(".") && statSync(join(WORKSPACE_PATH, f)).isDirectory()
+    const dirs: string[] = readdirSync(WORKSPACE_PATH).filter(
+      (f: string) =>
+        !f.startsWith(".") && statSync(join(WORKSPACE_PATH, f)).isDirectory()
     );
 
     console.log("pre filtered dir", dirs);

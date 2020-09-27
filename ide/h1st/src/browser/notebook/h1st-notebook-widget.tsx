@@ -35,6 +35,7 @@ import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
 import { ICellModel } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
+import { H1stBackendWithClientService } from "../../common/protocol";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -50,7 +51,8 @@ export class H1stNotebookWidget extends ReactWidget
     protected readonly selectionService: SelectionService,
     protected readonly fileService: FileService,
     protected readonly themeService: ThemeService,
-    protected readonly messageService: MessageService
+    protected readonly messageService: MessageService,
+    protected readonly h1stBackendClient: H1stBackendWithClientService
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
@@ -103,14 +105,12 @@ export class H1stNotebookWidget extends ReactWidget
     WEBSOCKET = WebSocket;
 
     console.log(KernelAPI);
+    const serverConfig = await this.h1stBackendClient.getNotebookServerConfig();
 
     this.messageService.info("Initialize Kernel. Retrieving kernels");
 
     const serverSettings: ServerConnection.ISettings = {
-      baseUrl: "http://localhost:8888",
-      appUrl: "http://localhost:8888",
-      wsUrl: "ws://localhost:8888",
-      token: "abc",
+      ...serverConfig,
       init: { cache: "no-store", credentials: "same-origin" },
       fetch: FETCH,
       Headers: HEADERS,

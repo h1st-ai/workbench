@@ -9,6 +9,7 @@ import URI from "@theia/core/lib/common/uri";
 import { TextEditorProvider } from "@theia/editor/lib/browser";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 import { injectable, inject } from "inversify";
+import { H1stBackendWithClientService } from "../../common/protocol";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
 
 @injectable()
@@ -25,6 +26,8 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
   protected readonly fileService: FileService;
   @inject(ThemeService) protected readonly themeService: ThemeService;
   @inject(MessageService) protected readonly messageService: MessageService;
+  @inject(H1stBackendWithClientService)
+  protected readonly h1stBackendWithClientService: H1stBackendWithClientService;
 
   createWidget(options: NavigatableWidgetOptions): Promise<H1stNotebookWidget> {
     const uri = new URI(options.uri);
@@ -38,7 +41,8 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
       this.selectionService,
       this.fileService,
       this.themeService,
-      this.messageService
+      this.messageService,
+      this.h1stBackendWithClientService
     );
 
     this.setLabels(newNotebook, uri);
