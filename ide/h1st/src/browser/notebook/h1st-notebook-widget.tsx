@@ -20,6 +20,7 @@ import {
   KernelAPI,
   KernelManager,
   KernelMessage,
+  Kernel,
   // SessionManager,
   // Session,
   // SessionAPI,
@@ -33,9 +34,14 @@ import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
+import { kernelActions } from "./reducers/kernel";
 import { ICellModel } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
+
+type INotebookContext = {
+  saveNotebook: Function;
+};
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -45,6 +51,9 @@ export class H1stNotebookWidget extends ReactWidget
   private _content: any;
   private _width: number;
   private _height: number;
+  private _kernel: Kernel.IKernelConnection;
+  private _context: React.Context<INotebookContext>;
+  private _defaultContextValue: INotebookContext;
 
   constructor(
     readonly uri: URI,
@@ -56,6 +65,47 @@ export class H1stNotebookWidget extends ReactWidget
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
+    this.setTheme();
+
+    this._defaultContextValue = {
+      saveNotebook: this.saveNotebook,
+    };
+
+    this._context = React.createContext<INotebookContext>(
+      this._defaultContextValue
+    );
+  }
+
+  private saveNotebook() {
+    console.log("notebook save");
+  }
+
+  private setTheme() {
+    const { setActiveTheme } = notebookActions;
+
+    const {
+      id,
+      type,
+      label,
+      description,
+      editorTheme,
+    } = this.themeService.getCurrentTheme();
+
+    this.store.dispatch(
+      setActiveTheme({
+        id,
+        type,
+        label,
+        description,
+        editorTheme,
+      })
+    );
+  }
+
+  private setCurrentKernelStatus(status: string) {
+    const { setKernelStatus } = kernelActions;
+
+    this.store.dispatch(setKernelStatus(status));
   }
 
   // get onDispose(): Event<void> {
@@ -82,11 +132,6 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected onResize(msg: Widget.ResizeMessage): void {
-    // if (msg.width < 0 || msg.height < 0) {
-    //     this.editor.resizeToFit();
-    // } else {
-    //     this.editor.setSize(msg);
-    // }
     const { width, height } = msg;
     this._width = width;
     this._height = height;
@@ -119,18 +164,26 @@ export class H1stNotebookWidget extends ReactWidget
     };
 
     const kernelManager = new KernelManager({ serverSettings });
-    const kernel = await kernelManager.startNew({ name: "python" });
+    this._kernel = await kernelManager.startNew({ name: "python" });
+
+    console.log("Current Kernel", this._kernel);
 
     // Register a callback for when the kernel changes state.
-    kernel.statusChanged.connect((_, status) => {
-      this.messageService.warn(`Kernel Status Changed: ${status}`);
+    this._kernel.statusChanged.connect((_, status) => {
+      this.setCurrentKernelStatus(status);
+    });
+
+    // Register a callback for when the kernel changes state.
+    this._kernel.statusChanged.disconnect((_, status) => {
+      this.setCurrentKernelStatus(status);
+      this.messageService.warn(`Kernel disconnect: ${status}`);
     });
 
     console.log("Executing code");
 
     const currentCode = "! pip install seaborn";
 
-    const future = kernel.requestExecute({
+    const future = this._kernel.requestExecute({
       code: currentCode,
     });
 
@@ -148,7 +201,7 @@ export class H1stNotebookWidget extends ReactWidget
       code: "matplotlib",
       cursor_pos: 5,
     };
-    const inspectReply = await kernel.requestComplete(request);
+    const inspectReply = await this._kernel.requestComplete(request);
     console.log("Looking at reply");
     if (inspectReply.content.status === "ok") {
       console.log(
@@ -253,25 +306,8 @@ export class H1stNotebookWidget extends ReactWidget
       this._content = defaultNotebookModel;
     }
 
-    const { setCells, setActiveTheme } = notebookActions;
+    const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._content.cells }));
-
-    const {
-      id,
-      type,
-      label,
-      description,
-      editorTheme,
-    } = this.themeService.getCurrentTheme();
-    this.store.dispatch(
-      setActiveTheme({
-        id,
-        type,
-        label,
-        description,
-        editorTheme,
-      })
-    );
 
     this.update();
     super.onAfterAttach(msg);
@@ -296,8 +332,9 @@ export class H1stNotebookWidget extends ReactWidget
   // }
 
   protected render(): React.ReactNode {
+    const NotebookContext = this._context;
     return (
-      <React.Fragment>
+      <NotebookContext.Provider value={this._defaultContextValue}>
         <Provider store={this.store}>
           <Notebook
             uri={this.uri}
@@ -306,7 +343,7 @@ export class H1stNotebookWidget extends ReactWidget
             height={this._height}
           />
         </Provider>
-      </React.Fragment>
+      </NotebookContext.Provider>
     );
   }
 }

@@ -15,11 +15,14 @@ export const KernelSlice = createSlice({
     listKernel: (state): void => {
       console.log("listKernel");
     },
+    setKernelStatus: (state, { payload }): void => {
+      state.connectionStatus = payload;
+    },
   },
 });
 
 // Actions
-export const kernelAction = KernelSlice.actions;
+export const kernelActions = KernelSlice.actions;
 
 // Selector
 export const selectKernel = (state: IStore): IKernel => state.kernel;
