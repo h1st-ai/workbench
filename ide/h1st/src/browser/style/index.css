@@ -368,3 +368,16 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .cell-output-wrapper .execute_result .csieaG {
   color: var(--theia-foreground);
 }
+
+.cell-output-wrapper table,
+.cell-output-wrapper td,
+.cell-output-wrapper th {
+  border-collapse: collapse;
+  border-color: var(--theia-foreground);
+  font-size: 0.8rem;
+}
+
+.cell-output-wrapper td,
+.cell-output-wrapper th {
+  padding: 4px;
+}
