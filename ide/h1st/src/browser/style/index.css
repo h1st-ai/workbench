@@ -361,6 +361,6 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   padding: 8px 16px;
 }
 
-.cell-output-wrapper .execute-result .csieaG {
+.cell-output-wrapper .execute_result .csieaG {
   color: var(--theia-foreground);
 }
