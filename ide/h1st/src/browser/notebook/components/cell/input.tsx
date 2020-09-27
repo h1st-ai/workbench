@@ -17,15 +17,7 @@ export default function CellInput({ model, width, height }: any) {
   const { activeCell } = useSelector((store: IStore) => store.notebook);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
   const wrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
-      const editor = editorRef.current;
-      if (editor) {
-        editor.focus();
-      }
-    }
-  });
+  // let editor: monaco.editor.IStandaloneCodeEditor;
 
   // update input width when the widget size change
   useEffect(() => {
@@ -34,12 +26,23 @@ export default function CellInput({ model, width, height }: any) {
     }
   }, [width]);
 
+  useEffect(() => {
+    if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
+      // const editor = editorRef.current;
+
+      console.log("focusing cell", editorRef.current);
+      setTimeout(() => {
+        if (editorRef.current) {
+          editorRef.current.focus();
+        }
+      }, 0);
+    }
+  }, [activeCell]);
+
   // Monaco editor is ready to use
   function handleEditorDidMount(_: any, monacoEditor: any) {
     console.log(`${model.id} editor did mount`, monacoEditor);
     editorRef.current = monacoEditor;
-    // setEditor(monacoEditor);
-    // editor = monacoEditor;
 
     setTimeout(() => {
       updateEditorHeight();
@@ -55,7 +58,7 @@ export default function CellInput({ model, width, height }: any) {
     });
 
     monacoEditor.onDidFocusEditorText((ev: any) => {
-      if (model.cell_type === CELL_TYPE.CODE) {
+      if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
         dispatch(setActiveCell({ id: model.id }));
       }
     });
@@ -133,12 +136,6 @@ export default function CellInput({ model, width, height }: any) {
       // editor.layout({ width, height });
       editor.layout();
     }
-
-    // if (container.childElementCount !== currLineCount) {
-    //   updateEditorHeight();
-    // } else {
-    //   setCurrentLineCount(currLineCount);
-    // }
   }
 
   function renderMarkdownInput() {

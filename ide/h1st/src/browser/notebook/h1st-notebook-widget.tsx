@@ -96,8 +96,22 @@ export class H1stNotebookWidget extends ReactWidget
     const { setCells, setActiveTheme } = notebookActions;
     this.store.dispatch(setCells({ cells: this._content.cells }));
 
-    const currentTheme = this.themeService.getCurrentTheme();
-    this.store.dispatch(setActiveTheme(currentTheme));
+    const {
+      id,
+      type,
+      label,
+      description,
+      editorTheme,
+    } = this.themeService.getCurrentTheme();
+    this.store.dispatch(
+      setActiveTheme({
+        id,
+        type,
+        label,
+        description,
+        editorTheme,
+      })
+    );
 
     this.update();
     super.onAfterAttach(msg);

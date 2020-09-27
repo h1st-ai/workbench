@@ -1,6 +1,14 @@
-import { Theme } from "@theia/core/lib/browser/theming";
+import { ThemeType } from "@theia/core/lib/browser/theming";
 
 export interface ICell {}
+
+export interface Theme {
+  readonly id: string;
+  readonly type: ThemeType;
+  readonly label: string;
+  readonly description?: string;
+  readonly editorTheme?: string;
+}
 
 export interface INotebook {
   cells: ICellModel[];
