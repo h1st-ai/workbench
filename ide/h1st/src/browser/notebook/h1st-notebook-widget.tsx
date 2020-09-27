@@ -25,6 +25,7 @@ import Notebook from "./components/notebook";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
 import { ICellModel } from "./types";
+import { ThemeService } from "@theia/core/lib/browser/theming";
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -38,7 +39,8 @@ export class H1stNotebookWidget extends ReactWidget
   constructor(
     readonly uri: URI,
     protected readonly selectionService: SelectionService,
-    protected readonly fileService: FileService
+    protected readonly fileService: FileService,
+    protected readonly themeService: ThemeService
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
@@ -73,7 +75,6 @@ export class H1stNotebookWidget extends ReactWidget
     // } else {
     //     this.editor.setSize(msg);
     // }
-    console.log("widget resize", msg);
     const { width, height } = msg;
     this._width = width;
     this._height = height;
@@ -92,8 +93,12 @@ export class H1stNotebookWidget extends ReactWidget
       this._content = defaultNotebookModel;
     }
 
-    const { setCells } = notebookActions;
+    const { setCells, setActiveTheme } = notebookActions;
     this.store.dispatch(setCells({ cells: this._content.cells }));
+
+    const currentTheme = this.themeService.getCurrentTheme();
+    this.store.dispatch(setActiveTheme(currentTheme));
+
     this.update();
     super.onAfterAttach(msg);
   }

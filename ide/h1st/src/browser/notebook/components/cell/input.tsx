@@ -28,11 +28,11 @@ export default function CellInput({ model, width, height }: any) {
   });
 
   // update input width when the widget size change
-  // useEffect(() => {
-  //   if (editorRef.current) {
-  //     editorRef.current.layout();
-  //   }
-  // }, [width]);
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.layout();
+    }
+  }, [width]);
 
   // Monaco editor is ready to use
   function handleEditorDidMount(_: any, monacoEditor: any) {

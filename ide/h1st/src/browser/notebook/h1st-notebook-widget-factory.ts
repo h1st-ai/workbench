@@ -4,6 +4,7 @@ import {
   NavigatableWidgetOptions,
   WidgetFactory,
 } from "@theia/core/lib/browser";
+import { ThemeService } from "@theia/core/lib/browser/theming";
 import URI from "@theia/core/lib/common/uri";
 import { TextEditorProvider } from "@theia/editor/lib/browser";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
@@ -22,6 +23,7 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
   protected readonly selectionService: SelectionService;
   @inject(FileService)
   protected readonly fileService: FileService;
+  @inject(ThemeService) protected readonly themeService: ThemeService;
 
   createWidget(options: NavigatableWidgetOptions): Promise<H1stNotebookWidget> {
     const uri = new URI(options.uri);
@@ -33,7 +35,8 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
     const newNotebook = new H1stNotebookWidget(
       uri,
       this.selectionService,
-      this.fileService
+      this.fileService,
+      this.themeService
     );
 
     this.setLabels(newNotebook, uri);

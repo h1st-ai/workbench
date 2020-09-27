@@ -1,6 +1,8 @@
 import * as React from "react";
 import Editor from "@monaco-editor/react";
 import * as monacoEditor from "monaco-editor/esm/vs/editor/editor.api";
+import { IStore } from "../../types";
+import { useSelector } from "react-redux";
 
 // const DEFAULT_OPTIONS = {
 //   glyphMargin: true,
@@ -42,6 +44,8 @@ interface IEditorProps {
 
 export default function MonacoEditor(props: IEditorProps) {
   const { options, language, value } = props;
+  const { activeTheme } = useSelector((store: IStore) => store.notebook);
+
   // const {useEffect} = React;
 
   // useEffect(() => {
@@ -64,6 +68,7 @@ export default function MonacoEditor(props: IEditorProps) {
     <Editor
       language={language}
       value={value}
+      theme={activeTheme?.editorTheme}
       options={{
         ...options,
         glyphMargin: true,

@@ -10,6 +10,7 @@ const initialState: INotebook = {
   cells: [],
   selectedCell: null,
   activeCell: null,
+  activeTheme: null,
 };
 
 export const NotebookSlice = createSlice({
@@ -24,6 +25,9 @@ export const NotebookSlice = createSlice({
     },
     setActiveCell: (state, { payload }): void => {
       state.activeCell = payload.id;
+    },
+    setActiveTheme: (state, { payload }): void => {
+      state.activeTheme = payload;
     },
   },
 });

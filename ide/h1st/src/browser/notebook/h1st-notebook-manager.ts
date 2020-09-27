@@ -128,9 +128,9 @@ export class NotebookManager extends NavigatableWidgetOpenHandler<
 
   canHandle(uri: URI, options?: WidgetOpenerOptions): number {
     if (uri.path.ext.toLowerCase() === ".ipynb") {
-      console.log("opening notebook editor", uri.path.ext);
       return 10000;
     }
+
     return 0;
   }
 

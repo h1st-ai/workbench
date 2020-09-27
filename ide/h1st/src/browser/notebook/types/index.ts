@@ -1,9 +1,12 @@
+import { Theme } from "@theia/core/lib/browser/theming";
+
 export interface ICell {}
 
 export interface INotebook {
   cells: ICellModel[];
   selectedCell: string | null;
   activeCell: string | null;
+  activeTheme: Theme | null;
 }
 
 export interface INotebookWidget {
