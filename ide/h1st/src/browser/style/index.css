@@ -345,7 +345,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-output-wrapper {
-  padding: 8px 0px;
+  padding: 8px 0px 0px 0px;
 }
 
 .cell-output-wrapper pre {
