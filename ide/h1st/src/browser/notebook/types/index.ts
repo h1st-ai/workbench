@@ -59,3 +59,8 @@ export enum CELL_TYPE {
   CODE = "code",
   RAW = "raw",
 }
+
+export interface INotebookContext {
+  saveNotebook: Function;
+  getAutoCompleteItems: Function;
+}

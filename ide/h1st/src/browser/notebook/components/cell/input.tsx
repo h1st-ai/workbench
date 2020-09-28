@@ -4,29 +4,29 @@ import Editor from "./monaco-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
-// import { editor } from "monaco-editor";
+import NotebookContext from "../../context";
 
+const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
 export default function CellInput({ model, width, height }: any) {
-  const { useRef, useEffect } = React;
   let editorHeight: number;
 
   const dispatch = useDispatch();
   const { setActiveCell } = notebookActions;
   const { activeCell } = useSelector((store: IStore) => store.notebook);
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  // let editor: monaco.editor.IStandaloneCodeEditor;
+  const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const context = React.useContext(NotebookContext);
 
   // update input width when the widget size change
-  useEffect(() => {
+  React.useEffect(() => {
     if (editorRef.current) {
       editorRef.current.layout();
     }
   }, [width]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
       // const editor = editorRef.current;
 
@@ -49,9 +49,30 @@ export default function CellInput({ model, width, height }: any) {
       // updateEditorWidth();
     }, 0);
 
-    monacoEditor.onDidChangeModelContent((ev: any) => {
-      updateEditorHeight();
-    });
+    monacoEditor.onDidChangeModelContent(
+      debounce(async (ev: any) => {
+        updateEditorHeight();
+
+        console.log(context);
+
+        const cursorPos = editorRef.current?.getPosition();
+        const model = editorRef.current?.getModel();
+
+        if (cursorPos && model) {
+          const offset = model.getOffsetAt({
+            lineNumber: cursorPos.lineNumber,
+            column: cursorPos.column,
+          });
+          console.log("current offset", offset);
+
+          await context.getAutoCompleteItems(
+            editorRef.current?.getValue(),
+            offset
+          );
+        }
+      }),
+      150
+    );
 
     monacoEditor.onDidBlurEditorText((ev: any) => {
       dispatch(setActiveCell({ id: null }));

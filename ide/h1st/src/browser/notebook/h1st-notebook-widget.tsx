@@ -38,14 +38,10 @@ import Notebook from "./components/notebook";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
-import { ICellModel } from "./types";
+import { ICellModel, INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
-
-type INotebookContext = {
-  saveNotebook: Function;
-  getAutoCompleteItems: Function;
-};
+import NotebookContext from "./context";
 
 type INotebookContent = {
   cells: any[];
@@ -86,8 +82,6 @@ export class H1stNotebookWidget extends ReactWidget
   private _width: number;
   private _height: number;
   // private _kernel: Kernel.IKernelConnection;
-  private _context: React.Context<INotebookContext>;
-  private _defaultContextValue: INotebookContext;
   private _kernelManager: KernelManager;
   private _kernelSpecManager: KernelSpecManager;
   private _kernelSpecs: ISpecModels | null;
@@ -107,15 +101,6 @@ export class H1stNotebookWidget extends ReactWidget
     super();
     this.store = configureStore({ reducer, devTools: true });
     this.setTheme();
-
-    this._defaultContextValue = {
-      saveNotebook: this.saveNotebook,
-      getAutoCompleteItems: this.getAutoCompleteItems,
-    };
-
-    this._context = React.createContext<INotebookContext>(
-      this._defaultContextValue
-    );
   }
 
   private saveNotebook() {
@@ -474,7 +459,10 @@ export class H1stNotebookWidget extends ReactWidget
     this.update();
   }
 
-  protected async getAutoCompleteItems(code: string, cursor_pos: number) {
+  protected getAutoCompleteItems = async (
+    code: string,
+    cursor_pos: number
+  ): Promise<string[] | null> => {
     console.log("Request autocomplete");
     const request: KernelMessage.ICompleteRequestMsg["content"] = {
       code,
@@ -492,12 +480,16 @@ export class H1stNotebookWidget extends ReactWidget
     }
 
     return null;
-  }
+  };
 
   protected render(): React.ReactNode {
-    const NotebookContext = this._context;
+    const contextValue: INotebookContext = {
+      saveNotebook: this.saveNotebook,
+      getAutoCompleteItems: this.getAutoCompleteItems,
+    };
+
     return (
-      <NotebookContext.Provider value={this._defaultContextValue}>
+      <NotebookContext.Provider value={contextValue}>
         <Provider store={this.store}>
           <Notebook
             uri={this.uri}
