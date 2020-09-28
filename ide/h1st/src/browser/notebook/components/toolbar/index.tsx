@@ -4,16 +4,14 @@ import { useSelector } from "react-redux";
 import { IStore } from "../../types";
 
 export default function Toolbar() {
-  const { currentKernel, status } = useSelector(
-    (store: IStore) => store.kernel
-  );
+  const { currentKernel } = useSelector((store: IStore) => store.kernel);
 
   function renderKernelInfo() {
     if (currentKernel) {
       return (
         <div className="kernel-info-wrapper">
           <span>Kernel: {currentKernel.display_name}</span> |{" "}
-          <span>Status: {status}</span>
+          {/* <span>Status: {status}</span> */}
         </div>
       );
     }

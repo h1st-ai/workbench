@@ -430,6 +430,10 @@ export class H1stNotebookWidget extends ReactWidget
   };
 
   protected executeCodeCell = async (code: string, cellId: string) => {
+    if (code.trim() === "") {
+      return;
+    }
+
     if (this._session.kernel) {
       const { updateCellOutput, clearCellOutput } = notebookActions;
 

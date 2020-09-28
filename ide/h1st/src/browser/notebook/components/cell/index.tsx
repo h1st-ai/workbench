@@ -77,7 +77,12 @@ export function NotebookCell(props: INotebookProps) {
   }, [width]);
 
   function execute(ev: any) {
+    if (model.source.join("").trim() === "") {
+      return;
+    }
+
     console.log("adding cell to queue");
+
     dispatch(setSelectedCell({ id: model.id }));
     dispatch(addCellToQueue({ id: model.id }));
 
