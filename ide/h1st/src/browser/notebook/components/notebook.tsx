@@ -17,8 +17,9 @@ export default function(props: any) {
 
   React.useEffect(() => {});
 
-  const codeCells = cells.map((c: ICellModel) => (
+  const codeCells = cells.map((c: ICellModel, index: number) => (
     <NotebookCell
+      index={index}
       key={c.id}
       model={c}
       width={props.width}

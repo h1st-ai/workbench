@@ -8,6 +8,7 @@ import CellInput from "./input";
 import CellOuput from "./output";
 import { kernelActions } from "../../reducers/kernel";
 import NotebookContext from "../../context";
+import nextId from "react-id-generator";
 // import {
 //   Input,
 //   Prompt,
@@ -20,13 +21,14 @@ const CELL_CODE = "code";
 const CELL_MD = "markdown";
 
 interface INotebookProps {
+  index: number;
   model: ICellModel;
   width?: number;
   height?: number;
 }
 
 export function NotebookCell(props: INotebookProps) {
-  const { model, width, height } = props;
+  const { model, width, height, index } = props;
 
   if (!model) {
     return null;
@@ -40,6 +42,7 @@ export function NotebookCell(props: INotebookProps) {
     deleteCell,
     moveCellUp,
     moveCellDown,
+    insertCellAfter,
   } = notebookActions;
   const { addCellToQueue } = kernelActions;
   const { executionQueue, currentKernel } = useSelector(
@@ -129,6 +132,23 @@ export function NotebookCell(props: INotebookProps) {
 
   function moveDown() {
     dispatch(moveCellDown({ cellId: model.id }));
+  }
+
+  function insertAfter(ev: any) {
+    ev.stopPropagation();
+    ev.preventDefault();
+
+    const newId = nextId();
+    dispatch(
+      insertCellAfter({
+        cellId: model.id,
+        cell: { id: newId, ...DEFAULT_CELL },
+      })
+    );
+
+    setTimeout(() => {
+      dispatch(setSelectedCell({ id: newId }));
+    }, 0);
   }
 
   function renderInputHeader() {
@@ -226,13 +246,17 @@ export function NotebookCell(props: INotebookProps) {
         onDoubleClick={_handleDoubleClick}
       >
         <div className="cell-controls" ref={controlRef}>
-          <button className="cell-btn-up" onClick={moveUp}>
+          <button
+            className="cell-btn-up"
+            onClick={moveUp}
+            disabled={index === 0}
+          >
             <Icon icon="cell-up" />
           </button>
           <button className="cell-btn-down" onClick={moveDown}>
             <Icon icon="cell-down" />
           </button>
-          <button className="cell-btn-plus">
+          <button className="cell-btn-plus" onClick={insertAfter}>
             <Icon icon="plus" />
           </button>
         </div>
@@ -251,3 +275,11 @@ export function NotebookCell(props: INotebookProps) {
     </React.Fragment>
   );
 }
+
+const DEFAULT_CELL = {
+  cell_type: "code",
+  execution_count: 0,
+  metadata: {},
+  outputs: [],
+  source: [],
+};

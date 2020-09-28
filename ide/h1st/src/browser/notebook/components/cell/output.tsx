@@ -110,5 +110,12 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
     return <Markdown data={data} />;
   }
 
-  return <div className="cell-output-wrapper">{renderMedia()}</div>;
+  if (
+    model.cell_type === CELL_TYPE.MD ||
+    (model.outputs && model.outputs.length > 0)
+  ) {
+    return <div className="cell-output-wrapper">{renderMedia()}</div>;
+  }
+
+  return null;
 });
