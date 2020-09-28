@@ -39,6 +39,14 @@ RUN yarn global add @theia/cli@1.5.0 && yarn
 WORKDIR /home/theia/browser-app
 RUN NODE_OPTIONS="--max_old_space_size=4096" yarn run build:pro && yarn run download:plugins
 
+RUN cd /tmp && curl -LO https://github.com/traefik/traefik/releases/download/v2.3.0/traefik_v2.3.0_linux_amd64.tar.gz && \
+  tar -xf traefik_v2.3.0_linux_amd64.tar.gz && \
+  mv traefik /usr/local/bin && mkdir -p /opt/traefik && mkdir -p /root/.jupyter
+
+COPY ./docker/ide/traefik.yml /opt
+COPY ./docker/ide/traefik-service.yml /opt/traefik
+COPY ./docker/ide/jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
+
 COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html
 
@@ -50,5 +58,5 @@ ENV SHELL=/bin/bash \
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 WORKDIR /home/theia/browser-app
-# CMD ["/app.sh"]
+
 CMD ["/app.sh"]
