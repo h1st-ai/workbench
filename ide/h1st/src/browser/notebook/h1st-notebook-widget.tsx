@@ -447,6 +447,12 @@ export class H1stNotebookWidget extends ReactWidget
       await this.store.dispatch(clearCellOutput({ cellId }));
       const future = this._session.kernel.requestExecute({
         code,
+        store_history: true,
+        // silent?: boolean | undefined;
+        // store_history?: boolean | undefined;
+        // user_expressions?: JSONObject | undefined;
+        // allow_stdin?: boolean | undefined;
+        // stop_on_error?: boolean | undefined;
       });
 
       // Handle iopub messages
