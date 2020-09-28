@@ -63,4 +63,5 @@ export enum CELL_TYPE {
 export interface INotebookContext {
   saveNotebook: Function;
   getAutoCompleteItems: Function;
+  executeCodeCell: Function;
 }

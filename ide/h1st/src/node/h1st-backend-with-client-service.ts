@@ -105,7 +105,7 @@ export class H1stBackendWithClientServiceImpl
       baseUrl: process.env.JUPYTER_BASE_URL || "http://localhost:8888",
       appUrl: process.env.JUPYTER_APP_URL || "http://localhost:8888",
       wsUrl: process.env.JUPYTER_WS_URL || "ws://localhost:8888",
-      token: process.env.JUPYTER_TOKEN || "abc",
+      token: process.env.JUPYTER_TOKEN || "",
       init: { cache: "no-store", credentials: "same-origin" },
     };
 

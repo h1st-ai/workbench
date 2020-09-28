@@ -6,14 +6,14 @@ import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 import NotebookContext from "../../context";
 
-const debounce = require("lodash.debounce");
+// const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
 export default function CellInput({ model, width, height }: any) {
   let editorHeight: number;
 
   const dispatch = useDispatch();
-  const { setActiveCell } = notebookActions;
+  const { setActiveCell, setCellInput } = notebookActions;
   const { activeCell } = useSelector((store: IStore) => store.notebook);
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -44,35 +44,37 @@ export default function CellInput({ model, width, height }: any) {
     console.log(`${model.id} editor did mount`, monacoEditor);
     editorRef.current = monacoEditor;
 
+    if (editorRef.current) {
+      editorRef.current.setValue(model.source.join(""));
+    }
+
     setTimeout(() => {
       updateEditorHeight();
       // updateEditorWidth();
     }, 0);
 
-    monacoEditor.onDidChangeModelContent(
-      debounce(async (ev: any) => {
-        updateEditorHeight();
+    monacoEditor.onDidChangeModelContent(async (ev: any) => {
+      updateEditorHeight();
+      updateCellContent();
 
-        console.log(context);
+      console.log(context);
 
-        const cursorPos = editorRef.current?.getPosition();
-        const model = editorRef.current?.getModel();
+      const cursorPos = editorRef.current?.getPosition();
+      const model = editorRef.current?.getModel();
 
-        if (cursorPos && model) {
-          const offset = model.getOffsetAt({
-            lineNumber: cursorPos.lineNumber,
-            column: cursorPos.column,
-          });
-          console.log("current offset", offset);
+      if (cursorPos && model) {
+        const offset = model.getOffsetAt({
+          lineNumber: cursorPos.lineNumber,
+          column: cursorPos.column,
+        });
+        console.log("current offset", offset);
 
-          await context.getAutoCompleteItems(
-            editorRef.current?.getValue(),
-            offset
-          );
-        }
-      }),
-      150
-    );
+        await context.getAutoCompleteItems(
+          editorRef.current?.getValue(),
+          offset
+        );
+      }
+    });
 
     monacoEditor.onDidBlurEditorText((ev: any) => {
       dispatch(setActiveCell({ id: null }));
@@ -83,6 +85,18 @@ export default function CellInput({ model, width, height }: any) {
         dispatch(setActiveCell({ id: model.id }));
       }
     });
+  }
+
+  function updateCellContent() {
+    const editor = editorRef.current;
+    console.log("editor", editor);
+
+    if (editor) {
+      const code = editor.getValue();
+      const cellId = model.id;
+
+      dispatch(setCellInput({ code, cellId }));
+    }
   }
 
   // function updateEditorWidth() {
@@ -181,7 +195,8 @@ export default function CellInput({ model, width, height }: any) {
     return (
       <Editor
         language="python"
-        value={model.source.join("")}
+        // value={model.source.join("")}
+        value=""
         options={{
           glyphMargin: true,
           wordWrap: "on",

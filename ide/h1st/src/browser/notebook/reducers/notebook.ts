@@ -29,6 +29,15 @@ export const NotebookSlice = createSlice({
     setActiveTheme: (state, { payload }): void => {
       state.activeTheme = payload;
     },
+    setCellInput: (state, { payload }): void => {
+      const { cellId, code } = payload;
+
+      for (let i = 0; i < state.cells.length; i++) {
+        if (cellId === state.cells[i].id) {
+          state.cells[i].source = code.split("\n");
+        }
+      }
+    },
   },
 });
 

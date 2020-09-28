@@ -397,17 +397,6 @@ export class H1stNotebookWidget extends ReactWidget
     // kernel.statusChanged.connect((_, status) => {
     //   console.log(`Kernal status: ${status}`);
     // });
-
-    // console.log("Executing code");
-    // const future = kernel.requestExecute({ code: "a = 1\nprint(a)" });
-    // // Handle iopub messages
-    // future.onIOPub = (msg) => {
-    //   if (msg.header.msg_type !== "status") {
-    //     console.log("message from server", msg);
-    //   }
-    // };
-    // await future.done;
-    // console.log("Execution is done");
   }
 
   protected async initContentFromNotebook() {
@@ -482,10 +471,34 @@ export class H1stNotebookWidget extends ReactWidget
     return null;
   };
 
+  protected executeCodeCell = async (code: string, cellId: string) => {
+    console.log("Executing code");
+    if (this._session.kernel) {
+      if (this._session.kernel.status !== "idle") {
+        this.messageService.warn("Kernel is not ready");
+        return;
+      }
+
+      const future = this._session.kernel.requestExecute({
+        code,
+      });
+
+      // Handle iopub messages
+      future.onIOPub = (msg) => {
+        if (msg.header.msg_type !== "status") {
+          console.log("message from server", msg);
+        }
+      };
+      await future.done;
+      console.log("Execution is done");
+    }
+  };
+
   protected render(): React.ReactNode {
     const contextValue: INotebookContext = {
       saveNotebook: this.saveNotebook,
       getAutoCompleteItems: this.getAutoCompleteItems,
+      executeCodeCell: this.executeCodeCell,
     };
 
     return (
