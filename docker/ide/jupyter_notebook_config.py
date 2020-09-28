@@ -1,3 +1,4 @@
-c.NotebookApp.base_project_url = '/jupyter'
+c.NotebookApp.base_url = '/jupyter'
 c.NotebookApp.ip = '*'
-c.NotebookApp.token = 'abc'
+c.NotebookApp.password = ''
+c.NotebookApp.token = ''
