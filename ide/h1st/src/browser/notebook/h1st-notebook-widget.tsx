@@ -115,7 +115,7 @@ export class H1stNotebookWidget extends ReactWidget
   private getSourceCodeFromId(cellId: string, state: INotebook): string | null {
     for (let i = 0; i < state.cells.length; i++) {
       if (cellId === state.cells[i].id) {
-        return state.cells[i].source.join("\n");
+        return state.cells[i].source.join("");
       }
     }
 
