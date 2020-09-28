@@ -9,10 +9,10 @@ http:
     services: 
         jupyter: 
             loadBalancer: 
-            servers: 
-                - url: "http://127.0.0.1:8888"
+                servers: 
+                  - url: "http://127.0.0.1:8888"
         workbench: 
             loadBalancer: 
                 servers: 
-                - url: "http://127.0.0.1:3001"
+                  - url: "http://127.0.0.1:3001"
   
