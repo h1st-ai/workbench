@@ -41,9 +41,10 @@ RUN NODE_OPTIONS="--max_old_space_size=4096" yarn run build:pro && yarn run down
 
 RUN cd /tmp && curl -LO https://github.com/traefik/traefik/releases/download/v2.3.0/traefik_v2.3.0_linux_amd64.tar.gz && \
   tar -xf traefik_v2.3.0_linux_amd64.tar.gz && \
-  mv traefik /usr/local/bin
+  mv traefik /usr/local/bin && mkdir -p /opt/traefik
 
 COPY ./docker/ide/traefik.yml /opt
+COPY ./docker/ide/traefik-service.yml /opt/traefik
 
 COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html

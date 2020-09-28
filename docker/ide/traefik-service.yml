@@ -1,0 +1,18 @@
+http: 
+    routers: 
+        jupyter: 
+            rule: PathPrefix(`/jupyter`)
+            service: jupyter
+        workbench: 
+            rule: PathPrefix(`/`)
+            service: workbench
+    services: 
+        jupyter: 
+            loadBalancer: 
+            servers: 
+                - url: "http://127.0.0.1:8888"
+        workbench: 
+            loadBalancer: 
+                servers: 
+                - url: "http://127.0.0.1:3001"
+  
