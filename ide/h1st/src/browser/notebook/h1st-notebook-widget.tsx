@@ -451,21 +451,21 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected async onAfterAttach(msg: Message): Promise<void> {
+    super.onAfterAttach(msg);
     if (this.isVisible && !this._initialized) {
       await this.init();
     }
-
-    super.onAfterAttach(msg);
   }
 
-  protected onActivateRequest(msg: Message) {
+  protected async onActivateRequest(msg: Message) {
+    super.onActivateRequest(msg);
     console.log("activated", msg, this.uri);
 
     if (!this._initialized) {
-      this.init();
+      await this.init();
     }
 
-    super.onActivateRequest(msg);
+    //
     // this.update();
   }
 
