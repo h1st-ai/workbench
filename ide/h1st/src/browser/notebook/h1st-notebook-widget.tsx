@@ -7,15 +7,16 @@ import {
   ReactWidget,
   Widget,
   // Saveable,
-  // SaveableSource,
+  SaveableSource,
+  Saveable,
   // StatefulWidget,
   // ReactRenderer,
 } from "@theia/core/lib/browser";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
-import { MessageService, SelectionService } from "@theia/core";
+import { MessageService, Resource, SelectionService } from "@theia/core";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
-import nextId from "react-id-generator";
+
 import {
   // KernelAPI,
   KernelManager,
@@ -38,36 +39,11 @@ import Notebook from "./components/notebook";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
-import { ICellModel, INotebook, INotebookContext } from "./types";
+import { INotebook, INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
-
-type INotebookContent = {
-  cells: any[];
-  metadata: {
-    session_id?: string;
-    kernelspec: {
-      display_name: string;
-      language: string;
-      name: string;
-    };
-    language_info: {
-      codemirror_mode: {
-        name: string;
-        version: number;
-      };
-      file_extension: string;
-      mimetype: string;
-      name: string;
-      nbconvert_exporter: string;
-      pygments_lexer: string;
-      version: string;
-    };
-  };
-  nbformat: number;
-  nbformat_minor: number;
-};
+import { NotebookModel } from "./notebook-model";
 
 // type IKernelSpecs = {
 //   [key: string]: ISpecModel | undefined;
@@ -75,10 +51,9 @@ type INotebookContent = {
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
-  implements NavigatableWidget {
+  implements SaveableSource, NavigatableWidget {
   static readonly ID = "h1st:notebook:widget";
   private readonly store: any;
-  private _notebookFileContent: INotebookContent;
   private _width: number;
   private _height: number;
   // private _kernel: Kernel.IKernelConnection;
@@ -89,6 +64,7 @@ export class H1stNotebookWidget extends ReactWidget
   private _sessionManager: SessionManager;
   private _serverSettings: ServerConnection.ISettings;
   private _initialized: Boolean = false;
+  private _model: NotebookModel;
 
   constructor(
     readonly uri: URI,
@@ -101,6 +77,13 @@ export class H1stNotebookWidget extends ReactWidget
     super();
     this.store = configureStore({ reducer, devTools: true });
 
+    const resource: Resource = {
+      uri,
+      readContents: async () =>
+        await h1stBackendClient.getFileContent(uri.path.toString()),
+      dispose: () => console.log("notebook model dispose"),
+    };
+    this._model = new NotebookModel(resource);
     this.setTheme();
   }
 
@@ -112,6 +95,10 @@ export class H1stNotebookWidget extends ReactWidget
     }
 
     return null;
+  }
+
+  get saveable(): Saveable {
+    return this._model;
   }
 
   private saveNotebook() {
@@ -262,7 +249,7 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async createOrRestoreJupyterSession(): Promise<void> {
     try {
-      const sessionId = this._notebookFileContent.metadata.session_id;
+      const sessionId = this._model.value.metadata.session_id;
       if (sessionId) {
         const sessionModel = await this._sessionManager.findByPath(
           this.uri.path.toString()
@@ -421,18 +408,14 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected async initContentFromNotebook() {
-    const content = await this.fileService.readFile(this.uri);
+    console.log("initContentFromNotebook", this.uri.path.toString());
 
-    try {
-      const _notebookFileContent = JSON.parse(content.value.toString());
-
-      // we need to assign some kind of id to the cells
-      _notebookFileContent.cells.map((c: ICellModel) => (c.id = nextId()));
-
-      this._notebookFileContent = _notebookFileContent;
-    } catch (ex) {
-      this._notebookFileContent = defaultNotebookModel;
-    }
+    await this._model.load();
+    console.log("this._model.value", this._model.value);
+    // const content = await this.fileService.readFile(this.uri);
+    // const content = await this.h1stBackendClient.readFile(
+    //   this.uri.path.toString()
+    // );
   }
 
   protected async init() {
@@ -440,7 +423,7 @@ export class H1stNotebookWidget extends ReactWidget
     await this.initContentFromNotebook();
 
     const { setCells } = notebookActions;
-    this.store.dispatch(setCells({ cells: this._notebookFileContent.cells }));
+    this.store.dispatch(setCells({ cells: this._model.value.cells }));
     this.createOrRestoreJupyterSession();
     this.initializeKernelEventHandler();
 
@@ -454,6 +437,8 @@ export class H1stNotebookWidget extends ReactWidget
     super.onAfterAttach(msg);
     if (this.isVisible && !this._initialized) {
       await this.init();
+    } else {
+      this.update();
     }
   }
 
@@ -463,6 +448,8 @@ export class H1stNotebookWidget extends ReactWidget
 
     if (!this._initialized) {
       await this.init();
+    } else {
+      this.update();
     }
 
     //
@@ -558,7 +545,7 @@ export class H1stNotebookWidget extends ReactWidget
         <Provider store={this.store}>
           <Notebook
             uri={this.uri}
-            model={this._notebookFileContent}
+            model={this._model.value}
             width={this._width}
             height={this._height}
           />
@@ -567,38 +554,3 @@ export class H1stNotebookWidget extends ReactWidget
     );
   }
 }
-
-const defaultNotebookModel = {
-  cells: [
-    {
-      id: nextId("h1st"),
-      cell_type: "code",
-      execution_count: null,
-      metadata: {},
-      outputs: [],
-      source: [],
-    },
-  ],
-  metadata: {
-    language_info: {
-      codemirror_mode: {
-        name: "ipython",
-        version: 3,
-      },
-      file_extension: ".py",
-      mimetype: "text/x-python",
-      name: "python",
-      nbconvert_exporter: "python",
-      pygments_lexer: "ipython3",
-      version: "3.7.7-final",
-    },
-    orig_nbformat: 2,
-    kernelspec: {
-      name: "",
-      display_name: "",
-      language: "python",
-    },
-  },
-  nbformat: 4,
-  nbformat_minor: 2,
-};

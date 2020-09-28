@@ -13,6 +13,7 @@ export const H1ST_BACKEND_WITH_CLIENT_PATH = "/services/withClient";
 
 export interface H1stBackendWithClientService
   extends JsonRpcServer<BackendClient> {
+  getFileContent(uri: string): Promise<string>;
   getWorkspaceName(): Promise<string>;
   getWorkspacePath(): Promise<string>;
   getDefaultWorkspaceSettings(): Promise<IDefaultLayout>;
