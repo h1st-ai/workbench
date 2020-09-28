@@ -7,6 +7,7 @@ import {
 } from "@theia/core";
 import { Saveable } from "@theia/core/lib/browser";
 import nextId from "react-id-generator";
+import { ICellModel } from "./types";
 
 export class NotebookModel implements Saveable {
   autoSave: "on" | "off" = "on";
@@ -45,8 +46,12 @@ export class NotebookModel implements Saveable {
   protected initialize(value: string | undefined): void {
     if (value) {
       try {
-        this._model = JSON.parse(value);
-      } catch {
+        console.log("notebookContent", value);
+        const notebookContent = JSON.parse(value);
+        notebookContent.cells.map((c: ICellModel) => (c.id = nextId()));
+        this._model = notebookContent;
+      } catch (ex) {
+        console.error(ex);
         this._model = defaultNotebookModel;
       }
     }
