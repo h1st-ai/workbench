@@ -48,6 +48,7 @@ export class NotebookModel implements Saveable {
   }
 
   protected initialize(value: string | undefined): void {
+    console.log("initialize value", value);
     if (value) {
       try {
         console.log("notebookContent", value);
@@ -58,6 +59,8 @@ export class NotebookModel implements Saveable {
         console.error(ex);
         this._model = defaultNotebookModel;
       }
+    } else {
+      this._model = defaultNotebookModel;
     }
   }
 
