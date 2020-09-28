@@ -46,15 +46,6 @@ export default function MonacoEditor(props: IEditorProps) {
   const { options, language, value } = props;
   const { activeTheme } = useSelector((store: IStore) => store.notebook);
 
-  // const {useEffect} = React;
-
-  // useEffect(() => {
-  //   effect
-  //   return () => {
-  //     cleanup
-  //   }
-  // }, [input])
-
   function editorDidMount(
     _: any,
     editor: monacoEditor.editor.IStandaloneCodeEditor

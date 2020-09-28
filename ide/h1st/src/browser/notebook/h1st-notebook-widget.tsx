@@ -45,9 +45,7 @@ import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
 import { NotebookModel } from "./notebook-model";
 
-// type IKernelSpecs = {
-//   [key: string]: ISpecModel | undefined;
-// };
+const equal = require("fast-deep-equal");
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -88,11 +86,19 @@ export class H1stNotebookWidget extends ReactWidget
     this.setTheme();
   }
 
-  private onStoreChange = () => {
+  onStoreChange = () => {
     const content = this.store.getState();
 
     if (this._initialized && content) {
-      this._model.update(content.notebook);
+      console.log(
+        "comparing",
+        content.notebook.cells,
+        this._model.value.cells,
+        equal(content.notebook.cells, this._model.value.cells)
+      );
+      if (!equal(content.notebook.cells, this._model.value.cells)) {
+        this._model.update(content.notebook);
+      }
     }
   };
 
@@ -235,8 +241,9 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async initializeKernelEventHandler(): Promise<void> {
     if (this._session && this._session.kernel) {
-      this._session.kernel.statusChanged.connect((_, status) => {
-        this.setCurrentKernelStatus(status);
+      this._sessionManager.runningChanged.connect((_, status) => {
+        // this.setCurrentKernelStatus(status);
+        this.messageService.warn(`Kernel status: ${JSON.stringify(status)}`);
       });
 
       this._session.kernel.statusChanged.disconnect((_, status) => {
@@ -324,102 +331,6 @@ export class H1stNotebookWidget extends ReactWidget
 
     await this.initializeKernelSpecsManager();
     await this.initializeKernelEventHandler();
-    // this._kernel = await kernelManager.startNew({ name: this.uri.toString() });
-
-    // console.log("Current Session Manager", this._sessionManager);
-    // // Register a callback for when the kernel changes state.
-
-    // console.log("Listing all session", this._serverSettings);
-    // const sessionModels = await SessionAPI.listRunning();
-    // console.log("All session", sessionModels);
-
-    // console.log("Executing code");
-
-    // const currentCode = "! pip install seaborn";
-
-    // const future = this._kernel.requestExecute({
-    //   code: currentCode,
-    // });
-
-    // // Handle iopub messages
-    // future.onIOPub = (msg) => {
-    //   if (msg.header.msg_type !== "status") {
-    //     console.log(JSON.stringify(msg, null, 2));
-    //   }
-    // };
-    // await future.done;
-    // console.log("Execution is done");
-
-    // const kernelManager = new KernelManager({
-    //   serverSettings,
-    // });
-
-    // const sessionManager = new SessionManager({ kernelManager });
-
-    // console.log("Start a new session");
-
-    // const notebookPath = this.uri.path.toString();
-    // const sessionOptions: Session.ISessionOptions = {
-    //   kernel: {
-    //     name: "python",
-    //   },
-    //   path: notebookPath,
-    //   type: "notebook",
-    //   name: "foo.ipynb",
-    // };
-    // const sessionConnectionOptions: Session.ISessionConnection.IOptions = {
-    //   model: {
-    //     id: notebookPath,
-    //     kernel: {
-    //       name: "python",
-    //     },
-    //     path: notebookPath,
-    //     type: "notebook",
-    //     name: "foo.ipynb",
-    //   },
-    //   kernelConnectionOptions: 'serverSettings'
-    // }
-
-    // const sessionConnection = await sessionManager.startNew(sessionOptions);
-    // await sessionConnection.setPath(notebookPath);
-
-    // if (sessionConnection.kernel) {
-    //   console.log('Execute "a=1"');
-    //   const future = sessionConnection.kernel.requestExecute({ code: "a = 1" });
-    //   future.onReply = (reply) => {
-    //     console.log(
-    //       `Got execute reply with status ${JSON.stringify(reply, null, 4)}`
-    //     );
-    //   };
-    //   await future.done;
-
-    //   console.log("Shut down session");
-    //   await sessionConnection.shutdown();
-
-    //   console.log(
-    //     "Get a list of session models and connect to one if any exist"
-    //   );
-    //   const sessionModels = await SessionAPI.listRunning();
-    //   if (sessionModels.length > 0) {
-    //     const session = sessionManager.connectTo({ model: sessionModels[0] });
-    //     console.log(`Connected to ${session.kernel?.name}`);
-    //   }
-    // }
-
-    // console.log("Finding all existing kernels");
-
-    // const kernelModels = await KernelAPI.listRunning();
-    // console.log("Available Kernels", kernelModels);
-    // if (kernelModels.length > 0) {
-    //   console.log(`Connecting to ${kernelModels[0].name}`);
-    //   kernelManager.connectTo({ model: kernelModels[0] });
-    // }
-
-    // const kernel = await kernelManager.startNew({ name: "python" });
-
-    // kernel.statusChanged.connect((_, status) => {
-    //   console.log(`Kernal status: ${status}`);
-    // });
   }
 
   protected async initContentFromNotebook() {
@@ -439,8 +350,8 @@ export class H1stNotebookWidget extends ReactWidget
 
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._model.value.cells }));
-    this.createOrRestoreJupyterSession();
     this.initializeKernelEventHandler();
+    this.createOrRestoreJupyterSession();
 
     // mark this widget as initialized
     this._initialized = true;
@@ -497,10 +408,10 @@ export class H1stNotebookWidget extends ReactWidget
   private executeQueue = async () => {
     const state = this.store.getState();
 
-    const kernelStatus = state.kernel.status;
+    // const kernelStatus = state.kernel.status;
     const exeQueue = state.kernel.executionQueue;
 
-    if (exeQueue.length > 0 && kernelStatus === "idle") {
+    if (exeQueue.length > 0) {
       console.log("execute next cell");
 
       let code = null,

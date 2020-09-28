@@ -178,7 +178,7 @@ export default function CellInput({ model, width, height }: any) {
           <div className="cell-editor-wrapper" ref={wrapperRef}>
             <Editor
               language="markdown"
-              value={model.source.join("")}
+              value=""
               editorDidMount={handleEditorDidMount}
             />
           </div>

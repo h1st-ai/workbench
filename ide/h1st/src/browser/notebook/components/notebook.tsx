@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
 
-import NotebookSteps from "./step-panel";
+// import NotebookSteps from "./step-panel";
 import Toolbar from "./toolbar";
 // import { selectNotebook } from "../reducers/notebook";
 import { NotebookCell } from "./cell";
@@ -28,7 +28,7 @@ export default function(props: any) {
 
   return (
     <React.Fragment>
-      <NotebookSteps />
+      {/* <NotebookSteps /> */}
       <Toolbar />
       {codeCells}
       {/* <p>{uri.toString()}</p> */}

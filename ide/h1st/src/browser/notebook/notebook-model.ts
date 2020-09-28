@@ -80,7 +80,7 @@ export class NotebookModel implements Saveable {
 
   update(value: INotebookContent) {
     this._model.cells = value.cells;
-    this._dirty = true;
+    // this._dirty = true;
   }
 
   protected async readContents(): Promise<

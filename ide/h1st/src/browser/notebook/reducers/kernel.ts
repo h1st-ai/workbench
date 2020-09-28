@@ -5,7 +5,7 @@ import { IStore, IKernel } from "../types";
 const initialState: IKernel = {
   currentKernel: undefined,
   connectionStatus: "disconnected",
-  status: "idle",
+  status: "disconnected",
   executionQueue: [],
 };
 

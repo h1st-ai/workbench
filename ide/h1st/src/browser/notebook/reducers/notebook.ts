@@ -38,7 +38,9 @@ export const NotebookSlice = createSlice({
 
       for (let i = 0; i < state.cells.length; i++) {
         if (cellId === state.cells[i].id) {
-          state.cells[i].source = code.split("\n");
+          const content = code.split("\n");
+
+          state.cells[i].source = content.map((line: string) => line + "\n");
         }
       }
     },
