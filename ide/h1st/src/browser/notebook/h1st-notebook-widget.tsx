@@ -334,10 +334,9 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected async initContentFromNotebook() {
-    console.log("initContentFromNotebook", this.uri.path.toString());
-
+    console.log("loading file content", this.uri.toString());
     await this._model.load();
-    console.log("this._model.value", this._model.value);
+
     // const content = await this.fileService.readFile(this.uri);
     // const content = await this.h1stBackendClient.readFile(
     //   this.uri.path.toString()
@@ -377,9 +376,6 @@ export class H1stNotebookWidget extends ReactWidget
     } else {
       this.update();
     }
-
-    //
-    // this.update();
   }
 
   protected getAutoCompleteItems = async (
@@ -419,11 +415,9 @@ export class H1stNotebookWidget extends ReactWidget
       code = this.getSourceCodeFromId(cellId, state.notebook);
 
       if (code) {
-        const { removeCellFromQueue } = kernelActions;
-
         await this.executeCodeCell(code, cellId);
         // remove the first cell from queue
-        await this.store.dispatch(removeCellFromQueue());
+
         await this.executeQueue();
       }
     }
@@ -435,7 +429,12 @@ export class H1stNotebookWidget extends ReactWidget
     }
 
     if (this._session.kernel) {
-      const { updateCellOutput, clearCellOutput } = notebookActions;
+      const {
+        updateCellOutput,
+        clearCellOutput,
+        updateCellExecutionCount,
+      } = notebookActions;
+      const { setKernelStatus } = kernelActions;
 
       console.log("Executing code", this._session.kernel.status);
       // if (this._session.kernel.status !== "idle") {
@@ -457,14 +456,25 @@ export class H1stNotebookWidget extends ReactWidget
 
       // Handle iopub messages
       future.onIOPub = async (msg) => {
+        console.log("Kernel io:", msg);
         if (msg.header.msg_type !== "status") {
-          console.log("message from server", msg);
-
           await this.store.dispatch(updateCellOutput({ cellId, output: msg }));
+        } else {
+          await this.store.dispatch(
+            // @ts-ignore
+            setKernelStatus(msg.content.execution_state)
+          );
         }
       };
+
+      future.onReply = async (msg) => {
+        console.log("Execution completed", msg);
+        const { removeCellFromQueue } = kernelActions;
+        await this.store.dispatch(updateCellExecutionCount({ cellId }));
+        await this.store.dispatch(removeCellFromQueue());
+      };
+
       await future.done;
-      console.log("Execution is done");
     }
   };
 

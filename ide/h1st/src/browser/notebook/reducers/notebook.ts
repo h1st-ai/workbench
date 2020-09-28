@@ -66,6 +66,7 @@ export const NotebookSlice = createSlice({
 
       for (let i = 0; i < state.cells.length; i++) {
         if (cellId === state.cells[i].id) {
+          console.log("setCellInput", code);
           const content = code.split("\n");
 
           state.cells[i].source = content.map((line: string, index: number) =>
@@ -94,6 +95,20 @@ export const NotebookSlice = createSlice({
         }
       }
     },
+    updateCellExecutionCount: (state, { payload }): void => {
+      const { cellId } = payload;
+
+      let cell = selectCell(state, cellId);
+
+      if (cell) {
+        if (!cell.execution_count) {
+          cell.execution_count = 1;
+        } else {
+          cell.execution_count = cell.execution_count + 1;
+        }
+      }
+    },
+
     updateCellOutput: (state, { payload }): void => {
       const { cellId, output } = payload;
 
@@ -102,7 +117,6 @@ export const NotebookSlice = createSlice({
       if (cell) {
         switch (output.msg_type) {
           case "execute_input":
-            cell.execution_count = output.content.execution_count;
             break;
 
           case "stream":

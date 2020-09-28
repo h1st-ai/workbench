@@ -185,7 +185,7 @@ export function NotebookCell(props: INotebookProps) {
   function renderPromptContent() {
     if (model.id) {
       return executionQueue.indexOf(model.id) === -1
-        ? model.execution_count || 0
+        ? model.execution_count || "-"
         : "*";
     }
   }
