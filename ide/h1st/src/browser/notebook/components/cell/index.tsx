@@ -33,7 +33,12 @@ export function NotebookCell(props: INotebookProps) {
   }
 
   const cellType = model.cell_type;
-  const { setSelectedCell, setActiveCell, setCellType } = notebookActions;
+  const {
+    setSelectedCell,
+    setActiveCell,
+    setCellType,
+    deleteCell,
+  } = notebookActions;
   const { addCellToQueue } = kernelActions;
   const { executionQueue, currentKernel } = useSelector(
     (store: IStore) => store.kernel
@@ -112,6 +117,10 @@ export function NotebookCell(props: INotebookProps) {
     );
   }
 
+  function deleteCodeCell() {
+    dispatch(deleteCell({ cellId: model.id }));
+  }
+
   function renderInputHeader() {
     let headerControl = null;
     switch (cellType) {
@@ -131,7 +140,7 @@ export function NotebookCell(props: INotebookProps) {
     return (
       <div className="input-header input-markdown">
         {headerControl}
-        <button className="btn-cell-delete">
+        <button className="btn-cell-delete" onClick={deleteCodeCell}>
           <Icon icon="delete" />
         </button>
       </div>

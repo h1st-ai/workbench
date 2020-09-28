@@ -13,6 +13,24 @@ const initialState: INotebook = {
   activeTheme: null,
 };
 
+const selectCell = (state: any, cellId: string) => {
+  for (let i = 0; i < state.cells.length; i++) {
+    if (cellId === state.cells[i].id) {
+      return state.cells[i];
+    }
+  }
+};
+
+const getCellIndex = (state: any, cellId: string): number | null => {
+  for (let i = 0; i < state.cells.length; i++) {
+    if (cellId === state.cells[i].id) {
+      return i;
+    }
+  }
+
+  return null;
+};
+
 export const NotebookSlice = createSlice({
   name: "notebook",
   initialState,
@@ -67,13 +85,7 @@ export const NotebookSlice = createSlice({
     updateCellOutput: (state, { payload }): void => {
       const { cellId, output } = payload;
 
-      let cell = null;
-      for (let i = 0; i < state.cells.length; i++) {
-        if (cellId === state.cells[i].id) {
-          cell = state.cells[i];
-          break;
-        }
-      }
+      let cell = selectCell(state, cellId);
 
       if (cell) {
         switch (output.msg_type) {
@@ -116,6 +128,16 @@ export const NotebookSlice = createSlice({
               ...output.content,
             });
         }
+      }
+    },
+
+    deleteCell: (state, { payload }): void => {
+      const { cellId } = payload;
+
+      const cellIndex = getCellIndex(state, cellId);
+
+      if (cellIndex !== null) {
+        state.cells.splice(cellIndex, 1);
       }
     },
   },
