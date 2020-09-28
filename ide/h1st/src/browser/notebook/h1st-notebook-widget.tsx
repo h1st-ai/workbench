@@ -38,7 +38,7 @@ import Notebook from "./components/notebook";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
-import { ICellModel, INotebookContext } from "./types";
+import { ICellModel, INotebook, INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
@@ -100,7 +100,41 @@ export class H1stNotebookWidget extends ReactWidget
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
+    this.store.subscribe(this.onStoreChanged);
+
     this.setTheme();
+  }
+
+  private onStoreChanged = async () => {
+    console.log("store changed", this.store.getState().kernel.executionQueue);
+    const state = this.store.getState();
+
+    const kernelStatus = state.kernel.status;
+    const exeQueue = state.kernel.executionQueue;
+
+    if (exeQueue.length > 0 && kernelStatus === "idle") {
+      console.log("execute next cell");
+
+      let code = null,
+        cellId = exeQueue[0];
+      code = this.getSourceCodeFromId(cellId, state.notebook);
+
+      if (code) {
+        const { removeCellFromQueue } = kernelActions;
+        await this.executeCodeCell(code, cellId);
+        this.store.dispatch(removeCellFromQueue());
+      }
+    }
+  };
+
+  private getSourceCodeFromId(cellId: string, state: INotebook): string | null {
+    for (let i = 0; i < state.cells.length; i++) {
+      if (cellId === state.cells[i].id) {
+        return state.cells[i].source.join("\n");
+      }
+    }
+
+    return null;
   }
 
   private saveNotebook() {
@@ -288,6 +322,16 @@ export class H1stNotebookWidget extends ReactWidget
           );
         }
       }
+
+      if (this._session && this._session.kernel) {
+        const { setKernelInfo } = kernelActions;
+
+        this.store.dispatch(
+          setKernelInfo({
+            kernel: this._kernelSpecs?.kernelspecs[this._session.kernel?.name],
+          })
+        );
+      }
     } catch (ex) {
       this.messageService.warn("Cannot initialize kernel");
       console.log("Cannot initialize kernel", ex);
@@ -472,8 +516,8 @@ export class H1stNotebookWidget extends ReactWidget
   };
 
   protected executeCodeCell = async (code: string, cellId: string) => {
-    console.log("Executing code");
     if (this._session.kernel) {
+      console.log("Executing code", this._session.kernel.status);
       if (this._session.kernel.status !== "idle") {
         this.messageService.warn("Kernel is not ready");
         return;

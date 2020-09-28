@@ -13,7 +13,7 @@ export default function CellInput({ model, width, height }: any) {
   let editorHeight: number;
 
   const dispatch = useDispatch();
-  const { setActiveCell, setCellInput } = notebookActions;
+  const { setActiveCell, setCellInput, setCurrentCell } = notebookActions;
   const { activeCell } = useSelector((store: IStore) => store.notebook);
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -82,7 +82,7 @@ export default function CellInput({ model, width, height }: any) {
 
     monacoEditor.onDidFocusEditorText((ev: any) => {
       if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
-        dispatch(setActiveCell({ id: model.id }));
+        dispatch(setCurrentCell({ id: model.id }));
       }
     });
   }

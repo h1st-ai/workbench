@@ -143,6 +143,13 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .toolbar {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar .kernel-info-wrapper {
+  margin-right: 24px;
 }
 
 .toolbar ul {

@@ -3,9 +3,10 @@ import Icon from "../icon";
 import { notebookActions } from "../../reducers/notebook";
 import klass from "classnames";
 import { useDispatch, useSelector } from "react-redux";
-import { ICellModel, IStore } from "../../types";
+import { CELL_TYPE, ICellModel, IStore } from "../../types";
 import CellInput from "./input";
 import CellOuput from "./output";
+import { kernelActions } from "../../reducers/kernel";
 // import {
 //   Input,
 //   Prompt,
@@ -31,7 +32,12 @@ export function NotebookCell(props: INotebookProps) {
   }
 
   const cellType = model.cell_type;
-  const { setSelectedCell, setActiveCell } = notebookActions;
+  const { setSelectedCell, setActiveCell, setCellType } = notebookActions;
+  const { addCellToQueue } = kernelActions;
+  const { executionQueue, status } = useSelector(
+    (store: IStore) => store.kernel
+  );
+
   const dispatch = useDispatch();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const controlRef = React.useRef<HTMLDivElement>(null);
@@ -58,13 +64,35 @@ export function NotebookCell(props: INotebookProps) {
     }
   }, [width]);
 
+  function execute(ev: any) {
+    console.log("adding cell to queue");
+    dispatch(setSelectedCell({ id: model.id }));
+    dispatch(addCellToQueue({ id: model.id }));
+    ev.stopPropagation();
+    ev.preventDefault();
+  }
+
+  function toMarkdown() {
+    dispatch(setCellType({ type: CELL_TYPE.MD, cellId: model.id }));
+    setTimeout(() => dispatch(setActiveCell({ id: model.id })), 0);
+  }
+
+  function toCode() {
+    dispatch(setCellType({ type: CELL_TYPE.CODE, cellId: model.id }));
+    // setTimeout(() => dispatch(setActiveCell({ id: model.id })), 0);
+  }
+
   function renderCodeCellHeaderControl(): React.ReactNode {
     return (
       <div>
-        <button className="btn-cell-play">
+        <button
+          className="btn-cell-play"
+          disabled={status !== "idle"}
+          onClick={execute}
+        >
           <Icon icon="play" />
         </button>
-        <button className="btn-cell-md">
+        <button className="btn-cell-md" onClick={toMarkdown}>
           <Icon icon="markdown" />
         </button>
       </div>
@@ -73,7 +101,7 @@ export function NotebookCell(props: INotebookProps) {
 
   function renderMarkdownHeaderControl(): React.ReactNode {
     return (
-      <button className="btn-cell-toggle">
+      <button className="btn-cell-toggle" onClick={toCode}>
         <Icon icon="code" />
       </button>
     );
@@ -105,14 +133,20 @@ export function NotebookCell(props: INotebookProps) {
     );
   }
 
+  function renderPromptContent() {
+    if (model.id) {
+      return executionQueue.indexOf(model.id) === -1
+        ? model.execution_count || 0
+        : "*";
+    }
+  }
+
   function renderPrompt() {
     switch (cellType) {
       case CELL_CODE:
         return (
           <div className="cell-prompt" ref={promptRef}>
-            <div className="execution-count">
-              [{model.execution_count || 0}]
-            </div>
+            <div className="execution-count">[{renderPromptContent()}]</div>
           </div>
         );
 

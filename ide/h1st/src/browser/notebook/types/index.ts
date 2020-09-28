@@ -23,9 +23,10 @@ export interface INotebookWidget {
 }
 
 export interface IKernel {
-  currentKernel: string | undefined;
+  currentKernel: any | undefined;
   connectionStatus: string;
   status: string;
+  executionQueue: string[];
 }
 
 export interface IStore {

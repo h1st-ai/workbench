@@ -26,6 +26,10 @@ export const NotebookSlice = createSlice({
     setActiveCell: (state, { payload }): void => {
       state.activeCell = payload.id;
     },
+    setCurrentCell: (state, { payload }): void => {
+      state.activeCell = payload.id;
+      state.selectedCell = payload.id;
+    },
     setActiveTheme: (state, { payload }): void => {
       state.activeTheme = payload;
     },
@@ -35,6 +39,16 @@ export const NotebookSlice = createSlice({
       for (let i = 0; i < state.cells.length; i++) {
         if (cellId === state.cells[i].id) {
           state.cells[i].source = code.split("\n");
+        }
+      }
+    },
+    setCellType: (state, { payload }): void => {
+      const { cellId, type } = payload;
+
+      for (let i = 0; i < state.cells.length; i++) {
+        if (cellId === state.cells[i].id) {
+          state.cells[i].cell_type = type;
+          break;
         }
       }
     },
