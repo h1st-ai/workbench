@@ -76,16 +76,35 @@ export class H1stNotebookWidget extends ReactWidget
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
+    this.store.subscribe(this.onStoreChange);
 
     const resource: Resource = {
       uri,
-      readContents: async () =>
-        await h1stBackendClient.getFileContent(uri.path.toString()),
-      dispose: () => console.log("notebook model dispose"),
+      readContents: this.readNotebookContent,
+      saveContents: this.saveNotebook,
+      dispose: this.dispose,
     };
     this._model = new NotebookModel(resource);
     this.setTheme();
   }
+
+  private onStoreChange = () => {
+    const content = this.store.getState();
+
+    if (this._initialized && content) {
+      this._model.update(content.notebook);
+    }
+  };
+
+  private readNotebookContent = async () =>
+    await this.h1stBackendClient.getFileContent(this.uri.path.toString());
+
+  private saveNotebook = async (content: string) => {
+    console.log("saving content");
+
+    await this.fileService.write(this.uri, content);
+    this._model.dirty = false;
+  };
 
   private getSourceCodeFromId(cellId: string, state: INotebook): string | null {
     for (let i = 0; i < state.cells.length; i++) {
@@ -99,10 +118,6 @@ export class H1stNotebookWidget extends ReactWidget
 
   get saveable(): Saveable {
     return this._model;
-  }
-
-  private saveNotebook() {
-    console.log("notebook save");
   }
 
   private async setTheme() {

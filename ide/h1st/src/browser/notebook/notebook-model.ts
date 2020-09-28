@@ -34,6 +34,10 @@ export class NotebookModel implements Saveable {
     return this._dirty;
   }
 
+  set dirty(value: boolean) {
+    this._dirty = true;
+  }
+
   get value(): any {
     return this._model;
   }
@@ -74,6 +78,11 @@ export class NotebookModel implements Saveable {
     return this;
   }
 
+  update(value: INotebookContent) {
+    this._model.cells = value.cells;
+    this._dirty = true;
+  }
+
   protected async readContents(): Promise<
     string | monaco.editor.ITextBufferFactory | undefined
   > {
@@ -106,6 +115,7 @@ export class NotebookModel implements Saveable {
   }
 
   async save(): Promise<void> {
+    console.log("Saving notebook", this.resource, this._model);
     const content = JSON.stringify(this._model, null, 4);
     const contentLength = content.length;
 

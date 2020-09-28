@@ -100,25 +100,6 @@ export class H1stBackendWithClientServiceImpl
     });
   }
 
-  // getNotebookFileContent(uri: URI): Promise<string> {
-  //   console.log("getFileSync", readFileSync);
-  //   const result: INotebookServerConfig = {
-  //     baseUrl: process.env.JUPYTER_BASE_URL || "http://localhost:8888",
-  //     appUrl: process.env.JUPYTER_APP_URL || "http://localhost:8888",
-  //     wsUrl: process.env.JUPYTER_WS_URL || "ws://localhost:8888",
-  //     token: process.env.JUPYTER_TOKEN || "",
-  //     init: { cache: "no-store", credentials: "same-origin" },
-  //   };
-
-  //   return new Promise<string>((resolve, reject) => {
-  //     this.client
-  //       ? this.client.getName().then(() => {
-  //           resolve(result.toString());
-  //         })
-  //       : reject("No Client");
-  //   });
-  // }
-
   getNotebookServerConfig(): Promise<INotebookServerConfig> {
     const result: INotebookServerConfig = {
       baseUrl: process.env.JUPYTER_BASE_URL || "http://localhost:8888",
