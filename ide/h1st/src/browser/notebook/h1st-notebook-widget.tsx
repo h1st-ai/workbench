@@ -20,7 +20,7 @@ import {
   // KernelAPI,
   KernelManager,
   KernelSpecManager,
-  // KernelMessage,
+  KernelMessage,
   // Kernel,
   SessionManager,
   Session,
@@ -44,6 +44,7 @@ import { H1stBackendWithClientService } from "../../common/protocol";
 
 type INotebookContext = {
   saveNotebook: Function;
+  getAutoCompleteItems: Function;
 };
 
 type INotebookContent = {
@@ -109,6 +110,7 @@ export class H1stNotebookWidget extends ReactWidget
 
     this._defaultContextValue = {
       saveNotebook: this.saveNotebook,
+      getAutoCompleteItems: this.getAutoCompleteItems,
     };
 
     this._context = React.createContext<INotebookContext>(
@@ -280,7 +282,8 @@ export class H1stNotebookWidget extends ReactWidget
               `Resumed last kernel session: ${
                 this._kernelSpecs?.kernelspecs[this._session.kernel?.name]
                   ?.display_name
-              }`
+              }`,
+              { timeout: 3000 }
             );
           }
         }
@@ -295,7 +298,8 @@ export class H1stNotebookWidget extends ReactWidget
             `Connected to new kernel: ${
               this._kernelSpecs?.kernelspecs[this._session.kernel?.name]
                 ?.display_name
-            }`
+            }`,
+            { timeout: 3000 }
           );
         }
       }
@@ -337,20 +341,6 @@ export class H1stNotebookWidget extends ReactWidget
     // };
     // await future.done;
     // console.log("Execution is done");
-
-    // console.log("Send an inspect message");
-    // const request: KernelMessage.ICompleteRequestMsg["content"] = {
-    //   code: "matplotlib",
-    //   cursor_pos: 5,
-    // };
-    // const inspectReply = await this._kernel.requestComplete(request);
-    // console.log("Looking at reply");
-    // if (inspectReply.content.status === "ok") {
-    //   console.log(
-    //     "Inspect reply:",
-    //     JSON.stringify(inspectReply.content, null, 2)
-    //   );
-    // }
 
     // const kernelManager = new KernelManager({
     //   serverSettings,
@@ -482,6 +472,26 @@ export class H1stNotebookWidget extends ReactWidget
 
     super.onActivateRequest(msg);
     this.update();
+  }
+
+  protected async getAutoCompleteItems(code: string, cursor_pos: number) {
+    console.log("Request autocomplete");
+    const request: KernelMessage.ICompleteRequestMsg["content"] = {
+      code,
+      cursor_pos,
+    };
+    const inspectReply = await this._session.kernel?.requestComplete(request);
+
+    if (inspectReply?.content.status === "ok") {
+      console.log(
+        "Inspect reply:",
+        JSON.stringify(inspectReply?.content, null, 2)
+      );
+
+      return inspectReply?.content.matches;
+    }
+
+    return null;
   }
 
   protected render(): React.ReactNode {
