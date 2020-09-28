@@ -38,6 +38,8 @@ export function NotebookCell(props: INotebookProps) {
     setActiveCell,
     setCellType,
     deleteCell,
+    moveCellUp,
+    moveCellDown,
   } = notebookActions;
   const { addCellToQueue } = kernelActions;
   const { executionQueue, currentKernel } = useSelector(
@@ -119,6 +121,14 @@ export function NotebookCell(props: INotebookProps) {
 
   function deleteCodeCell() {
     dispatch(deleteCell({ cellId: model.id }));
+  }
+
+  function moveUp() {
+    dispatch(moveCellUp({ cellId: model.id }));
+  }
+
+  function moveDown() {
+    dispatch(moveCellDown({ cellId: model.id }));
   }
 
   function renderInputHeader() {
@@ -216,10 +226,10 @@ export function NotebookCell(props: INotebookProps) {
         onDoubleClick={_handleDoubleClick}
       >
         <div className="cell-controls" ref={controlRef}>
-          <button className="cell-btn-up">
+          <button className="cell-btn-up" onClick={moveUp}>
             <Icon icon="cell-up" />
           </button>
-          <button className="cell-btn-down">
+          <button className="cell-btn-down" onClick={moveDown}>
             <Icon icon="cell-down" />
           </button>
           <button className="cell-btn-plus">

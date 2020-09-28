@@ -31,6 +31,16 @@ const getCellIndex = (state: any, cellId: string): number | null => {
   return null;
 };
 
+// const getCellAndIndex = (state: any, cellId: string) => {
+//   for (let i = 0; i < state.cells.length; i++) {
+//     if (cellId === state.cells[i].id) {
+//       return [state.cells[i], i];
+//     }
+//   }
+
+//   return null;
+// };
+
 export const NotebookSlice = createSlice({
   name: "notebook",
   initialState,
@@ -138,6 +148,48 @@ export const NotebookSlice = createSlice({
 
       if (cellIndex !== null) {
         state.cells.splice(cellIndex, 1);
+      }
+    },
+
+    moveCellUp: (state, { payload }): void => {
+      const cellIndex = getCellIndex(state, payload.cellId);
+
+      if (cellIndex !== null) {
+        if (cellIndex > 0) {
+          const cell = state.cells.splice(cellIndex, 1)[0];
+          state.cells.splice(cellIndex - 1, 0, cell);
+        }
+      }
+    },
+
+    moveCellDown: (state, { payload }): void => {
+      const cellIndex = getCellIndex(state, payload.cellId);
+
+      if (cellIndex !== null) {
+        if (cellIndex < state.cells.length - 1) {
+          const cell = state.cells.splice(cellIndex, 1)[0];
+          state.cells.splice(cellIndex + 1, 0, cell);
+        }
+      }
+    },
+
+    insertCellBefore: (state, { payload }): void => {
+      const { cell, cellId } = payload;
+
+      const cellIndex = getCellIndex(state, cellId);
+
+      if (cellIndex !== null) {
+        state.cells.splice(cellIndex, 0, cell);
+      }
+    },
+
+    insertCellAfter: (state, { payload }): void => {
+      const { cell, cellId } = payload;
+
+      const cellIndex = getCellIndex(state, cellId);
+
+      if (cellIndex !== null) {
+        state.cells.splice(cellIndex + 1, 0, cell);
       }
     },
   },
