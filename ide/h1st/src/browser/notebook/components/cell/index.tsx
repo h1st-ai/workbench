@@ -7,6 +7,7 @@ import { CELL_TYPE, ICellModel, IStore } from "../../types";
 import CellInput from "./input";
 import CellOuput from "./output";
 import { kernelActions } from "../../reducers/kernel";
+import NotebookContext from "../../context";
 // import {
 //   Input,
 //   Prompt,
@@ -34,9 +35,10 @@ export function NotebookCell(props: INotebookProps) {
   const cellType = model.cell_type;
   const { setSelectedCell, setActiveCell, setCellType } = notebookActions;
   const { addCellToQueue } = kernelActions;
-  const { executionQueue, status } = useSelector(
+  const { executionQueue, currentKernel } = useSelector(
     (store: IStore) => store.kernel
   );
+  const context = React.useContext(NotebookContext);
 
   const dispatch = useDispatch();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -68,6 +70,9 @@ export function NotebookCell(props: INotebookProps) {
     console.log("adding cell to queue");
     dispatch(setSelectedCell({ id: model.id }));
     dispatch(addCellToQueue({ id: model.id }));
+
+    context.executeQueue();
+
     ev.stopPropagation();
     ev.preventDefault();
   }
@@ -87,7 +92,7 @@ export function NotebookCell(props: INotebookProps) {
       <div>
         <button
           className="btn-cell-play"
-          disabled={status !== "idle"}
+          disabled={!currentKernel}
           onClick={execute}
         >
           <Icon icon="play" />

@@ -100,32 +100,9 @@ export class H1stNotebookWidget extends ReactWidget
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
-    this.store.subscribe(this.onStoreChanged);
 
     this.setTheme();
   }
-
-  private onStoreChanged = async () => {
-    console.log("store changed", this.store.getState().kernel.executionQueue);
-    const state = this.store.getState();
-
-    const kernelStatus = state.kernel.status;
-    const exeQueue = state.kernel.executionQueue;
-
-    if (exeQueue.length > 0 && kernelStatus === "idle") {
-      console.log("execute next cell");
-
-      let code = null,
-        cellId = exeQueue[0];
-      code = this.getSourceCodeFromId(cellId, state.notebook);
-
-      if (code) {
-        const { removeCellFromQueue } = kernelActions;
-        await this.executeCodeCell(code, cellId);
-        this.store.dispatch(removeCellFromQueue());
-      }
-    }
-  };
 
   private getSourceCodeFromId(cellId: string, state: INotebook): string | null {
     for (let i = 0; i < state.cells.length; i++) {
@@ -141,7 +118,7 @@ export class H1stNotebookWidget extends ReactWidget
     console.log("notebook save");
   }
 
-  private setTheme() {
+  private async setTheme() {
     const { setActiveTheme } = notebookActions;
 
     const {
@@ -152,7 +129,7 @@ export class H1stNotebookWidget extends ReactWidget
       editorTheme,
     } = this.themeService.getCurrentTheme();
 
-    this.store.dispatch(
+    await this.store.dispatch(
       setActiveTheme({
         id,
         type,
@@ -196,7 +173,7 @@ export class H1stNotebookWidget extends ReactWidget
     const { width, height } = msg;
     this._width = width;
     this._height = height;
-    this.update();
+    // this.update();
   }
 
   protected async initializeServerSettings(): Promise<void> {
@@ -489,7 +466,7 @@ export class H1stNotebookWidget extends ReactWidget
     }
 
     super.onActivateRequest(msg);
-    this.update();
+    // this.update();
   }
 
   protected getAutoCompleteItems = async (
@@ -515,22 +492,52 @@ export class H1stNotebookWidget extends ReactWidget
     return null;
   };
 
+  private executeQueue = async () => {
+    const state = this.store.getState();
+
+    const kernelStatus = state.kernel.status;
+    const exeQueue = state.kernel.executionQueue;
+
+    if (exeQueue.length > 0 && kernelStatus === "idle") {
+      console.log("execute next cell");
+
+      let code = null,
+        cellId = exeQueue[0];
+      code = this.getSourceCodeFromId(cellId, state.notebook);
+
+      if (code) {
+        const { removeCellFromQueue } = kernelActions;
+
+        await this.executeCodeCell(code, cellId);
+        // remove the first cell from queue
+        await this.store.dispatch(removeCellFromQueue());
+        await this.executeQueue();
+      }
+    }
+  };
+
   protected executeCodeCell = async (code: string, cellId: string) => {
     if (this._session.kernel) {
-      console.log("Executing code", this._session.kernel.status);
-      if (this._session.kernel.status !== "idle") {
-        this.messageService.warn("Kernel is not ready");
-        return;
-      }
+      const { updateCellOutput, clearCellOutput } = notebookActions;
 
+      console.log("Executing code", this._session.kernel.status);
+      // if (this._session.kernel.status !== "idle") {
+      //   this.messageService.warn("Kernel is not ready");
+      //   console.log("Kernel is not ready", this._session.kernel.status);
+      //   return;
+      // }
+
+      await this.store.dispatch(clearCellOutput({ cellId }));
       const future = this._session.kernel.requestExecute({
         code,
       });
 
       // Handle iopub messages
-      future.onIOPub = (msg) => {
+      future.onIOPub = async (msg) => {
         if (msg.header.msg_type !== "status") {
           console.log("message from server", msg);
+
+          await this.store.dispatch(updateCellOutput({ cellId, output: msg }));
         }
       };
       await future.done;
@@ -543,6 +550,7 @@ export class H1stNotebookWidget extends ReactWidget
       saveNotebook: this.saveNotebook,
       getAutoCompleteItems: this.getAutoCompleteItems,
       executeCodeCell: this.executeCodeCell,
+      executeQueue: this.executeQueue,
     };
 
     return (

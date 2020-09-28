@@ -57,8 +57,6 @@ export default function CellInput({ model, width, height }: any) {
       updateEditorHeight();
       updateCellContent();
 
-      console.log(context);
-
       const cursorPos = editorRef.current?.getPosition();
       const model = editorRef.current?.getModel();
 

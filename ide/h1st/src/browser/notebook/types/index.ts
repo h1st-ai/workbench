@@ -65,4 +65,5 @@ export interface INotebookContext {
   saveNotebook: Function;
   getAutoCompleteItems: Function;
   executeCodeCell: Function;
+  executeQueue: Function;
 }

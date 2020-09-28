@@ -52,6 +52,50 @@ export const NotebookSlice = createSlice({
         }
       }
     },
+    clearCellOutput: (state, { payload }): void => {
+      const { cellId } = payload;
+
+      for (let i = 0; i < state.cells.length; i++) {
+        if (cellId === state.cells[i].id) {
+          state.cells[i].outputs = [];
+          break;
+        }
+      }
+    },
+    updateCellOutput: (state, { payload }): void => {
+      const { cellId, output } = payload;
+
+      let cell = null;
+      for (let i = 0; i < state.cells.length; i++) {
+        if (cellId === state.cells[i].id) {
+          cell = state.cells[i];
+          break;
+        }
+      }
+
+      if (cell) {
+        switch (output.msg_type) {
+          case "execute_input":
+            cell.execution_count = output.content.execution_count;
+            break;
+
+          case "stream":
+            if (cell.outputs.length === 0) {
+              cell.outputs.push({
+                output_type: output.msg_type,
+                name: output.content.name,
+                text: [output.content.text],
+              });
+            } else {
+              const out = cell.outputs[cell.outputs.length - 1];
+
+              out.text.push(output.content.text);
+            }
+            // const output = cell.outputs[cell.outputs.length]
+            break;
+        }
+      }
+    },
   },
 });
 
