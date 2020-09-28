@@ -17,8 +17,9 @@ import { MessageService, SelectionService } from "@theia/core";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 import nextId from "react-id-generator";
 import {
-  KernelAPI,
+  // KernelAPI,
   KernelManager,
+  KernelSpecManager,
   // KernelMessage,
   // Kernel,
   SessionManager,
@@ -27,6 +28,8 @@ import {
   ServerConnection,
 } from "@jupyterlab/services";
 
+import { ISpecModels } from "@jupyterlab/services/lib/kernelspec/restapi";
+
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -34,7 +37,7 @@ import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
-// import { kernelActions } from "./reducers/kernel";
+import { kernelActions } from "./reducers/kernel";
 import { ICellModel } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
@@ -69,6 +72,10 @@ type INotebookContent = {
   nbformat_minor: number;
 };
 
+// type IKernelSpecs = {
+//   [key: string]: ISpecModel | undefined;
+// };
+
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
   implements NavigatableWidget {
@@ -81,6 +88,8 @@ export class H1stNotebookWidget extends ReactWidget
   private _context: React.Context<INotebookContext>;
   private _defaultContextValue: INotebookContext;
   private _kernelManager: KernelManager;
+  private _kernelSpecManager: KernelSpecManager;
+  private _kernelSpecs: ISpecModels | null;
   private _session: Session.ISessionConnection;
   private _sessionManager: SessionManager;
   private _serverSettings: ServerConnection.ISettings;
@@ -133,11 +142,11 @@ export class H1stNotebookWidget extends ReactWidget
     );
   }
 
-  // private setCurrentKernelStatus(status: string) {
-  //   const { setKernelStatus } = kernelActions;
+  private setCurrentKernelStatus(status: string) {
+    const { setKernelStatus } = kernelActions;
 
-  //   this.store.dispatch(setKernelStatus(status));
-  // }
+    this.store.dispatch(setKernelStatus(status));
+  }
 
   // get onDispose(): Event<void> {
   //   return this.toDispose.onDispose;
@@ -204,23 +213,42 @@ export class H1stNotebookWidget extends ReactWidget
   protected initializeSessionManager(): void {
     this._sessionManager = new SessionManager({
       kernelManager: this._kernelManager,
+      serverSettings: this._serverSettings,
     });
   }
 
+  protected async initializeKernelSpecsManager(): Promise<void> {
+    this._kernelSpecManager = new KernelSpecManager({
+      serverSettings: this._serverSettings,
+    });
+
+    await this._kernelSpecManager.ready;
+    this._kernelSpecs = this._kernelSpecManager.specs;
+    console.log(`Default spec: ${this._kernelSpecs?.default}`);
+
+    if (this._kernelSpecs) {
+      console.log(
+        `Available specs: ${Object.keys(this._kernelSpecs.kernelspecs)}`
+      );
+    }
+  }
+
   protected async initializeKernelEventHandler(): Promise<void> {
-    // this._sessionManager.kernel.statusChanged.connect((_, status) => {
-    //   this.setCurrentKernelStatus(status);
-    // });
-    // // Register a callback for when the kernel changes state.
-    // this._sessionManager.kernel.statusChanged.disconnect((_, status) => {
-    //   this.setCurrentKernelStatus(status);
-    //   this.messageService.warn(`Kernel disconnect: ${status}`);
-    // });
+    if (this._session && this._session.kernel) {
+      this._session.kernel.statusChanged.connect((_, status) => {
+        this.setCurrentKernelStatus(status);
+      });
+
+      this._session.kernel.statusChanged.disconnect((_, status) => {
+        this.setCurrentKernelStatus(status);
+        this.messageService.warn(`Kernel disconnect: ${status}`);
+      });
+    }
   }
 
   protected async initializeNewSession(): Promise<Session.ISessionConnection> {
-    const kernelModels = await KernelAPI.listRunning(this._serverSettings);
-    console.log("Available Kernels", kernelModels);
+    // const kernelModels = await KernelAPI.listRunning(this._serverSettings);
+    // console.log("Available Kernels", kernelModels);
 
     const options: Session.ISessionOptions = {
       kernel: {
@@ -238,20 +266,39 @@ export class H1stNotebookWidget extends ReactWidget
     try {
       const sessionId = this._notebookFileContent.metadata.session_id;
       if (sessionId) {
-        const sessionModel = await this._sessionManager.findById(sessionId);
+        const sessionModel = await this._sessionManager.findByPath(
+          this.uri.path.toString()
+        );
 
         if (sessionModel) {
           this._session = this._sessionManager.connectTo({
             model: sessionModel,
           });
-        } else {
-          this._session = await this.initializeNewSession();
+
+          if (this._session.kernel) {
+            this.messageService.info(
+              `Resumed last kernel session: ${
+                this._kernelSpecs?.kernelspecs[this._session.kernel?.name]
+                  ?.display_name
+              }`
+            );
+          }
         }
-      } else {
-        this._session = await this.initializeNewSession();
       }
 
-      this.messageService.info(`Connected to ${this._session.kernel?.name}`);
+      // if we can't find the session id or session id on the notebook is null then create a new one
+      if (!this._session) {
+        this._session = await this.initializeNewSession();
+
+        if (this._session.kernel) {
+          this.messageService.info(
+            `Connected to new kernel: ${
+              this._kernelSpecs?.kernelspecs[this._session.kernel?.name]
+                ?.display_name
+            }`
+          );
+        }
+      }
     } catch (ex) {
       this.messageService.warn("Cannot initialize kernel");
       console.log("Cannot initialize kernel", ex);
@@ -263,6 +310,7 @@ export class H1stNotebookWidget extends ReactWidget
     this.initializeKernelManager();
     this.initializeSessionManager();
 
+    await this.initializeKernelSpecsManager();
     await this.initializeKernelEventHandler();
     // this._kernel = await kernelManager.startNew({ name: this.uri.toString() });
 
@@ -387,24 +435,29 @@ export class H1stNotebookWidget extends ReactWidget
     // console.log("Execution is done");
   }
 
-  protected async init() {
-    await this.initNotebookServices();
+  protected async initContentFromNotebook() {
     const content = await this.fileService.readFile(this.uri);
 
     try {
       const _notebookFileContent = JSON.parse(content.value.toString());
-      _notebookFileContent.cells.map(
-        (c: ICellModel) => (c.id = nextId("h1st"))
-      );
+
+      // we need to assign some kind of id to the cells
+      _notebookFileContent.cells.map((c: ICellModel) => (c.id = nextId()));
 
       this._notebookFileContent = _notebookFileContent;
     } catch (ex) {
       this._notebookFileContent = defaultNotebookModel;
     }
+  }
+
+  protected async init() {
+    await this.initNotebookServices();
+    await this.initContentFromNotebook();
 
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._notebookFileContent.cells }));
     this.createOrRestoreJupyterSession();
+    this.initializeKernelEventHandler();
 
     // mark this widget as initialized
     this._initialized = true;
