@@ -66,13 +66,28 @@ export class H1stNotebookWidget extends ReactWidget
     this.setTheme();
 
     this.notebookManager = new NotebookManager(
+      this.node,
       uri,
       this._model,
       this.store,
       this.h1stBackendClient,
       this.messageService
     );
+
+    // setTimeout(() => {
+    //   this.node.scroll({ top: 300 });
+    // }, 2000);
+    // console.log("this.parent?.node");
   }
+
+  // scrollTo = (selector: string) => {
+  //   const node = this.node.querySelector(selector);
+
+  //   if (node) {
+  //     // get the node scrollTop
+  //     node.scrollT
+  //   }
+  // }
 
   onStoreChange = () => {
     const content = this.store.getState();

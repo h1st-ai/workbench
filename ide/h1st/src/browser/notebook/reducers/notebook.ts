@@ -11,6 +11,7 @@ const initialState: INotebook = {
   selectedCell: null,
   activeCell: null,
   activeTheme: null,
+  focusedCell: null,
   executionQueue: [],
 };
 
@@ -46,18 +47,21 @@ export const NotebookSlice = createSlice({
   name: "notebook",
   initialState,
   reducers: {
+    focusOnCell: (state, { payload }): void => {
+      state.focusedCell = payload.cellId;
+    },
     setCells: (state, { payload }): void => {
       state.cells = payload.cells;
     },
     setSelectedCell: (state, { payload }): void => {
-      state.selectedCell = payload.id;
+      state.selectedCell = payload.cellId;
     },
     setActiveCell: (state, { payload }): void => {
-      state.activeCell = payload.id;
+      state.activeCell = payload.cellId;
     },
     setCurrentCell: (state, { payload }): void => {
-      state.activeCell = payload.id;
-      state.selectedCell = payload.id;
+      state.activeCell = payload.cellId;
+      state.selectedCell = payload.cellId;
     },
     setActiveTheme: (state, { payload }): void => {
       state.activeTheme = payload;
@@ -192,6 +196,8 @@ export const NotebookSlice = createSlice({
 
       if (cellIndex !== null) {
         state.cells.splice(cellIndex, 0, cell);
+      } else {
+        state.cells.push(cell);
       }
     },
 
@@ -202,6 +208,8 @@ export const NotebookSlice = createSlice({
 
       if (cellIndex !== null) {
         state.cells.splice(cellIndex + 1, 0, cell);
+      } else {
+        state.cells.push(cell);
       }
     },
     addCellToQueue: (state, { payload }): void => {

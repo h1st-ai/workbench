@@ -28,6 +28,9 @@ export class NotebookManager {
   private _serverSettings: ServerConnection.ISettings;
 
   constructor(
+    // the widget container
+    readonly widget: HTMLElement,
+    // the uri of the file
     readonly uri: URI,
     protected readonly model: NotebookModel,
     protected readonly store: any,
@@ -284,7 +287,7 @@ export class NotebookManager {
       code = this.getSourceCodeFromId(cellId, state.notebook);
 
       if (code) {
-        await this.store.dispatch(setSelectedCell({ id: cellId }));
+        await this.store.dispatch(setSelectedCell({ cellId }));
         await this.executeCodeCell(code, cellId);
         // remove the first cell from queue
       } else {
@@ -394,5 +397,29 @@ export class NotebookManager {
     await this.createOrRestoreJupyterSession();
 
     await this.initializeKernelEventHandler();
+  }
+
+  isVisibleWithinWidget(node: HTMLElement) {
+    let notVisible = true;
+    if (node) {
+      // node is not visible when offsetTop + node.height > widget.height
+      // or when node.offsetTop > widget.scrollTop + widget.height
+      notVisible =
+        node.offsetTop + node.clientHeight < this.widget.scrollTop ||
+        node.offsetTop > this.widget.scrollTop + this.widget.clientHeight;
+    }
+
+    return !notVisible;
+  }
+
+  scrollTo(selector: string) {
+    const node: HTMLElement | null = this.widget.querySelector(selector);
+    console.log("scrolling to", node);
+    if (node) {
+      if (!this.isVisibleWithinWidget(node)) {
+        node.scrollIntoView({ block: "end" });
+      }
+      //
+    }
   }
 }

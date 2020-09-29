@@ -6,10 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, ICellModel, IStore } from "../../types";
 import CellInput from "./input";
 import CellOuput from "./output";
+import { createNewCellStructure } from "../../defaults";
 // import { kernelActions } from "../../reducers/kernel";
 import NotebookContext from "../../context";
-
-const uniqid = require("uniqid");
 
 const CELL_CODE = "code";
 const CELL_MD = "markdown";
@@ -38,6 +37,7 @@ export function NotebookCell(props: INotebookProps) {
     moveCellDown,
     insertCellAfter,
     addCellToQueue,
+    focusOnCell,
   } = notebookActions;
   const { currentKernel, connectionStatus, status: kernelStatus } = useSelector(
     (store: IStore) => store.kernel
@@ -45,6 +45,7 @@ export function NotebookCell(props: INotebookProps) {
   const { selectedCell, activeCell, executionQueue } = useSelector(
     (store: IStore) => store.notebook
   );
+
   const context = React.useContext(NotebookContext);
 
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ export function NotebookCell(props: INotebookProps) {
   const controlRef = React.useRef<HTMLDivElement>(null);
   const focusRef = React.useRef<HTMLDivElement>(null);
   const promptRef = React.useRef<HTMLDivElement>(null);
+  // const monacoRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
 
   const { width, height } = context;
 
@@ -78,8 +80,8 @@ export function NotebookCell(props: INotebookProps) {
 
     console.log("adding cell to queue");
 
-    dispatch(setSelectedCell({ id: model.id }));
-    dispatch(addCellToQueue({ id: model.id }));
+    dispatch(setSelectedCell({ cellId: model.id }));
+    dispatch(addCellToQueue({ cellId: model.id }));
 
     if (connectionStatus === "connected" && kernelStatus === "idle") {
       context.manager?.executeQueue();
@@ -91,12 +93,12 @@ export function NotebookCell(props: INotebookProps) {
 
   function toMarkdown() {
     dispatch(setCellType({ type: CELL_TYPE.MD, cellId: model.id }));
-    setTimeout(() => dispatch(setActiveCell({ id: model.id })), 0);
+    setTimeout(() => dispatch(setActiveCell({ cellId: model.id })), 0);
   }
 
   function toCode() {
     dispatch(setCellType({ type: CELL_TYPE.CODE, cellId: model.id }));
-    // setTimeout(() => dispatch(setActiveCell({ id: model.id })), 0);
+    setTimeout(() => dispatch(focusOnCell({ cellId: model.id })), 0);
   }
 
   function renderCodeCellHeaderControl(): React.ReactNode {
@@ -140,17 +142,15 @@ export function NotebookCell(props: INotebookProps) {
     ev.stopPropagation();
     ev.preventDefault();
 
-    const newId = uniqid();
+    const newCell = createNewCellStructure();
     dispatch(
       insertCellAfter({
         cellId: model.id,
-        cell: { id: newId, ...DEFAULT_CELL },
+        cell: newCell,
       })
     );
 
-    setTimeout(() => {
-      dispatch(setSelectedCell({ id: newId }));
-    }, 0);
+    dispatch(focusOnCell({ cellId: newCell.id }));
   }
 
   function renderInputHeader() {
@@ -210,13 +210,13 @@ export function NotebookCell(props: INotebookProps) {
 
   function _setSelectedCell() {
     if (selectedCell !== model.id) {
-      dispatch(setSelectedCell({ id: model.id }));
+      dispatch(setSelectedCell({ cellId: model.id }));
     }
   }
 
   function _handleDoubleClick() {
     if (cellType === CELL_MD) {
-      dispatch(setActiveCell({ id: model.id }));
+      dispatch(setActiveCell({ cellId: model.id }));
     }
   }
 
@@ -240,6 +240,7 @@ export function NotebookCell(props: INotebookProps) {
   return (
     <React.Fragment>
       <div
+        id={`cell-${model.id}`}
         className={klass("cell-wrapper", `${model.cell_type}-cell`, {
           active: activeCell === model.id,
           selected: selectedCell === model.id,
@@ -277,11 +278,3 @@ export function NotebookCell(props: INotebookProps) {
     </React.Fragment>
   );
 }
-
-const DEFAULT_CELL = {
-  cell_type: "code",
-  execution_count: 0,
-  metadata: {},
-  outputs: [],
-  source: [],
-};

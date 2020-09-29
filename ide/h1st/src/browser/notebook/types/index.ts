@@ -17,6 +17,7 @@ export interface INotebook {
   activeCell: string | null;
   activeTheme: Theme | null;
   executionQueue: string[];
+  focusedCell: string | null;
 }
 
 export interface INotebookWidget {

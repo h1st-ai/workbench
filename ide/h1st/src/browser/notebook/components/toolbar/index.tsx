@@ -1,9 +1,11 @@
 import * as React from "react";
 import stickybits from "stickybits";
 import Icon from "../icon";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { IStore } from "../../types";
 import NotebookContext from "../../context";
+import { notebookActions } from "../../reducers/notebook";
+import { createNewCellStructure } from "../../defaults";
 
 function KernelStatus() {
   const { status } = useSelector((store: IStore) => store.kernel);
@@ -53,6 +55,9 @@ function JupyterKernel() {
 export default function Toolbar() {
   const context = React.useContext(NotebookContext);
   const { selectedCell } = useSelector((store: IStore) => store.notebook);
+  const dispatch = useDispatch();
+
+  const { insertCellAfter, focusOnCell } = notebookActions;
 
   React.useEffect(() => {
     // sticky position for toolbar
@@ -78,6 +83,18 @@ export default function Toolbar() {
 
   const clearAllCellOutputs = async () => {
     await context.manager?.clearAllCellOutput();
+  };
+
+  const createNewCell = () => {
+    const newCell = createNewCellStructure();
+    dispatch(
+      insertCellAfter({
+        cellId: selectedCell,
+        cell: newCell,
+      })
+    );
+
+    dispatch(focusOnCell({ cellId: newCell.id }));
   };
 
   return (
@@ -107,7 +124,7 @@ export default function Toolbar() {
         </li>
 
         <li>
-          <button>
+          <button onClick={createNewCell}>
             <Icon width={24} height={24} icon="plus" />
           </button>
         </li>

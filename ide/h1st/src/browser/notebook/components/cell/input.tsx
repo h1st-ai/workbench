@@ -9,12 +9,19 @@ import NotebookContext from "../../context";
 // const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
-export default function CellInput({ model }: any) {
+function CellInput({ model }: any) {
   let editorHeight: number;
 
   const dispatch = useDispatch();
-  const { setActiveCell, setCellInput, setCurrentCell } = notebookActions;
-  const { activeCell } = useSelector((store: IStore) => store.notebook);
+  const {
+    setActiveCell,
+    setCellInput,
+    setCurrentCell,
+    focusOnCell,
+  } = notebookActions;
+  const { activeCell, focusedCell } = useSelector(
+    (store: IStore) => store.notebook
+  );
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const context = React.useContext(NotebookContext);
@@ -27,6 +34,27 @@ export default function CellInput({ model }: any) {
       editorRef.current.layout();
     }
   }, [width]);
+
+  // if a focused cell hasbeen request, focus on that cell
+  React.useEffect(() => {
+    if (focusedCell === model.id) {
+      setTimeout(() => {
+        console.log(
+          "focusing on cell",
+          focusedCell,
+          model.id,
+          editorRef.current
+        );
+        if (editorRef.current) {
+          editorRef.current?.focus();
+
+          // now we have the focus, clear the request
+          dispatch(focusOnCell({ cellId: null }));
+          context.manager?.scrollTo(`#cell-${model.id}`);
+        }
+      }, 0);
+    }
+  }, [focusedCell]);
 
   React.useEffect(() => {
     if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
@@ -79,12 +107,12 @@ export default function CellInput({ model }: any) {
     });
 
     monacoEditor.onDidBlurEditorText((ev: any) => {
-      dispatch(setActiveCell({ id: null }));
+      dispatch(setActiveCell({ cellId: null }));
     });
 
     monacoEditor.onDidFocusEditorText((ev: any) => {
       if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
-        dispatch(setCurrentCell({ id: model.id }));
+        dispatch(setCurrentCell({ cellId: model.id }));
       }
     });
   }
@@ -260,4 +288,5 @@ export default function CellInput({ model }: any) {
 
   return renderInput();
 }
-//
+
+export default React.forwardRef(CellInput);
