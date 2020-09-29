@@ -22,7 +22,7 @@ interface INotebookProps {
 }
 
 export function NotebookCell(props: INotebookProps) {
-  const { model, width, height, index } = props;
+  const { model, index } = props;
 
   if (!model) {
     return null;
@@ -52,6 +52,8 @@ export function NotebookCell(props: INotebookProps) {
   const controlRef = React.useRef<HTMLDivElement>(null);
   const focusRef = React.useRef<HTMLDivElement>(null);
   const promptRef = React.useRef<HTMLDivElement>(null);
+
+  const { width, height } = context;
 
   React.useEffect(() => {
     if (

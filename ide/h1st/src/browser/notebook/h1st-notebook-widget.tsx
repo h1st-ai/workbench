@@ -29,7 +29,7 @@ import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
 import { NotebookModel } from "./notebook-model";
-import { NotebookManager } from "./notebook_manager";
+import { NotebookManager } from "./notebook-manager";
 
 const equal = require("fast-deep-equal");
 
@@ -40,7 +40,6 @@ export class H1stNotebookWidget extends ReactWidget
   private readonly store: any;
   private _width: number;
   private _height: number;
-  // private _kernel: Kernel.IKernelConnection;
   private _initialized: Boolean = false;
   private _model: NotebookModel;
   private notebookManager: NotebookManager;
@@ -55,7 +54,7 @@ export class H1stNotebookWidget extends ReactWidget
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
-    this.store.subscribe(this.onStoreChange);
+    // this.store.subscribe(this.onStoreChange);
 
     const resource: Resource = {
       uri,
@@ -73,6 +72,10 @@ export class H1stNotebookWidget extends ReactWidget
       this.h1stBackendClient,
       this.messageService
     );
+
+    this.onScrollUp((ev) => {
+      console.log("scrolling", ev);
+    });
   }
 
   onStoreChange = () => {
@@ -154,7 +157,7 @@ export class H1stNotebookWidget extends ReactWidget
     const { width, height } = msg;
     this._width = width;
     this._height = height;
-    // this.update();
+    this.update();
   }
 
   protected async initContentFromNotebook() {
@@ -199,17 +202,14 @@ export class H1stNotebookWidget extends ReactWidget
     const contextValue: INotebookContext = {
       saveNotebook: this.saveNotebook,
       manager: this.notebookManager,
+      width: this._width,
+      height: this._height,
     };
 
     return (
       <NotebookContext.Provider value={contextValue}>
         <Provider store={this.store}>
-          <Notebook
-            uri={this.uri}
-            model={this._model.value}
-            width={this._width}
-            height={this._height}
-          />
+          <Notebook uri={this.uri} model={this._model.value} />
         </Provider>
       </NotebookContext.Provider>
     );

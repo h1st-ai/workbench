@@ -9,7 +9,7 @@ import NotebookContext from "../../context";
 // const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
-export default function CellInput({ model, width, height }: any) {
+export default function CellInput({ model }: any) {
   let editorHeight: number;
 
   const dispatch = useDispatch();
@@ -18,6 +18,8 @@ export default function CellInput({ model, width, height }: any) {
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const context = React.useContext(NotebookContext);
+
+  const { width } = context;
 
   // update input width when the widget size change
   React.useEffect(() => {
@@ -30,7 +32,7 @@ export default function CellInput({ model, width, height }: any) {
     if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
       // const editor = editorRef.current;
 
-      console.log("focusing cell", editorRef.current);
+      console.log("focusing cell");
       setTimeout(() => {
         if (editorRef.current) {
           editorRef.current.focus();
@@ -57,23 +59,23 @@ export default function CellInput({ model, width, height }: any) {
       updateEditorHeight();
       updateCellContent();
 
-      if (model.cell_type === CELL_TYPE.CODE) {
-        const cursorPos = editorRef.current?.getPosition();
-        const model = editorRef.current?.getModel();
+      //   if (model.cell_type === CELL_TYPE.CODE) {
+      //     const cursorPos = editorRef.current?.getPosition();
+      //     const model = editorRef.current?.getModel();
 
-        if (cursorPos && model) {
-          const offset = model.getOffsetAt({
-            lineNumber: cursorPos.lineNumber,
-            column: cursorPos.column,
-          });
-          console.log("current offset", offset);
+      //     if (cursorPos && model) {
+      //       const offset = model.getOffsetAt({
+      //         lineNumber: cursorPos.lineNumber,
+      //         column: cursorPos.column,
+      //       });
+      //       console.log("current offset", offset);
 
-          await context.manager?.getAutoCompleteItems(
-            editorRef.current?.getValue(),
-            offset
-          );
-        }
-      }
+      //       await context.manager?.getAutoCompleteItems(
+      //         editorRef.current?.getValue(),
+      //         offset
+      //       );
+      //     }
+      //   }
     });
 
     monacoEditor.onDidBlurEditorText((ev: any) => {
@@ -94,7 +96,7 @@ export default function CellInput({ model, width, height }: any) {
       const code = editor.getValue();
       const cellId = model.id;
 
-      console.log("updating cell input", code.split("\n"));
+      console.log("updating cell input");
 
       dispatch(setCellInput({ code, cellId }));
     }
@@ -160,10 +162,10 @@ export default function CellInput({ model, width, height }: any) {
     // do nothing if the height has not change
     if (height === editorHeight) return;
 
-    console.log(
-      `${model.id} editor height change detected from ${editorHeight} to ${height}. Updating editor height`,
-      editor
-    );
+    // console.log(
+    //   `${model.id} editor height change detected from ${editorHeight} to ${height}. Updating editor height`,
+    //   editor
+    // );
 
     if (wrapperRef.current) {
       editorHeight = height;
@@ -258,3 +260,4 @@ export default function CellInput({ model, width, height }: any) {
 
   return renderInput();
 }
+//
