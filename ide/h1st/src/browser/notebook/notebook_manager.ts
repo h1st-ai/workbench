@@ -97,14 +97,16 @@ export class NotebookManager {
 
   protected async initializeKernelEventHandler(): Promise<void> {
     if (this._session && this._session.kernel) {
-      this._sessionManager.runningChanged.connect((_, status) => {
-        // this.setCurrentKernelStatus(status);
-        this.messageService.warn(`Kernel status: ${JSON.stringify(status)}`);
+      this._sessionManager.runningChanged.connect((_, kernels) => {
+        // @ts-ignore
+        this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
+        console.log("Kernel status:", kernels);
       });
 
-      this._session.kernel.statusChanged.disconnect((_, status) => {
-        this.setCurrentKernelStatus(status);
-        this.messageService.warn(`Kernel disconnect: ${status}`);
+      this._session.kernel.statusChanged.disconnect((_, kernels) => {
+        // @ts-ignore
+        this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
+        this.messageService.warn("Kernel disconnect");
       });
     }
   }
@@ -171,9 +173,6 @@ export class NotebookManager {
   }
 
   protected async initializeNewSession(): Promise<Session.ISessionConnection> {
-    // const kernelModels = await KernelAPI.listRunning(this._serverSettings);
-    // console.log("Available Kernels", kernelModels);
-
     const options: Session.ISessionOptions = {
       kernel: {
         name: "python",
@@ -184,15 +183,6 @@ export class NotebookManager {
     };
 
     return await this._sessionManager.startNew(options);
-  }
-
-  protected async initNotebookServices(): Promise<void> {
-    await this.initializeServerSettings();
-    this.initializeKernelManager();
-    this.initializeSessionManager();
-
-    await this.initializeKernelSpecsManager();
-    await this.initializeKernelEventHandler();
   }
 
   async interrupKernel() {
@@ -254,8 +244,8 @@ export class NotebookManager {
     if (exeQueue.length > 0) {
       console.log("execute next cell");
 
-      let code = null,
-        cellId = exeQueue[0];
+      let code = null;
+      let cellId = exeQueue[0];
       code = this.getSourceCodeFromId(cellId, state.notebook);
 
       if (code) {
@@ -360,8 +350,13 @@ export class NotebookManager {
   }
 
   async init() {
-    await this.initNotebookServices();
-    await this.initializeKernelEventHandler();
+    await this.initializeServerSettings();
+    this.initializeKernelManager();
+    this.initializeSessionManager();
+
+    await this.initializeKernelSpecsManager();
     await this.createOrRestoreJupyterSession();
+
+    await this.initializeKernelEventHandler();
   }
 }

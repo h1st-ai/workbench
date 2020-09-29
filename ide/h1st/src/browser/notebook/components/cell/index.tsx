@@ -39,8 +39,11 @@ export function NotebookCell(props: INotebookProps) {
     insertCellAfter,
   } = notebookActions;
   const { addCellToQueue } = kernelActions;
-  const { executionQueue, currentKernel } = useSelector(
+  const { executionQueue, currentKernel, connectionStatus } = useSelector(
     (store: IStore) => store.kernel
+  );
+  const { selectedCell, activeCell } = useSelector(
+    (store: IStore) => store.notebook
   );
   const context = React.useContext(NotebookContext);
 
@@ -49,10 +52,6 @@ export function NotebookCell(props: INotebookProps) {
   const controlRef = React.useRef<HTMLDivElement>(null);
   const focusRef = React.useRef<HTMLDivElement>(null);
   const promptRef = React.useRef<HTMLDivElement>(null);
-
-  const { selectedCell, activeCell } = useSelector(
-    (store: IStore) => store.notebook
-  );
 
   React.useEffect(() => {
     if (
@@ -80,7 +79,9 @@ export function NotebookCell(props: INotebookProps) {
     dispatch(setSelectedCell({ id: model.id }));
     dispatch(addCellToQueue({ id: model.id }));
 
-    context.manager?.executeQueue();
+    if (connectionStatus === "idle") {
+      context.manager?.executeQueue();
+    }
 
     ev.stopPropagation();
     ev.preventDefault();
