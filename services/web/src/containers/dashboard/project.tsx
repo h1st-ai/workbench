@@ -259,14 +259,41 @@ export function ProjectGridItem({
 
     return (
       <div className={styles.actions}>
-        <div className={styles.mainActions}>
-          {renderStatus()} {btn}
-        </div>
-
-        <button className={styles.trashBtn} onClick={deleteProject}>
-          {trashLoading && <ThreeDotIndicator width={20} fill="#bbb" />}
-          {!trashLoading && <Icon icon="trash" width={20} height={20} />}
-        </button>
+        <nav className="actionsDropdownWrapper">
+          <button className="menuTrigger">
+            <svg width="31" height="7" viewBox="0 0 31 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="3.5" cy="3" r="3" fill="#B0B6C1"/>
+              <circle cx="15.5" cy="3" r="3" fill="#B0B6C1"/>    
+              <circle cx="27.5" cy="3" r="3" fill="#B0B6C1"/>
+            </svg>
+          </button>
+          <ul className="actionsDropdown">
+            <li className="actionRename">
+              <button>
+                <span className="menuIcon">
+                  <svg  viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.58 4.26006C15.7632 4.07313 15.8659 3.82181 15.8659 3.56006C15.8659 3.29831 15.7632 3.04699 15.58 2.86006L13 0.29006C12.8126 0.103809 12.5592 -0.000732422 12.295 -0.000732422C12.0308 -0.000732422 11.7774 0.103809 11.59 0.29006L4 7.88006V11.8101H8C8.31 11.8101 15.74 4.11006 15.58 4.26006ZM6 9.81006V8.71006L12.29 2.42006L13.46 3.56006L7.17 9.81006H6Z" fill="#B0B6C1"/>
+                    <path d="M15.58 4.26006C15.7632 4.07313 15.8659 3.82181 15.8659 3.56006C15.8659 3.29831 15.7632 3.04699 15.58 2.86006L13 0.29006C12.8126 0.103809 12.5592 -0.000732422 12.295 -0.000732422C12.0308 -0.000732422 11.7774 0.103809 11.59 0.29006L4 7.88006V11.8101H8C8.31 11.8101 15.74 4.11006 15.58 4.26006ZM6 9.81006V8.71006L12.29 2.42006L13.46 3.56006L7.17 9.81006H6Z" fill="#B0B6C1"/>
+                    <path d="M16 13.8101H0V15.8101H16V13.8101Z" fill="#B0B6C1"/>
+                    <path d="M16 13.8101H0V15.8101H16V13.8101Z" fill="#B0B6C1"/>
+                  </svg>
+                </span>
+                Rename
+                </button>
+            </li>
+            <li className="actionDelete">
+              <button> 
+                <span className="menuIcon">
+                  <svg  viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 3H12V0H4V3H0V5H1V16H15V5H16V3ZM6 2H10V3H6V2ZM13 14H3V5H13V14Z" fill="#C22F25"/>
+                    <path d="M7 7H5V12H7V7Z" fill="#C22F25"/>
+                    <path d="M11 7H9V12H11V7Z" fill="#C22F25"/>
+                  </svg>
+                </span>
+              Delete</button>
+            </li>
+          </ul>
+        </nav>
       </div>
     );
   }
@@ -280,12 +307,14 @@ export function ProjectGridItem({
           {status !== 'running' && name}
         </h4>
 
-        <div className={styles.author}>
-          <small>
+        <div className={styles.projectMeta}>
+          <span className={styles.projectMetaLabel}>
             Created{' '}
-            <strong>{formatDistance(new Date(updated_at), new Date())}</strong>{' '}
-            ago
-          </small>
+           
+          </span>
+          <span className={styles.timmeStamp}> 
+            {formatDistance(new Date(updated_at), new Date())}{' '}
+            ago</span>
 
           {/* <img src={author.attributes.picture} />{' '} */}
           {/* {`${author.firstName} ${author.lastName}`} */}

@@ -2,21 +2,26 @@
 
 :root {
   --color-primary: #30479b;
+  --color-blue-bright: #1837b8;
   --color-white-1: #f2f4f5;
   --color-dblue: #2c3d69;
-
+  --color-border:#eee;
   --color-grey-3: #6b7180;
   --color-grey-4: #8b98a1;
+  --color-red: #C22F25;
+  --color-light-yellow: #FFF8EE;
   --font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
 }
 html {
   box-sizing: border-box;
+  font-size:62.5%;
 }
 body {
   font-family: var(--font-family);
   /* font-size: 100%; */
   background: var(--color-white-1);
   color: var(--color-grey-3);
+  font-size:1.6rem;
 }
 * {
   font-family: var(--font-family);
@@ -26,6 +31,12 @@ body {
   -moz-box-sizing: inherit;
   box-sizing: inherit;
   }
+a, button {
+  transition: color 150ms ease-in-out, 
+  background-color 150ms ease-in-out, 
+  border-color 150ms ease-in-out,
+  box-shadow 150ms ease-in-out;
+}
 .btn {
   letter-spacing: 0.1rem;
 }
@@ -146,4 +157,90 @@ button:active{
 
 .dialog .title {
   margin-top: 0px;
+}
+.actionsDropdownWrapper {
+  position: relative;
+  flex: 0 1 auto;
+  margin-left: auto;
+  
+}
+.actionsDropdown{
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  bottom: 0;
+  
+  width:120px;
+  right: -24px;
+  transform:translateY(30px);
+  transition: opacity 250ms ease-in, transform 250ms ease-in;
+  padding-bottom:36px;
+}
+.actionsDropdown li {
+  border-bottom:1px solid var(--color-border);
+  border-left:1px solid var(--color-border);
+  border-right:1px solid var(--color-border);
+  background:#fff;
+}
+.actionsDropdown li:first-child{
+  border-top:1px solid var(--color-border);
+}
+.actionsDropdown button {
+  padding:10px 5px;
+  appearance: none;
+  background-color: transparent;
+  border-color: transparent;
+  display: flex;
+  align-items: center;
+  font-size:1.6rem;
+  cursor: pointer;
+  width: 100%;
+  background-color: #fff;
+  text-align:left;
+}
+.actionsDropdown button:hover{
+  background-color:var(--color-light-yellow);
+}
+.actionsDropdown .menuIcon {
+  margin-right:10px;
+  width: 20px;
+  height: 16px;
+  text-align: center;
+  display: flex;
+  align-items: center;;
+}
+.actionsDropdown .menuIcon svg {
+  width:16px;
+  height:16px;
+  margin: 0 auto;
+}
+.menuTrigger svg * {
+  transition: fill 150ms ease;
+}
+.actionsDropdownWrapper:hover .menuTrigger svg * {
+  fill: var(--color-primary);
+}
+.actionsDropdownWrapper:hover .actionsDropdown {
+  visibility: visible;
+  opacity: 1;
+  transform:translateY(0);
+}
+.menuTrigger {
+  background: transparent;
+  border-color: transparent;
+  padding: 5px 0;
+  margin-left:auto;
+  margin-right:-10px;
+}
+.actionDelete .menuIcon{
+  
+}
+.actionDelete button{
+  color: var(--color-red);
+}
+.actionDelete svg, .actionDelete svg * {
+
 }

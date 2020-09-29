@@ -1,15 +1,18 @@
 :root {
   --header-height: 52px;
+  --header-bg: #132271;
+  --color-opaque-white: rgba(254,254,254,.5);
 }
 
 .appHeader {
   height: var(--header-height);
-  background: #ffffff;
+  background: var(--header-bg);
   padding: 0px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
+  color:#fff;
 }
 
 .logo {
@@ -18,7 +21,6 @@
   font-size: 18px;
   line-height: 23px;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
   margin: 0px;
   display: flex;
   max-width: 220px;
@@ -28,7 +30,7 @@
 }
 
 .logo a {
-  color: var(--color-primary);
+  color: #fff;;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -40,8 +42,8 @@
   opacity: 0.8;
 }
 
-.logo svg {
-  fill: var(--color-primary);
+.logo svg, .logo svg *{
+  fill: #fff;
 }
 
 .logo span {
@@ -52,18 +54,33 @@
   position: absolute;
   margin: auto;
   width: 200px;
+  display:flex;
   text-align: center;
+  line-height: 16px;
+  align-items:center;
   left: 0px;
   right: 0px;
   bottom: 0px;
   top: 0px;
   height: 100%;
-  line-height: var(--header-height);
+  color:var(--color-opaque-white);
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  
 }
-
+.projectIcon {
+  height:24px;
+  margin-right:10px;
+}
+.projectIcon svg {
+  height:24px;
+  width:24px;
+}
 .userMenu {
   position: relative;
-  height: 52px;
+  height: var(--header-bg);
   display: flex;
   align-items: center;
 }
@@ -76,7 +93,6 @@
   position: absolute;
   right: 0px;
   top: calc(100% + 4px);
-
   border-radius: 5px;
   list-style: none;
   width: 223px;
