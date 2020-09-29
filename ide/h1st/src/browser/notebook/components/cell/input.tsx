@@ -45,7 +45,7 @@ export default function CellInput({ model, width, height }: any) {
     editorRef.current = monacoEditor;
 
     if (editorRef.current) {
-      editorRef.current.setValue(model.source.join(""));
+      editorRef.current.setValue(model.source.join("\n"));
     }
 
     setTimeout(() => {

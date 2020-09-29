@@ -98,8 +98,10 @@ export class NotebookManager {
   protected async initializeKernelEventHandler(): Promise<void> {
     if (this._session && this._session.kernel) {
       // Fire when kernel changed. Eg: server goes down and up again
-      this._session.kernelChanged.connect((_, val) => {
+      this._session.kernelChanged.connect(async (_, val) => {
         console.log("Session kernel changed", val);
+        await this.createOrRestoreJupyterSession();
+        await this.initializeKernelEventHandler();
       });
 
       // The kernel statusChanged signal, proxied from the current kernel.
@@ -155,45 +157,24 @@ export class NotebookManager {
 
   protected async createOrRestoreJupyterSession(): Promise<void> {
     try {
-      const sessionId = this.model.value.metadata.session_id;
-      if (sessionId) {
-        const sessionModel = await this._sessionManager.findByPath(
-          this.uri.path.toString()
+      this._session = await this.initializeNewSession();
+
+      if (this._session.kernel) {
+        this.messageService.info(
+          `Connected to new kernel: ${
+            this._kernelSpecs?.kernelspecs[this._session.kernel?.name]
+              ?.display_name
+          }`,
+          { timeout: 3000 }
         );
-
-        if (sessionModel) {
-          this._session = this._sessionManager.connectTo({
-            model: sessionModel,
-          });
-
-          if (this._session.kernel) {
-            this.messageService.info(
-              `Resumed last kernel session: ${
-                this._kernelSpecs?.kernelspecs[this._session.kernel?.name]
-                  ?.display_name
-              }`,
-              { timeout: 3000 }
-            );
-          }
-        }
-      }
-
-      // if we can't find the session id or session id on the notebook is null then create a new one
-      if (!this._session) {
-        this._session = await this.initializeNewSession();
-
-        if (this._session.kernel) {
-          this.messageService.info(
-            `Connected to new kernel: ${
-              this._kernelSpecs?.kernelspecs[this._session.kernel?.name]
-                ?.display_name
-            }`,
-            { timeout: 3000 }
-          );
-        }
       }
 
       if (this._session && this._session.kernel) {
+        // reconnect if disconncted
+        if (this._session.kernel.connectionStatus !== "disconnected") {
+          this._session.kernel.reconnect();
+        }
+
         const { setKernelInfo } = kernelActions;
 
         this.store.dispatch(
@@ -203,7 +184,7 @@ export class NotebookManager {
         );
       }
     } catch (ex) {
-      this.messageService.warn("Cannot initialize kernel");
+      this.messageService.error("Cannot initialize kernel", "OK");
       console.log("Cannot initialize kernel", ex);
     }
   }
@@ -299,11 +280,7 @@ export class NotebookManager {
     }
 
     if (this._session.kernel) {
-      const {
-        updateCellOutput,
-        clearCellOutput,
-        updateCellExecutionCount,
-      } = notebookActions;
+      const { updateCellOutput, clearCellOutput } = notebookActions;
       const { setKernelStatus } = kernelActions;
 
       console.log("Executing code", this._session.kernel.status);
@@ -341,7 +318,7 @@ export class NotebookManager {
         console.log("Execution completed", msg);
         const { removeCellFromQueue } = kernelActions;
         await this.store.dispatch(removeCellFromQueue());
-        await this.store.dispatch(updateCellExecutionCount({ cellId }));
+        // await this.store.dispatch(updateCellExecutionCount({ cellId }));
       };
 
       await future.done;
@@ -351,7 +328,7 @@ export class NotebookManager {
   private getSourceCodeFromId(cellId: string, state: INotebook): string | null {
     for (let i = 0; i < state.cells.length; i++) {
       if (cellId === state.cells[i].id) {
-        return state.cells[i].source.join("");
+        return state.cells[i].source.join("\n");
       }
     }
 

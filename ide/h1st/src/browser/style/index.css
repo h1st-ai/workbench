@@ -188,9 +188,19 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   text-indent: -99999px;
   width: 8px;
   height: 8px;
-  border: 2px solid;
+  border: 2px solid var(--theia-foreground);
   border-radius: 50%;
   margin-left: 8px;
+}
+
+.kernel-status.idle {
+  background: #89d185 !important;
+  border-color: #89d185 !important;
+}
+
+.kernel-status.busy {
+  background: #c97071 !important;
+  border-color: #c97071 !important;
 }
 
 .toolbar ul {
