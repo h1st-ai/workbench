@@ -2,11 +2,14 @@ import * as React from "react";
 import Icon from "../icon";
 import { useSelector } from "react-redux";
 import { IStore } from "../../types";
+import NotebookContext from "../../context";
 
 export default function Toolbar() {
   const { currentKernel, connectionStatus } = useSelector(
     (store: IStore) => store.kernel
   );
+
+  const context = React.useContext(NotebookContext);
 
   function renderKernelInfo() {
     if (currentKernel) {
@@ -18,6 +21,10 @@ export default function Toolbar() {
       );
     }
   }
+
+  const doRestartKernel = async (ev: any) => {
+    await context.restartKernel();
+  };
 
   return (
     <div className="toolbar">
@@ -34,7 +41,7 @@ export default function Toolbar() {
         </li>
 
         <li>
-          <button>
+          <button onClick={doRestartKernel}>
             <Icon width={16} height={16} icon="reload" />
           </button>
         </li>

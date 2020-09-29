@@ -66,4 +66,5 @@ export interface INotebookContext {
   getAutoCompleteItems: Function;
   executeCodeCell: Function;
   executeQueue: Function;
+  restartKernel: Function;
 }

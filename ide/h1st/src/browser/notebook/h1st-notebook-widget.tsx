@@ -406,6 +406,22 @@ export class H1stNotebookWidget extends ReactWidget
     return null;
   };
 
+  private restartKernel = async () => {
+    console.log("restarting Kernel");
+
+    const answer = await this.messageService.info(
+      "Do you want to restart the current kernel? All variables will be lost.",
+      "No",
+      "Yes"
+    );
+    if (answer === "Yes") {
+      if (this._session.kernel) {
+        await this._session.kernel.restart();
+        this.messageService.info("Kernel restarted", { timeout: 4000 });
+      }
+    }
+  };
+
   private executeQueue = async () => {
     const state = this.store.getState();
 
@@ -489,6 +505,7 @@ export class H1stNotebookWidget extends ReactWidget
       getAutoCompleteItems: this.getAutoCompleteItems,
       executeCodeCell: this.executeCodeCell,
       executeQueue: this.executeQueue,
+      restartKernel: this.restartKernel,
     };
 
     return (
