@@ -191,9 +191,9 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async onAfterAttach(msg: Message): Promise<void> {
     super.onAfterAttach(msg);
-    if (this.isVisible && !this._initialized) {
-      await this.init();
-    } else {
+    if (this.isVisible) {
+      if (!this._initialized) await this.init();
+
       this.update();
     }
   }

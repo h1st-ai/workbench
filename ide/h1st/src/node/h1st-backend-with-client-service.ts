@@ -105,7 +105,7 @@ export class H1stBackendWithClientServiceImpl
       wsUrl: process.env.JUPYTER_WS_URL || "ws://localhost:8888",
       token: process.env.JUPYTER_TOKEN || "",
       cache: process.env.JUPYTER_CACHE || "no-store",
-      credentials: process.env.JUPYTER_CREDENTIAL_POLICY || "omit",
+      credentials: process.env.JUPYTER_CREDENTIAL_POLICY || "same-origin",
     };
 
     console.log("getNotebookServerConfig", result);
