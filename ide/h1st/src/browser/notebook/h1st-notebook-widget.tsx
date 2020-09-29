@@ -54,7 +54,7 @@ export class H1stNotebookWidget extends ReactWidget
   ) {
     super();
     this.store = configureStore({ reducer, devTools: true });
-    // this.store.subscribe(this.onStoreChange);
+    this.store.subscribe(this.onStoreChange);
 
     const resource: Resource = {
       uri,
