@@ -79,8 +79,6 @@ export class H1stBackendWithClientServiceImpl
       }
     );
 
-    console.log(notebooks, pythonFiles);
-
     const result = {
       files: [
         {
@@ -106,9 +104,11 @@ export class H1stBackendWithClientServiceImpl
       appUrl: process.env.JUPYTER_APP_URL || "http://localhost:8888",
       wsUrl: process.env.JUPYTER_WS_URL || "ws://localhost:8888",
       token: process.env.JUPYTER_TOKEN || "",
-      cache: process.env.JUPYTER_CACHE || "no-cache",
-      credentials: process.env.JUPYTER_CREDENTIAL_POLICY || "include",
+      cache: process.env.JUPYTER_CACHE || "no-store",
+      credentials: process.env.JUPYTER_CREDENTIAL_POLICY || "omit",
     };
+
+    console.log("getNotebookServerConfig", result);
 
     return new Promise<INotebookServerConfig>((resolve, reject) => {
       this.client
@@ -146,8 +146,6 @@ export class H1stBackendWithClientServiceImpl
       (f: string) =>
         !f.startsWith(".") && statSync(join(WORKSPACE_PATH, f)).isDirectory()
     );
-
-    console.log("pre filtered dir", dirs);
 
     if (dirs.length > 0) {
       console.log("default space ", `${WORKSPACE_PATH}/${dirs[0]}`);

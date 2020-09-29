@@ -9,7 +9,7 @@ import NotebookContext from "../../context";
 // const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
-function CellInput({ model }: any) {
+export default function CellInput({ model }: any) {
   let editorHeight: number;
 
   const dispatch = useDispatch();
@@ -288,5 +288,3 @@ function CellInput({ model }: any) {
 
   return renderInput();
 }
-
-export default React.forwardRef(CellInput);

@@ -36,7 +36,7 @@ export class NotebookModel implements Saveable {
   }
 
   set dirty(value: boolean) {
-    this._dirty = true;
+    this._dirty = value;
   }
 
   get value(): any {
