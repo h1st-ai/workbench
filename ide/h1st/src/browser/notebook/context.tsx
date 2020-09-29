@@ -5,10 +5,7 @@ const noop = () => console.log("noop");
 
 const defaultValue: INotebookContext = {
   saveNotebook: noop,
-  getAutoCompleteItems: noop,
-  executeQueue: noop,
-  restartKernel: noop,
-  executeCodeCell: noop,
+  manager: null,
 };
 
 const NotebookContext = React.createContext(defaultValue);

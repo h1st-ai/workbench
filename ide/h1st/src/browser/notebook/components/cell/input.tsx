@@ -67,7 +67,7 @@ export default function CellInput({ model, width, height }: any) {
         });
         console.log("current offset", offset);
 
-        await context.getAutoCompleteItems(
+        await context.manager?.getAutoCompleteItems(
           editorRef.current?.getValue(),
           offset
         );

@@ -1,4 +1,5 @@
 import { ThemeType } from "@theia/core/lib/browser/theming";
+import { NotebookManager } from "../notebook_manager";
 
 export interface ICell {}
 
@@ -63,8 +64,5 @@ export enum CELL_TYPE {
 
 export interface INotebookContext {
   saveNotebook: Function;
-  getAutoCompleteItems: Function;
-  executeCodeCell: Function;
-  executeQueue: Function;
-  restartKernel: Function;
+  manager: NotebookManager | null;
 }

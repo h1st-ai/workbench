@@ -23,7 +23,7 @@ export default function Toolbar() {
   }
 
   const doRestartKernel = async (ev: any) => {
-    await context.restartKernel();
+    await context.manager?.restartKernel();
   };
 
   return (

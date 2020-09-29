@@ -80,7 +80,7 @@ export function NotebookCell(props: INotebookProps) {
     dispatch(setSelectedCell({ id: model.id }));
     dispatch(addCellToQueue({ id: model.id }));
 
-    context.executeQueue();
+    context.manager?.executeQueue();
 
     ev.stopPropagation();
     ev.preventDefault();
