@@ -411,7 +411,7 @@ export class H1stNotebookWidget extends ReactWidget
     console.log("restarting Kernel");
 
     const answer = await this.messageService.info(
-      ApplicationLabels.MSG_KERNEL_RESTART_CONFIRM,
+      ApplicationLabels.KERNEL.MSG_RESTART,
       "No",
       "Yes"
     );
@@ -420,12 +420,12 @@ export class H1stNotebookWidget extends ReactWidget
         try {
           await this._session.kernel.restart();
           this.messageService.info(
-            ApplicationLabels.MSG_KERNEL_RESTART_SUCCESS,
+            ApplicationLabels.KERNEL.MSG_RESTART_SUCCESS,
             { timeout: 4000 }
           );
         } catch (ex) {
           this.messageService.error(
-            ApplicationLabels.MSG_KERNEL_RESTART_FAILURE
+            ApplicationLabels.KERNEL.MSG_RESTART_FAILURE
           );
         }
       }
