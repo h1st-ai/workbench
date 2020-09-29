@@ -287,6 +287,7 @@ export class NotebookManager {
       code = this.getSourceCodeFromId(cellId, state.notebook);
 
       if (code) {
+        this.scrollTo(`#cell-${cellId}`);
         await this.store.dispatch(setSelectedCell({ cellId }));
         await this.executeCodeCell(code, cellId);
         // remove the first cell from queue
@@ -404,9 +405,14 @@ export class NotebookManager {
     if (node) {
       // node is not visible when offsetTop + node.height > widget.height
       // or when node.offsetTop > widget.scrollTop + widget.height
+
+      // but the thing can be partial visible, we want to add some padding
+      const padding = -50;
+
       notVisible =
-        node.offsetTop + node.clientHeight < this.widget.scrollTop ||
-        node.offsetTop > this.widget.scrollTop + this.widget.clientHeight;
+        node.offsetTop + node.clientHeight + padding < this.widget.scrollTop ||
+        node.offsetTop >
+          this.widget.scrollTop + this.widget.clientHeight + padding;
     }
 
     return !notVisible;
