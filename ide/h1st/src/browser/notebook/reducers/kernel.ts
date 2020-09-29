@@ -6,7 +6,6 @@ const initialState: IKernel = {
   currentKernel: undefined,
   connectionStatus: "disconnected",
   status: "disconnected",
-  executionQueue: [],
 };
 
 export const KernelSlice = createSlice({
@@ -25,12 +24,6 @@ export const KernelSlice = createSlice({
     },
     setKernelConnectionStatus: (state, { payload }): void => {
       state.connectionStatus = payload;
-    },
-    addCellToQueue: (state, { payload }): void => {
-      state.executionQueue.push(payload.id);
-    },
-    removeCellFromQueue: (state): void => {
-      state.executionQueue.shift();
     },
   },
 });

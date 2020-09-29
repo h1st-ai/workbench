@@ -252,11 +252,37 @@ export class NotebookManager {
     }
   };
 
-  executeQueue = async () => {
+  executeCells = async (input: string | number) => {
+    const { addCellsAfterIndexToQueue, addCellRangeToQueue } = notebookActions;
     const state = this.store.getState();
 
+    switch (typeof input) {
+      case "number":
+        await this.store.dispatch(
+          addCellsAfterIndexToQueue({ startIndex: input })
+        );
+        break;
+
+      default:
+        await this.store.dispatch(addCellRangeToQueue({ cellId: input }));
+        break;
+    }
+
+    if (
+      state.kernel.connectionStatus === "connected" &&
+      state.kernel.status === "idle"
+    ) {
+      await this.executeQueue();
+    }
+  };
+
+  // TODO: Refactor this function not to mutate store directly
+  executeQueue = async () => {
+    const state = this.store.getState();
+    const { removeCellFromQueue, setSelectedCell } = notebookActions;
+
     // const kernelStatus = state.kernel.status;
-    const exeQueue = state.kernel.executionQueue;
+    const exeQueue = state.notebook.executionQueue;
 
     if (exeQueue.length > 0) {
       console.log("execute next cell");
@@ -266,11 +292,16 @@ export class NotebookManager {
       code = this.getSourceCodeFromId(cellId, state.notebook);
 
       if (code) {
+        await this.store.dispatch(setSelectedCell({ id: cellId }));
         await this.executeCodeCell(code, cellId);
         // remove the first cell from queue
-
-        await this.executeQueue();
+      } else {
+        // if the code is empty, Jupyter will note execute anything, we have to remove it manually
+        await this.store.dispatch(removeCellFromQueue());
       }
+
+      // process the next item in the queue
+      await this.executeQueue();
     }
   };
 
@@ -316,7 +347,7 @@ export class NotebookManager {
 
       future.onReply = async (msg) => {
         console.log("Execution completed", msg);
-        const { removeCellFromQueue } = kernelActions;
+        const { removeCellFromQueue } = notebookActions;
         await this.store.dispatch(removeCellFromQueue());
         // await this.store.dispatch(updateCellExecutionCount({ cellId }));
       };

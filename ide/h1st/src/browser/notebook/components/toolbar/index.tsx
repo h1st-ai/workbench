@@ -65,11 +65,15 @@ export default function Toolbar() {
     await context.manager?.restartKernel();
   };
 
+  const executeAll = async () => {
+    await context.manager?.executeCells(0);
+  };
+
   return (
     <div className="toolbar">
       <ul>
         <li>
-          <button>
+          <button onClick={executeAll}>
             <Icon width={16} height={16} icon="fast-forward" />
           </button>
         </li>

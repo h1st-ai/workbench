@@ -11,6 +11,7 @@ const initialState: INotebook = {
   selectedCell: null,
   activeCell: null,
   activeTheme: null,
+  executionQueue: [],
 };
 
 const selectCell = (state: any, cellId: string) => {
@@ -95,20 +96,6 @@ export const NotebookSlice = createSlice({
         cell.outputs = [];
       }
     },
-    // updateCellExecutionCount: (state, { payload }): void => {
-    //   const { cellId } = payload;
-
-    //   let cell = selectCell(state, cellId);
-
-    //   if (cell) {
-    //     if (!cell.execution_count) {
-    //       cell.execution_count = 1;
-    //     } else {
-    //       cell.execution_count = cell.execution_count + 1;
-    //     }
-    //   }
-    // },
-
     updateCellOutput: (state, { payload }): void => {
       const { cellId, output } = payload;
 
@@ -161,7 +148,6 @@ export const NotebookSlice = createSlice({
         }
       }
     },
-
     deleteCell: (state, { payload }): void => {
       const { cellId } = payload;
 
@@ -171,7 +157,6 @@ export const NotebookSlice = createSlice({
         state.cells.splice(cellIndex, 1);
       }
     },
-
     moveCellUp: (state, { payload }): void => {
       const cellIndex = getCellIndex(state, payload.cellId);
 
@@ -182,7 +167,6 @@ export const NotebookSlice = createSlice({
         }
       }
     },
-
     moveCellDown: (state, { payload }): void => {
       const cellIndex = getCellIndex(state, payload.cellId);
 
@@ -193,7 +177,6 @@ export const NotebookSlice = createSlice({
         }
       }
     },
-
     insertCellBefore: (state, { payload }): void => {
       const { cell, cellId } = payload;
 
@@ -212,6 +195,42 @@ export const NotebookSlice = createSlice({
       if (cellIndex !== null) {
         state.cells.splice(cellIndex + 1, 0, cell);
       }
+    },
+    addCellToQueue: (state, { payload }): void => {
+      state.executionQueue = state.executionQueue.concat(payload.id);
+    },
+    removeCellFromQueue: (state): void => {
+      state.executionQueue.shift();
+    },
+    addCellRangeToQueue: (state, { payload }): void => {
+      const { cellId } = payload;
+      let startIndex: number | null = 0;
+
+      if (cellId) {
+        startIndex = getCellIndex(state, cellId);
+
+        if (!startIndex) {
+          startIndex = 0;
+        }
+      }
+
+      const excutingCells: string[] = [];
+      for (let i = startIndex; i < state.cells.length; i++) {
+        excutingCells.push(state.cells[i].id);
+      }
+
+      state.executionQueue = state.executionQueue.concat(excutingCells);
+    },
+    addCellsAfterIndexToQueue: (state, { payload }): void => {
+      console.log("addCellsAfterIndexToQueue");
+      const { startIndex } = payload;
+
+      const excutingCells: string[] = [];
+      for (let i = startIndex; i < state.cells.length; i++) {
+        excutingCells.push(state.cells[i].id);
+      }
+
+      state.executionQueue = state.executionQueue.concat(excutingCells);
     },
   },
 });

@@ -16,6 +16,7 @@ export interface INotebook {
   selectedCell: string | null;
   activeCell: string | null;
   activeTheme: Theme | null;
+  executionQueue: string[];
 }
 
 export interface INotebookWidget {
@@ -27,7 +28,6 @@ export interface IKernel {
   currentKernel: any | undefined;
   connectionStatus: string;
   status: string;
-  executionQueue: string[];
 }
 
 export interface IStore {
@@ -47,7 +47,7 @@ export interface ICellModel {
   source: string[];
   cell_type: "markdown" | "code" | "raw";
   metadata: any;
-  id?: string;
+  id: string;
   outputs: any[];
   execution_count?: number;
 }

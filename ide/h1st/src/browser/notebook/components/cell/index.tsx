@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, ICellModel, IStore } from "../../types";
 import CellInput from "./input";
 import CellOuput from "./output";
-import { kernelActions } from "../../reducers/kernel";
+// import { kernelActions } from "../../reducers/kernel";
 import NotebookContext from "../../context";
 
 const uniqid = require("uniqid");
@@ -37,15 +37,12 @@ export function NotebookCell(props: INotebookProps) {
     moveCellUp,
     moveCellDown,
     insertCellAfter,
+    addCellToQueue,
   } = notebookActions;
-  const { addCellToQueue } = kernelActions;
-  const {
-    executionQueue,
-    currentKernel,
-    connectionStatus,
-    status: kernelStatus,
-  } = useSelector((store: IStore) => store.kernel);
-  const { selectedCell, activeCell } = useSelector(
+  const { currentKernel, connectionStatus, status: kernelStatus } = useSelector(
+    (store: IStore) => store.kernel
+  );
+  const { selectedCell, activeCell, executionQueue } = useSelector(
     (store: IStore) => store.notebook
   );
   const context = React.useContext(NotebookContext);
