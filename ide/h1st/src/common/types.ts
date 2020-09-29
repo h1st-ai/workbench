@@ -17,5 +17,7 @@ export type INotebookServerConfig = {
   appUrl: string;
   wsUrl: string;
   token: string;
-  init: INotebookServerInit;
+  init?: INotebookServerInit;
+  cache: string;
+  credentials: string;
 };

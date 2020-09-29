@@ -106,7 +106,8 @@ export class H1stBackendWithClientServiceImpl
       appUrl: process.env.JUPYTER_APP_URL || "http://localhost:8888",
       wsUrl: process.env.JUPYTER_WS_URL || "ws://localhost:8888",
       token: process.env.JUPYTER_TOKEN || "",
-      init: { cache: "no-store", credentials: "same-origin" },
+      cache: process.env.JUPYTER_CACHE || "no-cache",
+      credentials: process.env.JUPYTER_CREDENTIAL_POLICY || "include",
     };
 
     return new Promise<INotebookServerConfig>((resolve, reject) => {

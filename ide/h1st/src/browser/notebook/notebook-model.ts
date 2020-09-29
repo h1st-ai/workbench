@@ -6,8 +6,9 @@ import {
   ResourceError,
 } from "@theia/core";
 import { Saveable } from "@theia/core/lib/browser";
-import nextId from "react-id-generator";
 import { ICellModel } from "./types";
+
+const uniqid = require("uniqid");
 
 export class NotebookModel implements Saveable {
   autoSave: "on" | "off" = "on";
@@ -53,7 +54,7 @@ export class NotebookModel implements Saveable {
       try {
         console.log("notebookContent", value);
         const notebookContent = JSON.parse(value);
-        notebookContent.cells.map((c: ICellModel) => (c.id = nextId()));
+        notebookContent.cells.map((c: ICellModel) => (c.id = uniqid()));
         this._model = notebookContent;
       } catch (ex) {
         console.error(ex);
@@ -132,7 +133,7 @@ export class NotebookModel implements Saveable {
 const defaultNotebookModel = {
   cells: [
     {
-      id: nextId(),
+      id: uniqid(),
       cell_type: "code",
       execution_count: null,
       metadata: {},

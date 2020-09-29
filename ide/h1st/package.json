@@ -28,10 +28,10 @@
     "lodash.debounce": "^4.0.8",
     "monaco-editor": "0.20.0",
     "plotly.js-dist": "1.55.2",
-    "react-id-generator": "3.0.1",
     "react-redux": "7.2.1",
     "redux": "4.0.5",
-    "styled-components": "5.2.0"
+    "styled-components": "5.2.0",
+    "uniqid": "^5.2.0"
   },
   "devDependencies": {
     "@types/classnames": "2.2.10",

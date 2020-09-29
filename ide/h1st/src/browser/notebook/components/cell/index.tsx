@@ -8,14 +8,8 @@ import CellInput from "./input";
 import CellOuput from "./output";
 import { kernelActions } from "../../reducers/kernel";
 import NotebookContext from "../../context";
-import nextId from "react-id-generator";
-// import {
-//   Input,
-//   Prompt,
-//   Source,
-//   Outputs,
-//   Cell,
-// } from "@nteract/presentational-components";
+
+const uniqid = require("uniqid");
 
 const CELL_CODE = "code";
 const CELL_MD = "markdown";
@@ -143,7 +137,7 @@ export function NotebookCell(props: INotebookProps) {
     ev.stopPropagation();
     ev.preventDefault();
 
-    const newId = nextId();
+    const newId = uniqid();
     dispatch(
       insertCellAfter({
         cellId: model.id,

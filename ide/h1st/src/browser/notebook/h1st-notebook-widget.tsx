@@ -202,7 +202,12 @@ export class H1stNotebookWidget extends ReactWidget
     // intialize jupyter server settings
     this._serverSettings = {
       ...serverConfig,
-      init: { cache: "no-store", credentials: "same-origin" },
+      init: {
+        // @ts-ignore
+        cache: serverConfig.cache,
+        // @ts-ignore
+        credentials: serverConfig.credentials,
+      },
       fetch: FETCH,
       Headers: HEADERS,
       Request: REQUEST,
@@ -470,8 +475,8 @@ export class H1stNotebookWidget extends ReactWidget
       future.onReply = async (msg) => {
         console.log("Execution completed", msg);
         const { removeCellFromQueue } = kernelActions;
-        await this.store.dispatch(updateCellExecutionCount({ cellId }));
         await this.store.dispatch(removeCellFromQueue());
+        await this.store.dispatch(updateCellExecutionCount({ cellId }));
       };
 
       await future.done;

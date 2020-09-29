@@ -88,11 +88,11 @@ export const NotebookSlice = createSlice({
     clearCellOutput: (state, { payload }): void => {
       const { cellId } = payload;
 
-      for (let i = 0; i < state.cells.length; i++) {
-        if (cellId === state.cells[i].id) {
-          state.cells[i].outputs = [];
-          break;
-        }
+      const cell = selectCell(state, cellId);
+
+      if (cell) {
+        console.log("clearning cell output", cellId);
+        cell.outputs = [];
       }
     },
     updateCellExecutionCount: (state, { payload }): void => {
