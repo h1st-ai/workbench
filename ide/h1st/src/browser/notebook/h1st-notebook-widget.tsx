@@ -161,7 +161,7 @@ export class H1stNotebookWidget extends ReactWidget
     return this.uri;
   }
   createMoveToUri(resourceUri: URI): URI | undefined {
-    return new URI("test2");
+    return resourceUri;
   }
 
   protected onResize(msg: Widget.ResizeMessage): void {
