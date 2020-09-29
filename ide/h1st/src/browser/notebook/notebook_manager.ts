@@ -99,7 +99,7 @@ export class NotebookManager {
     if (this._session && this._session.kernel) {
       this._sessionManager.runningChanged.connect((_, kernels) => {
         // @ts-ignore
-        this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
+        // this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
         console.log("Kernel status:", kernels);
       });
 
@@ -107,6 +107,23 @@ export class NotebookManager {
         // @ts-ignore
         this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
         this.messageService.warn("Kernel disconnect");
+      });
+
+      this._session.kernelChanged.connect((_, val) => {
+        this.messageService.warn("Kernel changed");
+        console.log("Kernel changed", val);
+      });
+
+      this._session.statusChanged.connect((_, status) => {
+        this.messageService.warn("Session connect status changed");
+        console.log("Session status changed", status);
+        this.setCurrentKernelStatus(status);
+      });
+
+      this._session.statusChanged.disconnect((_, status) => {
+        this.messageService.warn("Session disconnect status changed");
+        console.log("Session status changed", status);
+        this.setCurrentKernelStatus(status);
       });
     }
   }
