@@ -83,6 +83,10 @@ export function NotebookCell(props: INotebookProps) {
     dispatch(setSelectedCell({ cellId: model.id }));
     dispatch(addCellToQueue({ cellId: model.id }));
 
+    console.log(
+      "cell added",
+      connectionStatus === "connected" && kernelStatus === "idle"
+    );
     if (connectionStatus === "connected" && kernelStatus === "idle") {
       context.manager?.executeQueue();
     }

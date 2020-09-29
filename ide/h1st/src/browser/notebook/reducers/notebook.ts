@@ -213,7 +213,7 @@ export const NotebookSlice = createSlice({
       }
     },
     addCellToQueue: (state, { payload }): void => {
-      state.executionQueue = state.executionQueue.concat(payload.id);
+      state.executionQueue = state.executionQueue.concat(payload.cellId);
     },
     removeCellFromQueue: (state): void => {
       state.executionQueue.shift();
