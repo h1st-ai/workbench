@@ -45,7 +45,7 @@ export default function CellInput({ model, width, height }: any) {
     editorRef.current = monacoEditor;
 
     if (editorRef.current) {
-      editorRef.current.setValue(model.source.join("\n"));
+      editorRef.current.setValue(model.source.join(""));
     }
 
     setTimeout(() => {
@@ -57,20 +57,22 @@ export default function CellInput({ model, width, height }: any) {
       updateEditorHeight();
       updateCellContent();
 
-      const cursorPos = editorRef.current?.getPosition();
-      const model = editorRef.current?.getModel();
+      if (model.cell_type === CELL_TYPE.CODE) {
+        const cursorPos = editorRef.current?.getPosition();
+        const model = editorRef.current?.getModel();
 
-      if (cursorPos && model) {
-        const offset = model.getOffsetAt({
-          lineNumber: cursorPos.lineNumber,
-          column: cursorPos.column,
-        });
-        console.log("current offset", offset);
+        if (cursorPos && model) {
+          const offset = model.getOffsetAt({
+            lineNumber: cursorPos.lineNumber,
+            column: cursorPos.column,
+          });
+          console.log("current offset", offset);
 
-        await context.manager?.getAutoCompleteItems(
-          editorRef.current?.getValue(),
-          offset
-        );
+          await context.manager?.getAutoCompleteItems(
+            editorRef.current?.getValue(),
+            offset
+          );
+        }
       }
     });
 
@@ -87,11 +89,12 @@ export default function CellInput({ model, width, height }: any) {
 
   function updateCellContent() {
     const editor = editorRef.current;
-    console.log("editor", editor);
 
     if (editor) {
       const code = editor.getValue();
       const cellId = model.id;
+
+      console.log("updating cell input", code.split("\n"));
 
       dispatch(setCellInput({ code, cellId }));
     }

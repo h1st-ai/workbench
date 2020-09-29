@@ -69,6 +69,10 @@ export default function Toolbar() {
     await context.manager?.interrupKernel();
   };
 
+  const clearAllCellOutputs = async () => {
+    await context.manager?.clearAllCellOutput();
+  };
+
   return (
     <div className="toolbar">
       <ul>
@@ -102,7 +106,7 @@ export default function Toolbar() {
         </li>
 
         <li>
-          <button>
+          <button onClick={clearAllCellOutputs}>
             <Icon width={24} height={24} icon="cell-clear" />
           </button>
         </li>

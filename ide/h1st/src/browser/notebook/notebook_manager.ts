@@ -213,6 +213,12 @@ export class NotebookManager {
     await this.store.dispatch(clearQueue());
   }
 
+  async clearAllCellOutput() {
+    const { clearCellOutputs } = notebookActions;
+
+    await this.store.dispatch(clearCellOutputs());
+  }
+
   restartKernel = async () => {
     console.log("restarting Kernel");
 

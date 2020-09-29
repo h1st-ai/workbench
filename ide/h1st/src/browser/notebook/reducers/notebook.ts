@@ -68,11 +68,11 @@ export const NotebookSlice = createSlice({
       for (let i = 0; i < state.cells.length; i++) {
         if (cellId === state.cells[i].id) {
           console.log("setCellInput", code);
-          state.cells[i].source = code.split("\n");
+          const content = code.split("\n");
 
-          // state.cells[i].source = content.map((line: string, index: number) =>
-          //   index < state.cells.length - 1 ? line + "\n" : line
-          // );
+          state.cells[i].source = content.map((line: string, index: number) =>
+            index < content.length - 1 ? line + "\n" : line
+          );
         }
       }
     },
@@ -95,6 +95,14 @@ export const NotebookSlice = createSlice({
         console.log("clearning cell output", cellId);
         cell.outputs = [];
       }
+    },
+    clearCellOutputs: (state): void => {
+      const cells = state.cells.map((cell) => ({
+        ...cell,
+        outputs: [],
+      }));
+
+      state.cells = cells;
     },
     updateCellOutput: (state, { payload }): void => {
       const { cellId, output } = payload;
