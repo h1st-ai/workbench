@@ -44,6 +44,7 @@ import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
 import { NotebookModel } from "./notebook-model";
+import { ApplicationLabels } from "./labels";
 
 const equal = require("fast-deep-equal");
 
@@ -410,14 +411,23 @@ export class H1stNotebookWidget extends ReactWidget
     console.log("restarting Kernel");
 
     const answer = await this.messageService.info(
-      "Do you want to restart the current kernel? All variables will be lost.",
+      ApplicationLabels.MSG_KERNEL_RESTART_CONFIRM,
       "No",
       "Yes"
     );
     if (answer === "Yes") {
       if (this._session.kernel) {
-        await this._session.kernel.restart();
-        this.messageService.info("Kernel restarted", { timeout: 4000 });
+        try {
+          await this._session.kernel.restart();
+          this.messageService.info(
+            ApplicationLabels.MSG_KERNEL_RESTART_SUCCESS,
+            { timeout: 4000 }
+          );
+        } catch (ex) {
+          this.messageService.error(
+            ApplicationLabels.MSG_KERNEL_RESTART_FAILURE
+          );
+        }
       }
     }
   };
