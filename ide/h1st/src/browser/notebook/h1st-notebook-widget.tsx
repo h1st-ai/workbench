@@ -72,10 +72,6 @@ export class H1stNotebookWidget extends ReactWidget
       this.h1stBackendClient,
       this.messageService
     );
-
-    this.onScrollUp((ev) => {
-      console.log("scrolling", ev);
-    });
   }
 
   onStoreChange = () => {

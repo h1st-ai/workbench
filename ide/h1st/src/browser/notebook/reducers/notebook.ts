@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 //   EXECUTE_CELL
 // } from '../const';
 
-import { INotebook, IStore } from "../types";
+import { CELL_TYPE, INotebook, IStore } from "../types";
 
 const initialState: INotebook = {
   cells: [],
@@ -224,7 +224,9 @@ export const NotebookSlice = createSlice({
 
       const excutingCells: string[] = [];
       for (let i = startIndex; i < state.cells.length; i++) {
-        excutingCells.push(state.cells[i].id);
+        if (state.cells[i].cell_type === CELL_TYPE.CODE) {
+          excutingCells.push(state.cells[i].id);
+        }
       }
 
       state.executionQueue = state.executionQueue.concat(excutingCells);
@@ -235,7 +237,9 @@ export const NotebookSlice = createSlice({
 
       const excutingCells: string[] = [];
       for (let i = startIndex; i < state.cells.length; i++) {
-        excutingCells.push(state.cells[i].id);
+        if (state.cells[i].cell_type === CELL_TYPE.CODE) {
+          excutingCells.push(state.cells[i].id);
+        }
       }
 
       state.executionQueue = state.executionQueue.concat(excutingCells);
