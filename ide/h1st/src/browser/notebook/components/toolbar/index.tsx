@@ -5,7 +5,7 @@ import { IStore } from "../../types";
 import NotebookContext from "../../context";
 
 export default function Toolbar() {
-  const { currentKernel, connectionStatus } = useSelector(
+  const { currentKernel, connectionStatus, status } = useSelector(
     (store: IStore) => store.kernel
   );
 
@@ -16,7 +16,8 @@ export default function Toolbar() {
       return (
         <div className="kernel-info-wrapper">
           <span>Kernel: {currentKernel.display_name}</span> |{" "}
-          <span>Status: {connectionStatus}</span>
+          <span>Status: {status}</span> |
+          <span>Connection: {connectionStatus}</span>
         </div>
       );
     }

@@ -21,6 +21,9 @@ export const KernelSlice = createSlice({
       console.log("listKernel");
     },
     setKernelStatus: (state, { payload }): void => {
+      state.status = payload;
+    },
+    setKernelConnectionStatus: (state, { payload }): void => {
       state.connectionStatus = payload;
     },
     addCellToQueue: (state, { payload }): void => {

@@ -97,33 +97,54 @@ export class NotebookManager {
 
   protected async initializeKernelEventHandler(): Promise<void> {
     if (this._session && this._session.kernel) {
-      this._sessionManager.runningChanged.connect((_, kernels) => {
-        // @ts-ignore
-        // this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
-        console.log("Kernel status:", kernels);
-      });
+      // this._sessionManager.runningChanged.connect((_, kernels) => {
+      //   // @ts-ignore
+      //   // this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
+      //   console.log("Kernel connect status:", kernels);
+      // });
 
-      this._session.kernel.statusChanged.disconnect((_, kernels) => {
-        // @ts-ignore
-        this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
-        this.messageService.warn("Kernel disconnect");
-      });
+      // this._session.kernel.statusChanged.disconnect((_, kernels) => {
+      //   // @ts-ignore
+      //   // this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
+
+      //   console.log("Kernel disconnect status:", kernels);
+      // });
 
       this._session.kernelChanged.connect((_, val) => {
         this.messageService.warn("Kernel changed");
-        console.log("Kernel changed", val);
+        console.log("Session kernel changed", val);
       });
 
       this._session.statusChanged.connect((_, status) => {
         this.messageService.warn("Session connect status changed");
-        console.log("Session status changed", status);
+        console.log("Session connect status changed", status);
         this.setCurrentKernelStatus(status);
       });
 
       this._session.statusChanged.disconnect((_, status) => {
-        this.messageService.warn("Session disconnect status changed");
-        console.log("Session status changed", status);
+        this.messageService.error(
+          "Session disconnect status changed",
+          "OK",
+          "Reconnect"
+        );
+        console.log("Session disconnect status changed", status);
         this.setCurrentKernelStatus(status);
+      });
+
+      this._session.connectionStatusChanged.connect((_, status) => {
+        this.messageService.info("Session connect status changed", "OK");
+        console.log("Session connect status changed", _, status);
+        this.setCurrentKernelConnectionStatus(status);
+      });
+
+      this._session.connectionStatusChanged.disconnect((_, status) => {
+        this.messageService.error(
+          "Session disconnect status changed",
+          "OK",
+          "Reconnect"
+        );
+
+        this.setCurrentKernelConnectionStatus(status);
       });
     }
   }
@@ -133,6 +154,22 @@ export class NotebookManager {
 
     this.store.dispatch(setKernelStatus(status));
   }
+
+  private setCurrentKernelConnectionStatus(status: string) {
+    const { setKernelConnectionStatus } = kernelActions;
+
+    this.store.dispatch(setKernelConnectionStatus(status));
+  }
+
+  // protected async reconnect(): Promise<void> {
+  //   try {
+  //     if (this._session) {
+  //       this._session.c
+  //     }
+  //   } catch (error) {
+
+  //   }
+  // }
 
   protected async createOrRestoreJupyterSession(): Promise<void> {
     try {

@@ -39,9 +39,12 @@ export function NotebookCell(props: INotebookProps) {
     insertCellAfter,
   } = notebookActions;
   const { addCellToQueue } = kernelActions;
-  const { executionQueue, currentKernel, connectionStatus } = useSelector(
-    (store: IStore) => store.kernel
-  );
+  const {
+    executionQueue,
+    currentKernel,
+    connectionStatus,
+    status: kernelStatus,
+  } = useSelector((store: IStore) => store.kernel);
   const { selectedCell, activeCell } = useSelector(
     (store: IStore) => store.notebook
   );
@@ -79,7 +82,7 @@ export function NotebookCell(props: INotebookProps) {
     dispatch(setSelectedCell({ id: model.id }));
     dispatch(addCellToQueue({ id: model.id }));
 
-    if (connectionStatus === "idle") {
+    if (connectionStatus === "connected" && kernelStatus === "idle") {
       context.manager?.executeQueue();
     }
 
