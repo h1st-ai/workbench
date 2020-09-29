@@ -150,6 +150,47 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .toolbar .kernel-info-wrapper {
   margin-right: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.toolbar .kernel-info-wrapper div {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background: var(--theia-editorWidget-background);
+  position: relative;
+  margin-left: 8px;
+}
+
+.toolbar .kernel-info-wrapper div:first-child {
+  padding-left: 32px;
+}
+
+.toolbar .kernel-info-wrapper .connection-icon {
+  display: block;
+  position: absolute;
+  left: 11px;
+}
+.toolbar .kernel-info-wrapper .connection-icon.connected svg {
+  fill: #89d185 !important;
+}
+.toolbar .kernel-info-wrapper .connection-icon.disconnected svg {
+  fill: #f48771 !important;
+}
+.toolbar .kernel-info-wrapper .connection-icon svg {
+  fill: var(--theia-foreground);
+}
+
+.kernel-status {
+  display: block;
+  text-indent: -99999px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid;
+  border-radius: 50%;
+  margin-left: 8px;
 }
 
 .toolbar ul {
@@ -346,6 +387,14 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-output-wrapper {
   padding: 8px 0px 0px 0px;
+}
+
+.cell-output-wrapper .markdown-body blockquote {
+  border: none;
+  border-left: 5px solid var(--theia-textBlockQuote-border);
+  margin: 0px;
+  padding: 8px 16px;
+  background: var(--theia-editorIndentGuide-background);
 }
 
 .cell-output-wrapper pre {

@@ -97,24 +97,12 @@ export class NotebookManager {
 
   protected async initializeKernelEventHandler(): Promise<void> {
     if (this._session && this._session.kernel) {
-      // this._sessionManager.runningChanged.connect((_, kernels) => {
-      //   // @ts-ignore
-      //   // this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
-      //   console.log("Kernel connect status:", kernels);
-      // });
-
-      // this._session.kernel.statusChanged.disconnect((_, kernels) => {
-      //   // @ts-ignore
-      //   // this.setCurrentKernelStatus(kernels[0].kernel?.execution_state);
-
-      //   console.log("Kernel disconnect status:", kernels);
-      // });
-
+      // Fire when kernel changed. Eg: server goes down and up again
       this._session.kernelChanged.connect((_, val) => {
-        this.messageService.warn("Kernel changed");
         console.log("Session kernel changed", val);
       });
 
+      // The kernel statusChanged signal, proxied from the current kernel.
       this._session.statusChanged.connect((_, status) => {
         this.messageService.warn("Session connect status changed");
         console.log("Session connect status changed", status);
@@ -122,18 +110,12 @@ export class NotebookManager {
       });
 
       this._session.statusChanged.disconnect((_, status) => {
-        this.messageService.error(
-          "Session disconnect status changed",
-          "OK",
-          "Reconnect"
-        );
         console.log("Session disconnect status changed", status);
         this.setCurrentKernelStatus(status);
       });
 
       this._session.connectionStatusChanged.connect((_, status) => {
-        this.messageService.info("Session connect status changed", "OK");
-        console.log("Session connect status changed", _, status);
+        console.log("Session connect status changed", status);
         this.setCurrentKernelConnectionStatus(status);
       });
 
