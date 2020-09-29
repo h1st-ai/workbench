@@ -50,16 +50,7 @@ function JupyterKernel() {
 
 export default function Toolbar() {
   const context = React.useContext(NotebookContext);
-
-  function renderKernelInfo() {
-    return (
-      <div className="kernel-info-wrapper">
-        <JupyterServer />
-        <JupyterKernel />
-        {/* <span> | Connection: {connectionStatus}</span> */}
-      </div>
-    );
-  }
+  const { selectedCell } = useSelector((store: IStore) => store.notebook);
 
   const doRestartKernel = async (ev: any) => {
     await context.manager?.restartKernel();
@@ -67,6 +58,11 @@ export default function Toolbar() {
 
   const executeAll = async () => {
     await context.manager?.executeCells(0);
+  };
+
+  const executeAfter = async () => {
+    //@ts-ignore
+    await context.manager?.executeCells(selectedCell);
   };
 
   return (
@@ -78,7 +74,7 @@ export default function Toolbar() {
           </button>
         </li>
         <li>
-          <button>
+          <button disabled={!selectedCell} onClick={executeAfter}>
             <Icon width={16} height={16} icon="play-down" />
           </button>
         </li>
@@ -102,7 +98,10 @@ export default function Toolbar() {
         </li>
       </ul>
 
-      {renderKernelInfo()}
+      <div className="kernel-info-wrapper">
+        <JupyterServer />
+        <JupyterKernel />
+      </div>
     </div>
   );
 }
