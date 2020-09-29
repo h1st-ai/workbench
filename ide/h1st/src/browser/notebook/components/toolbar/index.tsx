@@ -1,4 +1,5 @@
 import * as React from "react";
+import stickybits from "stickybits";
 import Icon from "../icon";
 import { useSelector } from "react-redux";
 import { IStore } from "../../types";
@@ -39,18 +40,24 @@ function JupyterServer() {
 function JupyterKernel() {
   const { currentKernel } = useSelector((store: IStore) => store.kernel);
 
-  return (
-    currentKernel && (
+  if (currentKernel) {
+    return (
       <div>
         {currentKernel.display_name}: <KernelStatus />
       </div>
-    )
-  );
+    );
+  }
+  return null;
 }
 
 export default function Toolbar() {
   const context = React.useContext(NotebookContext);
   const { selectedCell } = useSelector((store: IStore) => store.notebook);
+
+  React.useEffect(() => {
+    // sticky position for toolbar
+    stickybits(".toolbar");
+  }, []);
 
   const doRestartKernel = async (ev: any) => {
     await context.manager?.restartKernel();
