@@ -65,6 +65,10 @@ export default function Toolbar() {
     await context.manager?.executeCells(selectedCell);
   };
 
+  const interruptKernel = async () => {
+    await context.manager?.interrupKernel();
+  };
+
   return (
     <div className="toolbar">
       <ul>
@@ -86,14 +90,20 @@ export default function Toolbar() {
         </li>
 
         <li>
+          <button className="btn-toolbar-stop" onClick={interruptKernel}>
+            <Icon width={16} height={16} icon="stop" />
+          </button>
+        </li>
+
+        <li>
           <button>
             <Icon width={24} height={24} icon="plus" />
           </button>
         </li>
 
         <li>
-          <button className="btn-toolbar-stop">
-            <Icon width={16} height={16} icon="stop" />
+          <button>
+            <Icon width={24} height={24} icon="cell-clear" />
           </button>
         </li>
       </ul>

@@ -232,6 +232,9 @@ export const NotebookSlice = createSlice({
 
       state.executionQueue = state.executionQueue.concat(excutingCells);
     },
+    clearQueue: (state): void => {
+      state.executionQueue = [];
+    },
   },
 });
 

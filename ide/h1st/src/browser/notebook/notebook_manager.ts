@@ -106,7 +106,7 @@ export class NotebookManager {
 
       // The kernel statusChanged signal, proxied from the current kernel.
       this._session.statusChanged.connect((_, status) => {
-        this.messageService.warn("Session connect status changed");
+        // this.messageService.warn("Session connect status changed");
         console.log("Session connect status changed", status);
         this.setCurrentKernelStatus(status);
       });
@@ -203,28 +203,14 @@ export class NotebookManager {
   }
 
   async interrupKernel() {
-    console.log("restarting Kernel");
+    this._session.kernel?.interrupt();
 
-    const answer = await this.messageService.info(
-      ApplicationLabels.KERNEL.MSG_RESTART,
-      "No",
-      "Yes"
-    );
-    if (answer === "Yes") {
-      if (this._session.kernel) {
-        try {
-          await this._session.kernel.restart();
-          this.messageService.info(
-            ApplicationLabels.KERNEL.MSG_RESTART_SUCCESS,
-            { timeout: 4000 }
-          );
-        } catch (ex) {
-          this.messageService.error(
-            ApplicationLabels.KERNEL.MSG_RESTART_FAILURE
-          );
-        }
-      }
-    }
+    this.messageService.info(ApplicationLabels.KERNEL.MSG_INTERRUPT, {
+      timeout: 3000,
+    });
+    const { clearQueue } = notebookActions;
+
+    await this.store.dispatch(clearQueue());
   }
 
   restartKernel = async () => {
