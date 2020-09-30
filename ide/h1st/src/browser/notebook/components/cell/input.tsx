@@ -1,10 +1,13 @@
 import * as React from "react";
+// import fuzzysearch from "fuzzysearch";
 // import Editor from "@monaco-editor/react";
 // import Editor from "./monaco-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 import NotebookContext from "../../context";
+
+const fuzzysearch = require("fuzzysearch");
 
 // const throttle = require("lodash.throttle");
 const debounce = require("lodash.debounce");
@@ -103,27 +106,29 @@ export default function CellInput({ model }: any) {
               wordUntilPosition.word.length - 1
             );
 
+            console.log("suggestions", suggestions);
+
             if (suggestions) {
-              return suggestions.map((match) => {
-                return {
+              return suggestions
+                .filter((match) => fuzzysearch(wordUntilPosition.word, match))
+                .map((match) => ({
                   label: match,
                   kind: monaco.languages.CompletionItemKind.Variable,
                   documentation: "",
                   insertText: match,
                   range: range,
-                };
-              });
+                }));
             } // endif
           } // end word at position
         }
       }
 
       return [];
-    }, 500);
+    }, 700);
 
     monaco.languages.registerCompletionItemProvider("python", {
       provideCompletionItems: async function(editorModel, position) {
-        console.log("Models", editorModel, editorModelId);
+        console.log("Models", editorModel.id, editorModelId);
         if (editorModel.id === editorModelId) {
           var word = editorModel.getWordUntilPosition(position);
 
