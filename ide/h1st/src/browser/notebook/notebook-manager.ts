@@ -153,16 +153,10 @@ export class NotebookManager {
     this.store.dispatch(setKernelConnectionStatus(status));
   }
 
-  // protected async reconnect(): Promise<void> {
-  //   try {
-  //     if (this._session) {
-  //       this._session.c
-  //     }
-  //   } catch (error) {
-
-  //   }
-  // }
-
+  /**
+   * create a new session to Jupyter notebook server. It will attempt to
+   * connect to the same session using the underlying uri
+   */
   protected async createOrRestoreJupyterSession(): Promise<void> {
     try {
       this._session = await this.initializeNewSession();
@@ -197,6 +191,9 @@ export class NotebookManager {
     }
   }
 
+  /**
+   * Initialize a new session to Jupyter notebook server
+   */
   protected async initializeNewSession(): Promise<Session.ISessionConnection> {
     const options: Session.ISessionOptions = {
       kernel: {
@@ -210,6 +207,9 @@ export class NotebookManager {
     return await this._sessionManager.startNew(options);
   }
 
+  /**
+   * Interrupt the current kernel
+   */
   async interrupKernel() {
     this._session.kernel?.interrupt();
 
@@ -227,6 +227,9 @@ export class NotebookManager {
     await this.store.dispatch(clearCellOutputs());
   }
 
+  /**
+   * Restart the current kernel
+   */
   restartKernel = async () => {
     console.log("restarting Kernel");
 
@@ -252,6 +255,13 @@ export class NotebookManager {
     }
   };
 
+  /**
+   * Execute the current cell in the queue.
+   *
+   * @param input - the index or the cell id from which the execution starts
+   * @returns none
+   *
+   */
   executeCells = async (input: string | number) => {
     const { addCellsAfterIndexToQueue, addCellRangeToQueue } = notebookActions;
     const state = this.store.getState();
@@ -276,7 +286,14 @@ export class NotebookManager {
     }
   };
 
-  // TODO: Refactor this function not to mutate store directly
+  /**
+   * Execute the all current cells in the queue.
+   *
+   * @returns none
+   *
+   * TODO: Refactor this function not to mutate store directly
+   *
+   */
   executeQueue = async () => {
     const state = this.store.getState();
     const { removeCellFromQueue, setSelectedCell } = notebookActions;
@@ -306,6 +323,28 @@ export class NotebookManager {
     }
   };
 
+  /**
+   * add a cell id to the queue and execute the queue if the kernel is idle
+   */
+  async addCellToQueueAndStart(cellId: string) {
+    const { setSelectedCell, addCellToQueue } = notebookActions;
+    const { connectionStatus, kernelStatus } = this.store.getState().notebook;
+
+    this.store.dispatch(setSelectedCell({ cellId }));
+    this.store.dispatch(addCellToQueue({ cellId }));
+
+    if (connectionStatus === "connected" && kernelStatus === "idle") {
+      await this.executeQueue();
+    }
+  }
+
+  /**
+   * Do execute a code cell by sending its code to Jupyter kernel and receive the response
+   *
+   * @param code - the code to be executed
+   * @param cellId - the code cell identifier to update the output
+   *
+   */
   protected executeCodeCell = async (code: string, cellId: string) => {
     if (code.trim() === "") {
       return;
@@ -358,6 +397,9 @@ export class NotebookManager {
     }
   };
 
+  /**
+   * get the source code of a cell identified by cellId
+   */
   private getSourceCodeFromId(cellId: string, state: INotebook): string | null {
     for (let i = 0; i < state.cells.length; i++) {
       if (cellId === state.cells[i].id) {

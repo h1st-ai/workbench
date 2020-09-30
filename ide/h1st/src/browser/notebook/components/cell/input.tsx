@@ -119,6 +119,7 @@ export default function CellInput({ model }: any) {
       });
 
       initEditorEventHandler(editorRef.current);
+      initEditorCommands(editorRef.current);
 
       // update the editor height to match the content
       setTimeout(() => {
@@ -217,6 +218,7 @@ export default function CellInput({ model }: any) {
       });
 
       initEditorEventHandler(editorRef.current);
+      initEditorCommands(editorRef.current);
 
       // update the editor height to match the content
       setTimeout(() => {
@@ -225,13 +227,8 @@ export default function CellInput({ model }: any) {
     }
   }
 
+  // bind editor to some events
   function initEditorEventHandler(editor: monaco.editor.IStandaloneCodeEditor) {
-    editor.onDidFocusEditorText(() => {
-      if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
-        dispatch(setCurrentCell({ cellId: model.id }));
-      }
-    });
-
     // invoke when text changed inside editor
     editor.getModel()?.onDidChangeContent(() => {
       updateEditorHeight();
@@ -250,6 +247,21 @@ export default function CellInput({ model }: any) {
         }
       }
     });
+  }
+
+  /**
+   * initialize keyboard shortcuts for codecell
+   */
+  function initEditorCommands(editor: monaco.editor.IStandaloneCodeEditor) {
+    if (model.cell_type === CELL_TYPE.CODE) {
+      // CmdCtrl + Enter
+      editor.addCommand(
+        monaco.KeyMod.CtrlCmd + monaco.KeyCode.Enter,
+        function() {
+          context.manager?.addCellToQueueAndStart(model.id);
+        }
+      );
+    }
   }
 
   function updateCellContent() {

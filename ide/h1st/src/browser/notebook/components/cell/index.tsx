@@ -37,12 +37,9 @@ export function NotebookCell(props: INotebookProps) {
     moveCellUp,
     moveCellDown,
     insertCellAfter,
-    addCellToQueue,
     focusOnCell,
   } = notebookActions;
-  const { currentKernel, connectionStatus, status: kernelStatus } = useSelector(
-    (store: IStore) => store.kernel
-  );
+  const { currentKernel } = useSelector((store: IStore) => store.kernel);
   const { selectedCell, activeCell, executionQueue } = useSelector(
     (store: IStore) => store.notebook
   );
@@ -79,12 +76,7 @@ export function NotebookCell(props: INotebookProps) {
       return;
     }
 
-    dispatch(setSelectedCell({ cellId: model.id }));
-    dispatch(addCellToQueue({ cellId: model.id }));
-
-    if (connectionStatus === "connected" && kernelStatus === "idle") {
-      context.manager?.executeQueue();
-    }
+    context.manager?.addCellToQueueAndStart(model.id);
 
     ev.stopPropagation();
     ev.preventDefault();
