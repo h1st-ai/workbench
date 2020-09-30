@@ -78,12 +78,12 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   async closeWithoutSaving() {
-    this.close();
+    this.dispose();
   }
 
   async closeWithSaving(options?: SaveableWidget.CloseOptions | undefined) {
     await this.saveNotebook(JSON.stringify(this._model.value, null, 4));
-    this.close();
+    this.dispose();
   }
 
   async onCloseRequest(msg: Message) {
@@ -93,15 +93,23 @@ export class H1stNotebookWidget extends ReactWidget
 
       if (future) {
         const shouldSave = await future;
+        dialog.close();
 
         console.log("shouldSave", shouldSave);
 
-        if (shouldSave === true) {
-          this.closeWithSaving();
-        } else if (shouldSave === undefined) {
-          this.activate();
-        } else if (shouldSave === false) {
-          this.closeWithoutSaving();
+        switch (shouldSave) {
+          case true:
+            this.closeWithSaving();
+            break;
+
+          case false:
+            this.closeWithoutSaving();
+            super.onCloseRequest(msg);
+            break;
+
+          default:
+            this.activate();
+            break;
         }
       }
     } else {
