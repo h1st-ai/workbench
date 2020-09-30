@@ -90,7 +90,6 @@ export class NotebookModel implements Saveable {
       return temp;
     });
     this._model.cells = cells;
-    // this._dirty = true;
   }
 
   protected async readContents(): Promise<

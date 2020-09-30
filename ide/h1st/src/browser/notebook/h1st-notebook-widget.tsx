@@ -9,6 +9,8 @@ import {
   // Saveable,
   SaveableSource,
   Saveable,
+  SaveableWidget,
+  ShouldSaveDialog,
   // StatefulWidget,
   // ReactRenderer,
 } from "@theia/core/lib/browser";
@@ -35,7 +37,7 @@ const equal = require("fast-deep-equal");
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
-  implements SaveableSource, NavigatableWidget {
+  implements SaveableSource, NavigatableWidget, SaveableWidget {
   static readonly ID = "h1st:notebook:widget";
   private readonly store: any;
   private _width: number;
@@ -66,28 +68,46 @@ export class H1stNotebookWidget extends ReactWidget
     this.setTheme();
 
     this.notebookManager = new NotebookManager(
-      this.node,
+      this,
       uri,
       this._model,
       this.store,
       this.h1stBackendClient,
       this.messageService
     );
-
-    // setTimeout(() => {
-    //   this.node.scroll({ top: 300 });
-    // }, 2000);
-    // console.log("this.parent?.node");
   }
 
-  // scrollTo = (selector: string) => {
-  //   const node = this.node.querySelector(selector);
+  async closeWithoutSaving() {
+    this.close();
+  }
 
-  //   if (node) {
-  //     // get the node scrollTop
-  //     node.scrollT
-  //   }
-  // }
+  async closeWithSaving(options?: SaveableWidget.CloseOptions | undefined) {
+    await this.saveNotebook(JSON.stringify(this._model.value, null, 4));
+    this.close();
+  }
+
+  async onCloseRequest(msg: Message) {
+    if (Saveable.isDirty(this)) {
+      const dialog = new ShouldSaveDialog(this);
+      const future = dialog.open();
+
+      if (future) {
+        const shouldSave = await future;
+
+        console.log("shouldSave", shouldSave);
+
+        if (shouldSave === true) {
+          this.closeWithSaving();
+        } else if (shouldSave === undefined) {
+          this.activate();
+        } else if (shouldSave === false) {
+          this.closeWithoutSaving();
+        }
+      }
+    } else {
+      super.onCloseRequest(msg);
+    }
+  }
 
   onStoreChange = () => {
     const content = this.store.getState();
@@ -101,6 +121,7 @@ export class H1stNotebookWidget extends ReactWidget
       );
       if (!equal(content.notebook.cells, this._model.value.cells)) {
         this._model.update(content.notebook);
+        this.notebookManager.setDirty(true);
       }
     }
   };
@@ -112,7 +133,7 @@ export class H1stNotebookWidget extends ReactWidget
     console.log("saving content");
 
     await this.fileService.write(this.uri, content);
-    this._model.dirty = false;
+    this.notebookManager.setDirty(false);
   };
 
   get saveable(): Saveable {

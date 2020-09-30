@@ -18,6 +18,8 @@ import { kernelActions } from "./reducers/kernel";
 import URI from "@theia/core/lib/common/uri";
 import { ApplicationLabels } from "./labels";
 import { INotebook } from "./types";
+import { H1stNotebookWidget } from "./h1st-notebook-widget";
+import { setDirty } from "@theia/core/lib/browser";
 
 export class NotebookManager {
   private _kernelManager: KernelManager;
@@ -29,7 +31,7 @@ export class NotebookManager {
 
   constructor(
     // the widget container
-    readonly widget: HTMLElement,
+    readonly widget: H1stNotebookWidget,
     // the uri of the file
     readonly uri: URI,
     protected readonly model: NotebookModel,
@@ -37,6 +39,11 @@ export class NotebookManager {
     protected readonly h1stBackendClient: H1stBackendWithClientService,
     protected readonly messageService: MessageService
   ) {}
+
+  setDirty(dirty: boolean) {
+    this.model.dirty = dirty;
+    setDirty(this.widget, dirty);
+  }
 
   protected async initializeServerSettings(): Promise<void> {
     console.log("Initializing server settings");
@@ -410,16 +417,17 @@ export class NotebookManager {
       const padding = -50;
 
       notVisible =
-        node.offsetTop + node.clientHeight + padding < this.widget.scrollTop ||
+        node.offsetTop + node.clientHeight + padding <
+          this.widget.node.scrollTop ||
         node.offsetTop >
-          this.widget.scrollTop + this.widget.clientHeight + padding;
+          this.widget.node.scrollTop + this.widget.node.clientHeight + padding;
     }
 
     return !notVisible;
   }
 
   scrollTo(selector: string) {
-    const node: HTMLElement | null = this.widget.querySelector(selector);
+    const node: HTMLElement | null = this.widget.node.querySelector(selector);
     console.log("scrolling to", node);
     if (node) {
       if (!this.isVisibleWithinWidget(node)) {
