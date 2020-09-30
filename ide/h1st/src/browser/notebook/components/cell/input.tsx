@@ -255,12 +255,21 @@ export default function CellInput({ model }: any) {
   function initEditorCommands(editor: monaco.editor.IStandaloneCodeEditor) {
     if (model.cell_type === CELL_TYPE.CODE) {
       // CmdCtrl + Enter
-      editor.addCommand(
-        monaco.KeyMod.CtrlCmd + monaco.KeyCode.Enter,
-        function() {
-          context.manager?.addCellToQueueAndStart(model.id);
+      editor.addCommand(monaco.KeyMod.CtrlCmd + monaco.KeyCode.Enter, () => {
+        context.manager?.addCellToQueueAndStart(model.id);
+      });
+
+      editor.addCommand(monaco.KeyCode.UpArrow, () => {
+        const caretPosition = editor.getPosition();
+
+        if (
+          caretPosition &&
+          caretPosition.column === 0 &&
+          caretPosition.lineNumber === 0
+        ) {
+          alert("transfer to previous codeCell");
         }
-      );
+      });
     }
   }
 

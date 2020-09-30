@@ -340,6 +340,7 @@ export class NotebookManager {
 
   /**
    * Do execute a code cell by sending its code to Jupyter kernel and receive the response
+   * then update the output of the code cell inside the store
    *
    * @param code - the code to be executed
    * @param cellId - the code cell identifier to update the output

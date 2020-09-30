@@ -12,6 +12,7 @@ import {
   SaveableWidget,
   ShouldSaveDialog,
   setDirty,
+  Key,
   // StatefulWidget,
   // ReactRenderer,
 } from "@theia/core/lib/browser";
@@ -61,6 +62,8 @@ export class H1stNotebookWidget extends ReactWidget
     this.store.subscribe(this.onStoreChange);
 
     this.node.classList.add(this.CSS_CLASS);
+    // this is important so that we can bind event handlers to the widget
+    this.node.setAttribute("tabindex", "0");
 
     this._model = new NotebookModel(
       this.uri,
@@ -79,70 +82,7 @@ export class H1stNotebookWidget extends ReactWidget
       this.h1stBackendClient,
       this.messageService
     );
-
-    monaco.languages.registerCompletionItemProvider("python", {
-      provideCompletionItems: (model, position) => {
-        // find out if we are completing a property in the 'dependencies' object.
-        var textUntilPosition = model.getValueInRange({
-          startLineNumber: 1,
-          startColumn: 1,
-          endLineNumber: position.lineNumber,
-          endColumn: position.column,
-        });
-        var match = textUntilPosition.match(
-          /"dependencies"\s*:\s*\{\s*("[^"]*"\s*:\s*"[^"]*"\s*,\s*)*([^"]*)?$/
-        );
-        if (!match) {
-          return { suggestions: [] };
-        }
-        var word = model.getWordUntilPosition(position);
-        var range = {
-          startLineNumber: position.lineNumber,
-          endLineNumber: position.lineNumber,
-          startColumn: word.startColumn,
-          endColumn: word.endColumn,
-        };
-        return {
-          suggestions: this.createDependencyProposals(range),
-        };
-      },
-    });
   }
-
-  createDependencyProposals = (range: any) => {
-    return [
-      {
-        label: '"lodash"',
-        kind: monaco.languages.CompletionItemKind.Function,
-        documentation: "The Lodash library exported as Node.js modules.",
-        insertText: '"lodash": "*"',
-        range: range,
-      },
-      {
-        label: '"express"',
-        kind: monaco.languages.CompletionItemKind.Function,
-        documentation: "Fast, unopinionated, minimalist web framework",
-        insertText: '"express": "*"',
-        range: range,
-      },
-      {
-        label: '"mkdirp"',
-        kind: monaco.languages.CompletionItemKind.Function,
-        documentation: "Recursively mkdir, like <code>mkdir -p</code>",
-        insertText: '"mkdirp": "*"',
-        range: range,
-      },
-      {
-        label: '"my-third-party-library"',
-        kind: monaco.languages.CompletionItemKind.Function,
-        documentation: "Describe your library here",
-        insertText: '"${1:my-third-party-library}": "${2:1.2.3}"',
-        insertTextRules:
-          monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        range: range,
-      },
-    ];
-  };
 
   private onDirtyChange() {
     setDirty(this, this._model.dirty);
@@ -281,12 +221,18 @@ export class H1stNotebookWidget extends ReactWidget
     await this._model.load();
   }
 
+  protected initCommandShortcuts() {
+    console.log("Initializing command shortcuts");
+    this.addKeyListener(this.node, Key.ENTER, () => console.log("enter"));
+  }
+
   protected async init() {
     await this.initContentFromNotebook();
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._model.value.cells }));
 
     await this.notebookManager.init();
+    this.initCommandShortcuts();
 
     // mark this widget as initialized
     this._initialized = true;
