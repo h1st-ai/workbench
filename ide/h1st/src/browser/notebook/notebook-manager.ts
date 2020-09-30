@@ -371,12 +371,12 @@ export class NotebookManager {
   async getAutoCompleteItems(
     code: string | undefined,
     cursor_pos: number
-  ): Promise<string[] | null> {
+  ): Promise<string[]> {
     if (!code) {
       return [];
     }
 
-    console.log("Request autocomplete");
+    console.log("request complete items");
     const request: KernelMessage.ICompleteRequestMsg["content"] = {
       code,
       cursor_pos,
@@ -384,15 +384,10 @@ export class NotebookManager {
     const inspectReply = await this._session.kernel?.requestComplete(request);
 
     if (inspectReply?.content.status === "ok") {
-      console.log(
-        "Inspect reply:",
-        JSON.stringify(inspectReply?.content, null, 2)
-      );
-
       return inspectReply?.content.matches;
     }
 
-    return null;
+    return [];
   }
 
   async init() {
