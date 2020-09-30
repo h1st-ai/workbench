@@ -3,7 +3,7 @@ FROM theiaide/theia-python
 
 COPY ./docker/ide/components/requirements.txt /tmp
 RUN pip3 install --no-cache -r /tmp/requirements.txt
-RUN pip3 install git+https://github.com/h1st-ai/h1st?v=20200929
+RUN pip3 install git+https://github.com/h1st-ai/h1st@master
 
 # switch to py3 as default
 RUN PYTHON_PATH=`which python` && \
