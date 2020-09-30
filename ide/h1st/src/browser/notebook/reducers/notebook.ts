@@ -103,6 +103,7 @@ export const NotebookSlice = createSlice({
     clearCellOutputs: (state): void => {
       const cells = state.cells.map((cell) => ({
         ...cell,
+        execution_count: 0,
         outputs: [],
       }));
 
