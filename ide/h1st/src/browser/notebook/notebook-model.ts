@@ -1,11 +1,12 @@
 import {
-  DisposableCollection,
   Emitter,
   Event,
-  Resource,
-  ResourceError,
+  // ResourceError,
 } from "@theia/core";
 import { Saveable } from "@theia/core/lib/browser";
+import URI from "@theia/core/lib/common/uri";
+import { FileService } from "@theia/filesystem/lib/browser/file-service";
+import { H1stBackendWithClientService } from "../../common/protocol";
 import { ICellModel } from "./types";
 
 const uniqid = require("uniqid");
@@ -14,19 +15,22 @@ export class NotebookModel implements Saveable {
   autoSave: "on" | "off" = "on";
   autoSaveDelay: number = 500;
 
-  protected _model: INotebookContent;
+  protected _value: INotebookContent;
   protected readonly resolveModel: Promise<void>;
 
-  protected readonly toDispose = new DisposableCollection();
-  protected readonly toDisposeOnAutoSave = new DisposableCollection();
-
-  constructor(protected readonly resource: Resource) {
-    this.toDispose.push(resource);
-    this.toDispose.push(this.toDisposeOnAutoSave);
-    this.toDispose.push(this.onDirtyChangedEmitter);
-
-    this.resolveModel = this.readContents().then((content) =>
-      this.initialize(content?.toString())
+  constructor(
+    protected readonly uri: URI,
+    protected readonly fileService: FileService,
+    protected readonly h1stBackendClient: H1stBackendWithClientService
+  ) {
+    this.resolveModel = this.readContents().then(
+      (content) => {
+        this.setValid(true);
+        this.initialize(content?.toString());
+      },
+      () => {
+        this.setValid(false);
+      }
     );
   }
 
@@ -35,12 +39,18 @@ export class NotebookModel implements Saveable {
     return this._dirty;
   }
 
-  set dirty(value: boolean) {
+  setDirty(value: boolean) {
     this._dirty = value;
+    this.onDirtyChangedEmitter.fire();
   }
 
-  get value(): any {
-    return this._model;
+  get value(): INotebookContent {
+    return this._value;
+  }
+
+  protected readonly onNotebookContentDidLoadEmitter = new Emitter<void>();
+  get onNotebookContentLoad(): Event<void> {
+    return this.onNotebookContentDidLoadEmitter.event;
   }
 
   protected readonly onDirtyChangedEmitter = new Emitter<void>();
@@ -55,13 +65,16 @@ export class NotebookModel implements Saveable {
         console.log("notebookContent", value);
         const notebookContent = JSON.parse(value);
         notebookContent.cells.map((c: ICellModel) => (c.id = uniqid()));
-        this._model = notebookContent;
+        this._value = notebookContent;
+
+        // notify the notebook
+        this.onNotebookContentDidLoadEmitter.fire();
       } catch (ex) {
         console.error(ex);
-        this._model = defaultNotebookModel;
+        this._value = defaultNotebookModel;
       }
     } else {
-      this._model = defaultNotebookModel;
+      this._value = defaultNotebookModel;
     }
   }
 
@@ -89,28 +102,31 @@ export class NotebookModel implements Saveable {
 
     //   return temp;
     // });
-    this._model.cells = value.cells;
+    this._value.cells = value.cells;
   }
 
-  protected async readContents(): Promise<
-    string | monaco.editor.ITextBufferFactory | undefined
-  > {
-    try {
-      const options = { encoding: "utf-8" };
-      const content = await (this.resource.readStream
-        ? this.resource.readStream(options)
-        : this.resource.readContents(options));
+  private readContents = async () =>
+    this.h1stBackendClient.getFileContent(this.uri.path.toString());
 
-      this.setValid(true);
-      return content.toString();
-    } catch (e) {
-      this.setValid(false);
-      if (ResourceError.NotFound.is(e)) {
-        return undefined;
-      }
-      throw e;
-    }
-  }
+  // protected async readContents(): Promise<
+  //   string | monaco.editor.ITextBufferFactory | undefined
+  // > {
+  //   try {
+  //     const options = { encoding: "utf-8" };
+  //     const content = await (this.resource.readStream
+  //       ? this.resource.readStream(options)
+  //       : this.resource.readContents(options));
+
+  //     this.setValid(true);
+  //     return content.toString();
+  //   } catch (e) {
+  //     this.setValid(false);
+  //     if (ResourceError.NotFound.is(e)) {
+  //       return undefined;
+  //     }
+  //     throw e;
+  //   }
+  // }
 
   protected readonly onDidChangeValidEmitter = new Emitter<void>();
   readonly onDidChangeValid = this.onDidChangeValidEmitter.event;
@@ -124,14 +140,22 @@ export class NotebookModel implements Saveable {
   }
 
   async save(): Promise<void> {
-    console.log("Saving notebook", this.resource, this._model);
-    const content = JSON.stringify(this._model, null, 4);
-    const contentLength = content.length;
+    const validCells = this._value.cells.map((cell: any) => {
+      const newCell = { ...cell };
+      delete newCell.id;
 
-    return await Resource.save(this.resource, {
-      content,
-      contentLength,
+      return newCell;
     });
+
+    const savedContent = { ...this._value, cells: validCells };
+
+    const content = JSON.stringify(savedContent, null, 4);
+
+    await this.fileService.write(this.uri, content);
+
+    this._dirty = false;
+
+    this.onDirtyChangedEmitter.fire();
   }
 }
 

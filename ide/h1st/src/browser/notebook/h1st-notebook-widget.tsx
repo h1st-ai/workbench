@@ -11,12 +11,13 @@ import {
   Saveable,
   SaveableWidget,
   ShouldSaveDialog,
+  setDirty,
   // StatefulWidget,
   // ReactRenderer,
 } from "@theia/core/lib/browser";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
-import { MessageService, Resource, SelectionService } from "@theia/core";
+import { MessageService, SelectionService } from "@theia/core";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 
 import { Provider } from "react-redux";
@@ -58,13 +59,13 @@ export class H1stNotebookWidget extends ReactWidget
     this.store = configureStore({ reducer, devTools: true });
     this.store.subscribe(this.onStoreChange);
 
-    const resource: Resource = {
-      uri,
-      readContents: this.readNotebookContent,
-      saveContents: this.saveNotebook,
-      dispose: this.dispose,
-    };
-    this._model = new NotebookModel(resource);
+    this._model = new NotebookModel(
+      this.uri,
+      this.fileService,
+      this.h1stBackendClient
+    );
+    this._model.onNotebookContentLoad(() => this.onContentLoad());
+    this._model.onDirtyChanged(() => this.onDirtyChange());
     this.setTheme();
 
     this.notebookManager = new NotebookManager(
@@ -77,18 +78,23 @@ export class H1stNotebookWidget extends ReactWidget
     );
   }
 
+  private onDirtyChange() {
+    setDirty(this, this._model.dirty);
+  }
+
+  private async onContentLoad() {
+    if (this.isVisible) {
+      await this.init();
+      this.update();
+    }
+  }
+
   async closeWithoutSaving() {
     this.dispose();
   }
 
-  async closeWithSaving(options?: SaveableWidget.CloseOptions | undefined) {
-    const validCells = this._model.value.map((cell: any) => {
-      const newCell = { ...cell };
-      delete newCell.id;
-
-      return newCell;
-    });
-    await this.saveNotebook(JSON.stringify(validCells, null, 4));
+  async closeWithSaving() {
+    this._model.save();
     this.dispose();
   }
 
@@ -143,13 +149,13 @@ export class H1stNotebookWidget extends ReactWidget
     }
   };
 
-  private readNotebookContent = async () =>
-    await this.h1stBackendClient.getFileContent(this.uri.path.toString());
+  // private readNotebookContent = async () =>
+  //   await this.h1stBackendClient.getFileContent(this.uri.path.toString());
 
   private saveNotebook = async (content: string) => {
     console.log("saving content");
 
-    await this.fileService.write(this.uri, content);
+    // await this.fileService.write(this.uri, content);
     this.notebookManager.setDirty(false);
   };
 
@@ -239,7 +245,6 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async onActivateRequest(msg: Message) {
     super.onActivateRequest(msg);
-    console.log("activated", msg, this.uri);
 
     if (!this._initialized) {
       await this.init();

@@ -19,7 +19,6 @@ import URI from "@theia/core/lib/common/uri";
 import { ApplicationLabels } from "./labels";
 import { INotebook } from "./types";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
-import { setDirty } from "@theia/core/lib/browser";
 
 export class NotebookManager {
   private _kernelManager: KernelManager;
@@ -41,8 +40,7 @@ export class NotebookManager {
   ) {}
 
   setDirty(dirty: boolean) {
-    this.model.dirty = dirty;
-    setDirty(this.widget, dirty);
+    this.model.setDirty(dirty);
   }
 
   protected async initializeServerSettings(): Promise<void> {
