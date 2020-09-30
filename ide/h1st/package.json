@@ -28,6 +28,7 @@
     "lodash.debounce": "^4.0.8",
     "monaco-editor": "0.20.0",
     "plotly.js-dist": "1.55.2",
+    "react-markdown": "^4.3.1",
     "react-redux": "7.2.1",
     "redux": "4.0.5",
     "stickybits": "^3.7.7",

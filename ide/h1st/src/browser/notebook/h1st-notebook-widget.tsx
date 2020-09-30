@@ -219,12 +219,13 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected async onAfterAttach(msg: Message): Promise<void> {
-    super.onAfterAttach(msg);
     if (this.isVisible) {
       if (!this._initialized) await this.init();
 
       this.update();
     }
+
+    super.onAfterAttach(msg);
   }
 
   protected async onActivateRequest(msg: Message) {

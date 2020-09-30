@@ -1,9 +1,8 @@
 // import {Markdown} from "@nteract/presentational-components/lib/components/outputs";
 import * as React from "react";
-import Markdown from "@nteract/outputs/lib/components/media/markdown";
+// import Markdown from "@nteract/outputs/lib/components/media/markdown";
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
-
 import { KernelOutputError, Media, RichMedia } from "@nteract/outputs";
 import {
   MediaGIF,
@@ -16,6 +15,8 @@ import {
   Plain,
 } from "./media";
 import { MediaUnsupported } from "./media/wildcard";
+
+const MarkDown = require("react-markdown");
 
 export enum CELL_OUTPUT_TYPE {
   ERROR = "error",
@@ -107,7 +108,7 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
   }
 
   function renderMarkdown(data: string) {
-    return <Markdown data={data} />;
+    return <div className="markdown-body">{<MarkDown source={data} />}</div>;
   }
 
   if (
