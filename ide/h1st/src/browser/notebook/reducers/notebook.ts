@@ -213,6 +213,15 @@ export const NotebookSlice = createSlice({
         state.cells.push(cell);
       }
     },
+    insertCellAt: (state, { payload }): void => {
+      const { cell, cellIndex } = payload;
+
+      try {
+        state.cells.splice(cellIndex, 0, cell);
+      } catch {
+        console.log("Failed to insert");
+      }
+    },
     addCellToQueue: (state, { payload }): void => {
       state.executionQueue = state.executionQueue.concat(payload.cellId);
     },

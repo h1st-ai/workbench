@@ -470,3 +470,19 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .cell-output-wrapper th {
   padding: 4px;
 }
+
+.notebook-extra-bar {
+  /* min-height: 50px; */
+  padding: 8px 0px;
+}
+
+.notebook-extra-bar button {
+  visibility: hidden;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+.notebook-extra-bar:hover button {
+  visibility: visible;
+}
