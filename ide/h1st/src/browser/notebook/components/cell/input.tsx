@@ -109,8 +109,6 @@ export default function CellInput({ model }: any) {
         "markdown"
       );
 
-      editorModel.onDidChangeContent(onDidChangeModelContent);
-
       editorModelId = editorModel.id;
 
       // @ts-ignore
@@ -120,19 +118,11 @@ export default function CellInput({ model }: any) {
         ...EDITOR_OPTIONS,
       });
 
-      editorRef.current.onDidBlurEditorText(() => {
-        dispatch(setActiveCell({ cellId: null }));
-      });
+      initEditorEventHandler(editorRef.current);
 
-      editorRef.current.onDidFocusEditorText(() => {
-        if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
-          dispatch(setCurrentCell({ cellId: model.id }));
-        }
-      });
-
+      // update the editor height to match the content
       setTimeout(() => {
         updateEditorHeight();
-        // updateEditorWidth();
       }, 0);
     }
   }
@@ -217,8 +207,6 @@ export default function CellInput({ model }: any) {
         "python"
       );
 
-      editorModel.onDidChangeContent(onDidChangeModelContent);
-
       editorModelId = editorModel.id;
 
       // @ts-ignore
@@ -228,40 +216,41 @@ export default function CellInput({ model }: any) {
         ...EDITOR_OPTIONS,
       });
 
-      // editorRef.current.onDidBlurEditorText(() => {
-      //   dispatch(setActiveCell({ cellId: null }));
-      // });
+      initEditorEventHandler(editorRef.current);
 
-      // editorRef.current.onDidFocusEditorText(() => {
-      //   if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
-      //     dispatch(setCurrentCell({ cellId: model.id }));
-      //   }
-      // });
-
+      // update the editor height to match the content
       setTimeout(() => {
         updateEditorHeight();
-        // updateEditorWidth();
       }, 0);
     }
   }
 
-  function onDidChangeModelContent(ev: any) {
-    console.log("onDidChangeModelContent", ev);
-    updateEditorHeight();
-    updateCellContent();
+  function initEditorEventHandler(editor: monaco.editor.IStandaloneCodeEditor) {
+    editor.onDidFocusEditorText(() => {
+      if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
+        dispatch(setCurrentCell({ cellId: model.id }));
+      }
+    });
+
+    // invoke when text changed inside editor
+    editor.getModel()?.onDidChangeContent(() => {
+      updateEditorHeight();
+      updateCellContent();
+    });
+
+    editor.onDidBlurEditorText(() => {
+      dispatch(setActiveCell({ cellId: null }));
+    });
+
+    editor.onDidFocusEditorText(() => {
+      if (model.cell_type === CELL_TYPE.CODE) {
+        // if the activeCell flag is not set to the current code, mark this as current aka active and selected
+        if (model.id !== activeCell) {
+          dispatch(setCurrentCell({ cellId: model.id }));
+        }
+      }
+    });
   }
-
-  // Monaco editor is ready to use
-  // function handleEditorDidMount(
-  //   monacoEditor: monaco.editor.IStandaloneCodeEditor
-  // ) {
-  //   console.log(`${model.id} editor did mount`, monacoEditor);
-  //   // editorRef.current = monacoEditor;
-
-  //   // if (editorRef.current) {
-  //   //   editorRef.current.setValue(model.source.join(""));
-  //   // }
-  // }
 
   function updateCellContent() {
     const editor = editorRef.current;
