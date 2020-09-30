@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 import NotebookContext from "../../context";
+// import { editor } from "monaco-editor";
+// import { editor } from "monaco-editor";
 
 const fuzzysearch = require("fuzzysearch");
 
@@ -63,21 +65,79 @@ export default function CellInput({ model }: any) {
     }
   }, [focusedCell]);
 
-  React.useEffect(() => {
-    if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
-      // const editor = editorRef.current;
+  // React.useEffect(() => {
+  //   if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
+  //     // const editor = editorRef.current;
 
-      console.log("focusing cell");
-      setTimeout(() => {
-        if (editorRef.current) {
-          editorRef.current.focus();
-        }
-      }, 0);
-    }
-  }, [activeCell]);
+  //     console.log("focusing cell");
+  //     setTimeout(() => {
+  //       if (editorRef.current) {
+  //         editorRef.current.focus();
+  //       }
+  //     }, 0);
+  //   }
+  // }, [activeCell]);
 
   // initialize editor
   React.useEffect(() => {
+    if (model.cell_type === CELL_TYPE.CODE) {
+      initCodeCellEditor();
+    }
+
+    // return () => editorRef.current?.dispose();
+  }, []);
+
+  React.useEffect(() => {
+    // alert(editorRef.current);
+    // if (editorRef.current) editorRef.current.dispose();
+    // editorRef?.current?.dispose();
+    if (model.cell_type === CELL_TYPE.MD && activeCell === model.id) {
+      // alert("initialize editor");
+      initMarkdownEditor();
+      setTimeout(() => editorRef.current?.focus(), 0);
+    }
+
+    // return () => editorRef.current?.dispose();
+  }, [activeCell]);
+
+  function initMarkdownEditor() {
+    if (wrapperRef.current) {
+      // monaco.editor.onDidCreateEditor(handleEditorDidMount);
+
+      const editorModel = monaco.editor.createModel(
+        model.source.join(""),
+        "markdown"
+      );
+
+      editorModel.onDidChangeContent(onDidChangeModelContent);
+
+      editorModelId = editorModel.id;
+
+      // @ts-ignore
+      editorRef.current = monaco.editor.create(wrapperRef.current, {
+        model: editorModel,
+        language: "markdown",
+        ...EDITOR_OPTIONS,
+      });
+
+      editorRef.current.onDidBlurEditorText(() => {
+        dispatch(setActiveCell({ cellId: null }));
+      });
+
+      editorRef.current.onDidFocusEditorText(() => {
+        if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
+          dispatch(setCurrentCell({ cellId: model.id }));
+        }
+      });
+
+      setTimeout(() => {
+        updateEditorHeight();
+        // updateEditorWidth();
+      }, 0);
+    }
+  }
+
+  function initCodeCellEditor() {
     const createDependencyProposals = debounce(async function(range: any) {
       // returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
       // here you could do a server side lookup
@@ -102,6 +162,7 @@ export default function CellInput({ model }: any) {
           if (wordUntilPosition) {
             const suggestions = await context.manager?.getAutoCompleteItems(
               // editorRef.current?.getValue(),
+              // offset
               wordUntilPosition.word,
               wordUntilPosition.word.length - 1
             );
@@ -124,7 +185,7 @@ export default function CellInput({ model }: any) {
       }
 
       return [];
-    }, 700);
+    }, 500);
 
     monaco.languages.registerCompletionItemProvider("python", {
       provideCompletionItems: async function(editorModel, position) {
@@ -167,22 +228,22 @@ export default function CellInput({ model }: any) {
         ...EDITOR_OPTIONS,
       });
 
-      editorRef.current.onDidBlurEditorText(() => {
-        dispatch(setActiveCell({ cellId: null }));
-      });
+      // editorRef.current.onDidBlurEditorText(() => {
+      //   dispatch(setActiveCell({ cellId: null }));
+      // });
 
-      editorRef.current.onDidFocusEditorText(() => {
-        if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
-          dispatch(setCurrentCell({ cellId: model.id }));
-        }
-      });
+      // editorRef.current.onDidFocusEditorText(() => {
+      //   if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
+      //     dispatch(setCurrentCell({ cellId: model.id }));
+      //   }
+      // });
 
       setTimeout(() => {
         updateEditorHeight();
         // updateEditorWidth();
       }, 0);
     }
-  }, []);
+  }
 
   function onDidChangeModelContent(ev: any) {
     console.log("onDidChangeModelContent", ev);
@@ -215,41 +276,6 @@ export default function CellInput({ model }: any) {
     }
   }
 
-  // function updateEditorWidth() {
-  //   if (!width) return;
-
-  //   const editor = editorRef.current;
-
-  //   console.log(
-  //     "should width updated",
-  //     wrapperRef.current,
-  //     width,
-  //     editorWidth,
-  //     editor
-  //   );
-  //   if (wrapperRef.current) {
-  //     // real width of input = width minus other component width
-  //     const inputWidth = Math.max(100, width - 42 - 8 - 32 - 20);
-  //     const wrapper = wrapperRef.current;
-
-  //     wrapper.style.width = `${inputWidth}px`;
-
-  //     if (editor && editorWidth !== inputWidth) {
-  //       console.log(
-  //         `${model.id}: width changed detected. Updating width from`,
-  //         inputWidth,
-  //         width
-  //       );
-  //       // alert("width change");
-  //       setTimeout(() => {
-  //         // editor.layout({ height: editorHeight, width: inputWidth });
-  //         // editor.layout();
-  //         editorWidth = inputWidth;
-  //       }, 0);
-  //     }
-  //   }
-  // }
-
   function updateEditorHeight() {
     const editor = editorRef.current;
     if (!editor) return;
@@ -274,11 +300,6 @@ export default function CellInput({ model }: any) {
 
     // do nothing if the height has not change
     if (height === editorHeight) return;
-
-    // console.log(
-    //   `${model.id} editor height change detected from ${editorHeight} to ${height}. Updating editor height`,
-    //   editor
-    // );
 
     if (wrapperRef.current) {
       editorHeight = height;
@@ -361,11 +382,7 @@ export default function CellInput({ model }: any) {
       case "code":
         return (
           <div className="cell-input-spacing">
-            <div
-              className="cell-editor-wrapper"
-              style={{ height: 300 }}
-              ref={wrapperRef}
-            >
+            <div className="cell-editor-wrapper" ref={wrapperRef}>
               {/* {renderCodeInput()} */}
             </div>
           </div>
