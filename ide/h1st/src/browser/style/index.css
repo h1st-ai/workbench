@@ -226,13 +226,21 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   outline: none;
 }
 
-.toolbar ul li svg {
+.toolbar ul li button[disabled] {
+  opacity: 0.6;
+}
+
+.toolbar ul li button svg {
   transition: all 200ms;
   fill: var(--theia-foreground);
 }
 
-.toolbar ul li:hover svg {
+.toolbar ul li:hover button svg {
   transform: scale(1.5);
+}
+
+.toolbar ul li:hover button[disabled] svg {
+  transform: none;
 }
 
 .toolbar ul li button.btn-toolbar-stop svg {
@@ -263,6 +271,16 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   border: none;
   background: none;
   position: absolute;
+}
+
+.cell-controls button svg {
+  transition: all 200ms;
+  opacity: 0.8;
+}
+
+.cell-controls button:hover svg {
+  transform: scale(1.2);
+  opacity: 1;
 }
 
 .cell-controls button.cell-btn-up {
