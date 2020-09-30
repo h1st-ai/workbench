@@ -83,13 +83,13 @@ export class NotebookModel implements Saveable {
   }
 
   update(value: INotebookContent) {
-    const cells = value.cells.map((cell) => {
-      const temp = { ...cell };
-      delete temp.id;
+    // const cells = value.cells.map((cell) => {
+    //   const temp = { ...cell };
+    //   delete temp.id;
 
-      return temp;
-    });
-    this._model.cells = cells;
+    //   return temp;
+    // });
+    this._model.cells = value.cells;
   }
 
   protected async readContents(): Promise<
