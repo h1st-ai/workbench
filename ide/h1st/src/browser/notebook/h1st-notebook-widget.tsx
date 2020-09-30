@@ -46,6 +46,7 @@ export class H1stNotebookWidget extends ReactWidget
   private _initialized: Boolean = false;
   private _model: NotebookModel;
   private notebookManager: NotebookManager;
+  private CSS_CLASS: string = "h1st-notebook-widget";
 
   constructor(
     readonly uri: URI,
@@ -58,6 +59,8 @@ export class H1stNotebookWidget extends ReactWidget
     super();
     this.store = configureStore({ reducer, devTools: true });
     this.store.subscribe(this.onStoreChange);
+
+    this.node.classList.add(this.CSS_CLASS);
 
     this._model = new NotebookModel(
       this.uri,

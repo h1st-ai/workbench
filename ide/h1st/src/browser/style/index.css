@@ -150,6 +150,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   top: 0px;
   z-index: 1;
   background: var(--theia-editorGutter-background);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.07);
 }
 
 .toolbar .kernel-info-wrapper {

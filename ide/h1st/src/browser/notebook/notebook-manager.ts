@@ -425,7 +425,7 @@ export class NotebookManager {
     console.log("scrolling to", node);
     if (node) {
       if (!this.isVisibleWithinWidget(node)) {
-        node.scrollIntoView({ block: "end" });
+        node.scrollIntoView({ block: "center" });
       }
       //
     }
