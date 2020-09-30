@@ -401,7 +401,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-input-spacing {
-  padding: 8px 0px 5px 0px;
+  padding: 8px 24px 5px 0px;
   background: var(--theia-tab-inactiveBackground);
 }
 
