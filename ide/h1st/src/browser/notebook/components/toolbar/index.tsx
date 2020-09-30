@@ -70,11 +70,13 @@ export default function Toolbar() {
 
   const executeAll = async () => {
     await context.manager?.executeCells(0);
+    context.manager?.setDirty(true);
   };
 
   const executeAfter = async () => {
     //@ts-ignore
     await context.manager?.executeCells(selectedCell);
+    context.manager?.setDirty(true);
   };
 
   const interruptKernel = async () => {
@@ -83,6 +85,7 @@ export default function Toolbar() {
 
   const clearAllCellOutputs = async () => {
     await context.manager?.clearAllCellOutput();
+    context.manager?.setDirty(true);
   };
 
   const createNewCell = () => {
@@ -95,6 +98,7 @@ export default function Toolbar() {
     );
 
     dispatch(focusOnCell({ cellId: newCell.id }));
+    context.manager?.setDirty(true);
   };
 
   return (

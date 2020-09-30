@@ -356,6 +356,7 @@ export class NotebookManager {
       };
 
       await future.done;
+      this.setDirty(true);
     }
   };
 

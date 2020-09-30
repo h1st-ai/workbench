@@ -92,11 +92,13 @@ export function NotebookCell(props: INotebookProps) {
   function toMarkdown() {
     dispatch(setCellType({ type: CELL_TYPE.MD, cellId: model.id }));
     setTimeout(() => dispatch(setActiveCell({ cellId: model.id })), 0);
+    context.manager?.setDirty(true);
   }
 
   function toCode() {
     dispatch(setCellType({ type: CELL_TYPE.CODE, cellId: model.id }));
     setTimeout(() => dispatch(focusOnCell({ cellId: model.id })), 0);
+    context.manager?.setDirty(true);
   }
 
   function renderCodeCellHeaderControl(): React.ReactNode {
@@ -126,14 +128,17 @@ export function NotebookCell(props: INotebookProps) {
 
   function deleteCodeCell() {
     dispatch(deleteCell({ cellId: model.id }));
+    context.manager?.setDirty(true);
   }
 
   function moveUp() {
     dispatch(moveCellUp({ cellId: model.id }));
+    context.manager?.setDirty(true);
   }
 
   function moveDown() {
     dispatch(moveCellDown({ cellId: model.id }));
+    context.manager?.setDirty(true);
   }
 
   function insertAfter(ev: any) {
@@ -149,6 +154,7 @@ export function NotebookCell(props: INotebookProps) {
     );
 
     dispatch(focusOnCell({ cellId: newCell.id }));
+    context.manager?.setDirty(true);
   }
 
   function renderInputHeader() {
