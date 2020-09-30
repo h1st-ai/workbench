@@ -133,14 +133,9 @@ export class H1stNotebookWidget extends ReactWidget
     const content = this.store.getState();
 
     if (this._initialized && content) {
-      // const list1 = fromJS(content.notebook.cells);
-      // const list2 = fromJS(content.notebook.)
-      console.log(
-        "comparing",
-        content.notebook.cells,
-        this._model.value.cells,
-        equal(content.notebook.cells, this._model.value.cells)
-      );
+      // console.log(
+      //   equal(content.notebook.cells, this._model.value.cells)
+      // );
 
       if (!equal(content.notebook.cells, this._model.value.cells)) {
         this._model.update(content.notebook);

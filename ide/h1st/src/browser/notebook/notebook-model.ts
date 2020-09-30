@@ -96,37 +96,11 @@ export class NotebookModel implements Saveable {
   }
 
   update(value: INotebookContent) {
-    // const cells = value.cells.map((cell) => {
-    //   const temp = { ...cell };
-    //   delete temp.id;
-
-    //   return temp;
-    // });
     this._value.cells = value.cells;
   }
 
   private readContents = async () =>
     this.h1stBackendClient.getFileContent(this.uri.path.toString());
-
-  // protected async readContents(): Promise<
-  //   string | monaco.editor.ITextBufferFactory | undefined
-  // > {
-  //   try {
-  //     const options = { encoding: "utf-8" };
-  //     const content = await (this.resource.readStream
-  //       ? this.resource.readStream(options)
-  //       : this.resource.readContents(options));
-
-  //     this.setValid(true);
-  //     return content.toString();
-  //   } catch (e) {
-  //     this.setValid(false);
-  //     if (ResourceError.NotFound.is(e)) {
-  //       return undefined;
-  //     }
-  //     throw e;
-  //   }
-  // }
 
   protected readonly onDidChangeValidEmitter = new Emitter<void>();
   readonly onDidChangeValid = this.onDidChangeValidEmitter.event;
