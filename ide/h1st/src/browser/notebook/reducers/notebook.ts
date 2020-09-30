@@ -71,7 +71,6 @@ export const NotebookSlice = createSlice({
 
       for (let i = 0; i < state.cells.length; i++) {
         if (cellId === state.cells[i].id) {
-          console.log("setCellInput", code);
           const content = code.split("\n");
 
           state.cells[i].source = content.map((line: string, index: number) =>

@@ -1,12 +1,13 @@
 import * as React from "react";
 // import Editor from "@monaco-editor/react";
-import Editor from "./monaco-editor";
+// import Editor from "./monaco-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 import NotebookContext from "../../context";
 
-// const debounce = require("lodash.debounce");
+// const throttle = require("lodash.throttle");
+const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
 export default function CellInput({ model }: any) {
@@ -23,6 +24,9 @@ export default function CellInput({ model }: any) {
     (store: IStore) => store.notebook
   );
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
+  let editorModelId: string; //monaco.editor.ITextModel;
+
+  // const editorWrapper = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const context = React.useContext(NotebookContext);
 
@@ -69,53 +73,129 @@ export default function CellInput({ model }: any) {
     }
   }, [activeCell]);
 
-  // Monaco editor is ready to use
-  function handleEditorDidMount(_: any, monacoEditor: any) {
-    console.log(`${model.id} editor did mount`, monacoEditor);
-    editorRef.current = monacoEditor;
+  // initialize editor
+  React.useEffect(() => {
+    const createDependencyProposals = debounce(async function(range: any) {
+      // returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
+      // here you could do a server side lookup
+      const editor = editorRef.current;
 
-    if (editorRef.current) {
-      editorRef.current.setValue(model.source.join(""));
-    }
+      if (model.cell_type === CELL_TYPE.CODE && editor) {
+        const cursorPos = editor?.getPosition();
+        // const model = editorRef.current?.getModel();
 
-    setTimeout(() => {
-      updateEditorHeight();
-      // updateEditorWidth();
-    }, 0);
+        if (cursorPos) {
+          // console.log("Looking up");
+          // const offset = model.getOffsetAt({
+          //   lineNumber: cursorPos.lineNumber,
+          //   column: cursorPos.column,
+          // });
+          // console.log("current offset", offset);
 
-    monacoEditor.onDidChangeModelContent(async (ev: any) => {
-      updateEditorHeight();
-      updateCellContent();
+          const wordUntilPosition = editor
+            ?.getModel()
+            ?.getWordAtPosition(cursorPos);
 
-      //   if (model.cell_type === CELL_TYPE.CODE) {
-      //     const cursorPos = editorRef.current?.getPosition();
-      //     const model = editorRef.current?.getModel();
+          if (wordUntilPosition) {
+            const suggestions = await context.manager?.getAutoCompleteItems(
+              // editorRef.current?.getValue(),
+              wordUntilPosition.word,
+              wordUntilPosition.word.length - 1
+            );
 
-      //     if (cursorPos && model) {
-      //       const offset = model.getOffsetAt({
-      //         lineNumber: cursorPos.lineNumber,
-      //         column: cursorPos.column,
-      //       });
-      //       console.log("current offset", offset);
-
-      //       await context.manager?.getAutoCompleteItems(
-      //         editorRef.current?.getValue(),
-      //         offset
-      //       );
-      //     }
-      //   }
-    });
-
-    monacoEditor.onDidBlurEditorText((ev: any) => {
-      dispatch(setActiveCell({ cellId: null }));
-    });
-
-    monacoEditor.onDidFocusEditorText((ev: any) => {
-      if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
-        dispatch(setCurrentCell({ cellId: model.id }));
+            if (suggestions) {
+              return suggestions.map((match) => {
+                return {
+                  label: match,
+                  kind: monaco.languages.CompletionItemKind.Variable,
+                  documentation: "",
+                  insertText: match,
+                  range: range,
+                };
+              });
+            } // endif
+          } // end word at position
+        }
       }
+
+      return [];
+    }, 500);
+
+    monaco.languages.registerCompletionItemProvider("python", {
+      provideCompletionItems: async function(editorModel, position) {
+        console.log("Models", editorModel, editorModelId);
+        if (editorModel.id === editorModelId) {
+          var word = editorModel.getWordUntilPosition(position);
+
+          console.log("getWordUntilPosition", word);
+
+          var range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn,
+          };
+
+          return {
+            suggestions: await createDependencyProposals(range),
+          };
+        }
+      },
     });
+
+    if (wrapperRef.current) {
+      // monaco.editor.onDidCreateEditor(handleEditorDidMount);
+
+      const editorModel = monaco.editor.createModel(
+        model.source.join(""),
+        "python"
+      );
+
+      editorModel.onDidChangeContent(onDidChangeModelContent);
+
+      editorModelId = editorModel.id;
+
+      // @ts-ignore
+      editorRef.current = monaco.editor.create(wrapperRef.current, {
+        model: editorModel,
+        language: "python",
+        ...EDITOR_OPTIONS,
+      });
+
+      editorRef.current.onDidBlurEditorText(() => {
+        dispatch(setActiveCell({ cellId: null }));
+      });
+
+      editorRef.current.onDidFocusEditorText(() => {
+        if (model.cell_type === CELL_TYPE.CODE && model.id !== activeCell) {
+          dispatch(setCurrentCell({ cellId: model.id }));
+        }
+      });
+
+      setTimeout(() => {
+        updateEditorHeight();
+        // updateEditorWidth();
+      }, 0);
+    }
+  }, []);
+
+  function onDidChangeModelContent(ev: any) {
+    console.log("onDidChangeModelContent", ev);
+    updateEditorHeight();
+    updateCellContent();
   }
+
+  // Monaco editor is ready to use
+  // function handleEditorDidMount(
+  //   monacoEditor: monaco.editor.IStandaloneCodeEditor
+  // ) {
+  //   console.log(`${model.id} editor did mount`, monacoEditor);
+  //   // editorRef.current = monacoEditor;
+
+  //   // if (editorRef.current) {
+  //   //   editorRef.current.setValue(model.source.join(""));
+  //   // }
+  // }
 
   function updateCellContent() {
     const editor = editorRef.current;
@@ -209,11 +289,11 @@ export default function CellInput({ model }: any) {
       return (
         <div className="cell-input-spacing">
           <div className="cell-editor-wrapper" ref={wrapperRef}>
-            <Editor
+            {/* <Editor
               language="markdown"
               value=""
               editorDidMount={handleEditorDidMount}
-            />
+            /> */}
           </div>
         </div>
       );
@@ -222,47 +302,51 @@ export default function CellInput({ model }: any) {
     return null;
   }
 
-  function renderCodeInput() {
-    return (
-      <Editor
-        language="python"
-        // value={model.source.join("")}
-        value=""
-        options={{
-          glyphMargin: true,
-          wordWrap: "on",
-          scrollBeyondLastLine: false,
-          lightbulb: { enabled: true },
-          fixedOverflowWidgets: true,
-          automaticLayout: true,
-          minimap: {
-            enabled: false,
-          },
-          lineNumbers: "off",
-          scrollbar: {
-            vertical: "hidden",
-            horizontal: "hidden",
-            verticalScrollbarSize: 0,
-            horizontalScrollbarSize: 0,
-            alwaysConsumeMouseWheel: false,
-          },
-          renderLineHighlight: "none",
-          highlightActiveIndentGuide: false,
-          renderIndentGuides: false,
-          overviewRulerBorder: false,
-          overviewRulerLanes: 0,
-          hideCursorInOverviewRuler: true,
-          folding: false,
-          occurrencesHighlight: false,
-          selectionHighlight: false,
-          lineDecorationsWidth: 0,
-          contextmenu: false,
-          matchBrackets: "near",
-        }}
-        editorDidMount={handleEditorDidMount}
-      />
-    );
-  }
+  // function renderCodeInput() {
+  //   return (
+  //     <Editor
+  //       language="python"
+  //       // value={model.source.join("")}
+  //       value=""
+  //       options={{
+  //         glyphMargin: true,
+  //         wordWrap: "on",
+  //         scrollBeyondLastLine: false,
+  //         lightbulb: { enabled: true },
+  //         fixedOverflowWidgets: true,
+  //         automaticLayout: true,
+  //         minimap: {
+  //           enabled: false,
+  //         },
+  //         lineNumbers: "off",
+  //         scrollbar: {
+  //           vertical: "hidden",
+  //           horizontal: "hidden",
+  //           verticalScrollbarSize: 0,
+  //           horizontalScrollbarSize: 0,
+  //           alwaysConsumeMouseWheel: false,
+  //         },
+  //         renderLineHighlight: "none",
+  //         highlightActiveIndentGuide: false,
+  //         renderIndentGuides: false,
+  //         overviewRulerBorder: false,
+  //         overviewRulerLanes: 0,
+  //         hideCursorInOverviewRuler: true,
+  //         folding: false,
+  //         occurrencesHighlight: false,
+  //         selectionHighlight: false,
+  //         lineDecorationsWidth: 0,
+  //         contextmenu: false,
+  //         matchBrackets: "near",
+  //       }}
+  //       editorDidMount={handleEditorDidMount}
+  //     />
+  //   );
+  // }
+
+  // function renderCodeInput() {
+  //   return <div></div>
+  // }
 
   function renderInput() {
     switch (model.cell_type) {
@@ -272,8 +356,12 @@ export default function CellInput({ model }: any) {
       case "code":
         return (
           <div className="cell-input-spacing">
-            <div className="cell-editor-wrapper" ref={wrapperRef}>
-              {renderCodeInput()}
+            <div
+              className="cell-editor-wrapper"
+              style={{ height: 300 }}
+              ref={wrapperRef}
+            >
+              {/* {renderCodeInput()} */}
             </div>
           </div>
         );
@@ -288,3 +376,35 @@ export default function CellInput({ model }: any) {
 
   return renderInput();
 }
+
+const EDITOR_OPTIONS = {
+  glyphMargin: true,
+  wordWrap: "on",
+  scrollBeyondLastLine: false,
+  lightbulb: { enabled: true },
+  fixedOverflowWidgets: true,
+  automaticLayout: true,
+  minimap: {
+    enabled: false,
+  },
+  lineNumbers: "off",
+  scrollbar: {
+    vertical: "hidden",
+    horizontal: "hidden",
+    verticalScrollbarSize: 0,
+    horizontalScrollbarSize: 0,
+    alwaysConsumeMouseWheel: false,
+  },
+  renderLineHighlight: "none",
+  highlightActiveIndentGuide: false,
+  renderIndentGuides: false,
+  overviewRulerBorder: false,
+  overviewRulerLanes: 0,
+  hideCursorInOverviewRuler: true,
+  folding: false,
+  occurrencesHighlight: false,
+  selectionHighlight: false,
+  lineDecorationsWidth: 0,
+  contextmenu: false,
+  matchBrackets: "always",
+};
