@@ -22,6 +22,8 @@ fi
 )
 
 (
+    EXTRAPATH=$(find `pwd`/ -maxdepth 1 -type d | xargs -n 999 | tr -s ' ' ':')
+    export PYTHONPATH=$EXTRAPATH:$PYTHONPATH
     jupyter-notebook --allow-root &
 )
 
