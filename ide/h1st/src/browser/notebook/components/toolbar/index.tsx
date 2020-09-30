@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { IStore } from "../../types";
 import NotebookContext from "../../context";
 import { notebookActions } from "../../reducers/notebook";
-import { createNewCellStructure } from "../../defaults";
+import { NotebookFactory } from "../../notebook-factory";
 
 function KernelStatus() {
   const { status } = useSelector((store: IStore) => store.kernel);
@@ -89,7 +89,7 @@ export default function Toolbar() {
   };
 
   const createNewCell = () => {
-    const newCell = createNewCellStructure();
+    const newCell = NotebookFactory.makeNewCell();
     dispatch(
       insertCellAfter({
         cellId: selectedCell,

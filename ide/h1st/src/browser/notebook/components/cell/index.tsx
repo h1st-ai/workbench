@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, ICellModel, IStore } from "../../types";
 import CellInput from "./input";
 import CellOuput from "./output";
-import { createNewCellStructure } from "../../defaults";
+
 // import { kernelActions } from "../../reducers/kernel";
 import NotebookContext from "../../context";
+import { NotebookFactory } from "../../notebook-factory";
 
 const CELL_CODE = "code";
 const CELL_MD = "markdown";
@@ -134,18 +135,20 @@ export function NotebookCell(props: INotebookProps) {
   function moveUp() {
     dispatch(moveCellUp({ cellId: model.id }));
     context.manager?.setDirty(true);
+    context.manager?.scrollTo(`#cell-${model.id}`);
   }
 
   function moveDown() {
     dispatch(moveCellDown({ cellId: model.id }));
     context.manager?.setDirty(true);
+    context.manager?.scrollTo(`#cell-${model.id}`);
   }
 
   function insertAfter(ev: any) {
     ev.stopPropagation();
     ev.preventDefault();
 
-    const newCell = createNewCellStructure();
+    const newCell = NotebookFactory.makeNewCell();
     dispatch(
       insertCellAfter({
         cellId: model.id,
@@ -155,6 +158,7 @@ export function NotebookCell(props: INotebookProps) {
 
     dispatch(focusOnCell({ cellId: newCell.id }));
     context.manager?.setDirty(true);
+    context.manager?.scrollTo(`#cell-${newCell.id}`);
   }
 
   function renderInputHeader() {
