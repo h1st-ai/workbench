@@ -344,23 +344,6 @@ export class NotebookManager {
     this.store.dispatch(selectNextCellOf(cellId));
   }
 
-  // /**
-  //  * add a cell id to the queue and execute the queue if the kernel is idle
-  //  */
-  // async addCellToQueueAndStart(cellId: string) {
-  //   const { addCellToQueue } = notebookActions;
-  //   const {
-  //     connectionStatus,
-  //     status: kernelStatus,
-  //   } = this.store.getState().kernel;
-
-  //   this.store.dispatch(addCellToQueue({ cellId }));
-
-  //   if (connectionStatus === "connected" && kernelStatus === "idle") {
-  //     await this.executeQueue();
-  //   }
-  // }
-
   /**
    * add a cell id to the execution queue
    */

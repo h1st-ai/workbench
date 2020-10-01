@@ -85,7 +85,7 @@ export default function CellInput({ model }: any) {
     }
 
     // return () => editorRef.current?.dispose();
-  }, []);
+  }, [model.cell_type]);
 
   React.useEffect(() => {
     // alert(editorRef.current);
@@ -98,7 +98,7 @@ export default function CellInput({ model }: any) {
     }
 
     // return () => editorRef.current?.dispose();
-  }, [activeCell]);
+  }, [activeCell, model.cell_type]);
 
   function initMarkdownEditor() {
     if (wrapperRef.current) {

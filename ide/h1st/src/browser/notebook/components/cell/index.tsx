@@ -71,19 +71,20 @@ export function NotebookCell(props: INotebookProps) {
     }
   }, [width]);
 
-  function execute(ev: any) {
+  function execute() {
     if (model.source.join("").trim() === "") {
       console.log("omit empty cell");
       return;
     }
 
+    console.log("omit empty cell");
     // context.manager?.setSelectedCell(model.id);
     context.manager?.addCellToQueue(model.id);
     // context.manager?.selectNextCellOf(model.id);
     context.manager?.executeQueue();
 
-    ev.stopPropagation();
-    ev.preventDefault();
+    // ev.stopPropagation();
+    // ev.preventDefault();
   }
 
   function toMarkdown() {
