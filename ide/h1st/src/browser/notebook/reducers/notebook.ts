@@ -6,7 +6,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { CELL_TYPE, INotebook, IStore } from "../types";
 
-const initialState: INotebook = {
+export const initialState: INotebook = {
   cells: [],
   selectedCell: null,
   activeCell: null,
