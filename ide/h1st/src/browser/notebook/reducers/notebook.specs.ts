@@ -1,22 +1,12 @@
 import { EnhancedStore } from "@reduxjs/toolkit";
 import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
-const middlewares = [thunk];
-const mockStore = configureMockStore(middlewares);
 
-// describe("notebook util functions", () => {
-// let store: any;
-// beforeEach(() => {
-//   store = mockStore({
-//     notebook: {
-//       cells: [""],
-//     },
-//   });
-// });
-// });
 import * as chai from "chai";
-import { initialState, selectCellAndNeighbors } from "./notebook";
+import { initialState, selectCellAndNeighbors, selectCell } from "./notebook";
 import { INotebook } from "../types";
+
+const middlewares: any[] = [];
+const mockStore = configureMockStore(middlewares);
 
 describe("notebook store", () => {
   const { expect, assert } = chai;
@@ -40,6 +30,14 @@ describe("notebook store", () => {
     });
 
     describe("selectCellAndNeighbors", () => {
+      it("select from an empty list", () => {
+        const result = selectCellAndNeighbors({ cells: [] }, "foo");
+
+        assert(result?.cell === undefined, "cell is undefined");
+        assert(result?.next === undefined, "cell is undefined");
+        assert(result?.prev === undefined, "cell is undefined");
+      });
+
       it("select non existant cell", () => {
         const result = selectCellAndNeighbors(state, "foo");
 
@@ -54,6 +52,28 @@ describe("notebook store", () => {
         expect(result?.cell).to.eql({ id: "cell1" });
         assert(result?.prev === undefined, "prev cell is undefined");
         expect(result?.next).to.eql({ id: "cell2" });
+      });
+
+      it("select last cell and it neighbors", () => {
+        const result = selectCellAndNeighbors(state, "cell5");
+
+        expect(result?.cell).to.eql({ id: "cell5" });
+        assert(result?.next === undefined, "prev cell is undefined");
+        expect(result?.prev).to.eql({ id: "cell4" });
+      });
+    });
+
+    describe("selectCell", () => {
+      it("select non existant cell", () => {
+        const result = selectCell(state, "foo");
+
+        assert(result === undefined, "cell is undefined");
+      });
+
+      it("select correct cell", () => {
+        const result = selectCell(state, "cell1");
+
+        expect(result).to.eql({ id: "cell1" });
       });
     });
   });
