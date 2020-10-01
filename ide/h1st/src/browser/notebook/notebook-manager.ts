@@ -268,8 +268,10 @@ export class NotebookManager {
    *
    */
   executeCells = async (input: string | number) => {
-    const { addCellsAfterIndexToQueue, addCellRangeToQueue } = notebookActions;
-    const state = this.getAppState();
+    const {
+      addCellsAfterIndexToQueue,
+      addCellsAfterCellToQueue,
+    } = notebookActions;
 
     switch (typeof input) {
       case "number":
@@ -279,16 +281,11 @@ export class NotebookManager {
         break;
 
       default:
-        await this.store.dispatch(addCellRangeToQueue({ cellId: input }));
+        await this.store.dispatch(addCellsAfterCellToQueue({ cellId: input }));
         break;
     }
 
-    if (
-      state.kernel.connectionStatus === "connected" &&
-      state.kernel.status === "idle"
-    ) {
-      await this.executeQueue();
-    }
+    await this.executeQueue();
   };
 
   /**

@@ -258,7 +258,7 @@ export const NotebookSlice = createSlice({
     removeCellFromQueue: (state): void => {
       state.executionQueue.shift();
     },
-    addCellRangeToQueue: (state, { payload }): void => {
+    addCellsAfterCellToQueue: (state, { payload }): void => {
       const { cellId } = payload;
       let startIndex: number | null = 0;
 
