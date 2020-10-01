@@ -1,4 +1,9 @@
-import { EnhancedStore } from "@reduxjs/toolkit";
+import {
+  CaseReducerActions,
+  configureStore,
+  createSlice,
+  Slice,
+} from "@reduxjs/toolkit";
 import configureMockStore from "redux-mock-store";
 
 import * as chai from "chai";
@@ -7,16 +12,16 @@ import {
   selectCellAndNeighbors,
   selectCell,
   getCellIndex,
+  reducers,
 } from "./notebook";
-import { INotebook } from "../types";
 
 const middlewares: any[] = [];
 const mockStore = configureMockStore(middlewares);
 
 describe("Notebook store", () => {
   const { expect, assert } = chai;
-  let store: EnhancedStore;
-  let state: INotebook;
+  let store: any;
+  let state: any;
 
   /**
    * Helper function test
@@ -124,6 +129,86 @@ describe("Notebook store", () => {
         expect(state.activeTheme).to.eql(null);
         expect(state.focusedCell).to.eql(null);
         expect(state.executionQueue).to.eql([]);
+      });
+    });
+  });
+
+  /**
+   * Store state test
+   */
+  describe("actions", () => {
+    let notebookSlice: Slice;
+    let notebookActions: CaseReducerActions<any>;
+
+    beforeEach(() => {
+      const cells = [
+        {
+          cell_type: "code",
+          execution_count: 82,
+          metadata: {},
+          outputs: [
+            {
+              output_type: "execute_result",
+              data: {
+                "text/plain": "1",
+              },
+              metadata: {},
+              execution_count: 82,
+            },
+          ],
+          source: [" hello1"],
+          id: "cell1",
+        },
+        {
+          cell_type: "code",
+          execution_count: 82,
+          metadata: {},
+          outputs: [
+            {
+              output_type: "execute_result",
+              data: {
+                "text/plain": "1",
+              },
+              metadata: {},
+              execution_count: 82,
+            },
+          ],
+          source: [" hello2"],
+          id: "cell2",
+        },
+      ];
+
+      notebookSlice = createSlice({
+        name: "notebook",
+        initialState: { ...initialState, cells },
+        //@ts-ignore
+        reducers,
+      });
+
+      store = configureStore({
+        reducer: {
+          notebook: notebookSlice.reducer,
+        },
+      });
+
+      state = store.getState();
+      notebookActions = notebookSlice.actions;
+    });
+
+    describe("focusOnCell", () => {
+      it("focus on cell", () => {
+        const { focusOnCell } = notebookActions;
+        //@ts-ignore
+        store.dispatch(focusOnCell({ cellId: "foo" }));
+        state = store.getState();
+
+        expect(state.notebook.focusedCell).to.equal("foo");
+
+        //@ts-ignore
+        store.dispatch(focusOnCell({ cellId: "bar" }));
+        state = store.getState();
+
+        expect(state.notebook.focusedCell).to.equal("bar");
       });
     });
   });
