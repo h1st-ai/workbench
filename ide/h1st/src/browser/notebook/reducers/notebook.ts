@@ -20,7 +20,7 @@ export const initialState: INotebook = {
  * @param state - the notebook store
  * @param cellId - the id of the cell we want to select
  */
-const selectCellAndNeighbors = (state: any, cellId: string) => {
+export const selectCellAndNeighbors = (state: any, cellId: string) => {
   for (let i = 0; i < state.cells.length; i++) {
     if (cellId === state.cells[i].id) {
       return {
@@ -32,7 +32,7 @@ const selectCellAndNeighbors = (state: any, cellId: string) => {
   }
 };
 
-const selectCell = (state: any, cellId: string) => {
+export const selectCell = (state: any, cellId: string) => {
   for (let i = 0; i < state.cells.length; i++) {
     if (cellId === state.cells[i].id) {
       return state.cells[i];
