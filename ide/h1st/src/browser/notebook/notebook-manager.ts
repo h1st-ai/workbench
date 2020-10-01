@@ -334,6 +334,11 @@ export class NotebookManager {
     this.store.dispatch(setSelectedCell({ cellId }));
   }
 
+  selectNextCellOf(cellId: string) {
+    const { selectNextCellOf } = notebookActions;
+    this.store.dispatch(selectNextCellOf(cellId));
+  }
+
   /**
    * add a cell id to the queue and execute the queue if the kernel is idle
    */
@@ -370,15 +375,6 @@ export class NotebookManager {
       this.addCellToQueue(cellId);
     }
   }
-
-  /**
-   * add a cell id to the queue and execute the queue if the kernel is idle
-   */
-  // async addCellToQueueAndStartSelectedCell() {
-  //   const { selectedCell } = this.store.getState().notebook;
-
-  //   await this.addCellToQueueAndStart(selectedCell);
-  // }
 
   /**
    * Do execute a code cell by sending its code to Jupyter kernel and receive the response
