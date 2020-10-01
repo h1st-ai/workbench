@@ -2,17 +2,25 @@ import { EnhancedStore } from "@reduxjs/toolkit";
 import configureMockStore from "redux-mock-store";
 
 import * as chai from "chai";
-import { initialState, selectCellAndNeighbors, selectCell } from "./notebook";
+import {
+  initialState,
+  selectCellAndNeighbors,
+  selectCell,
+  getCellIndex,
+} from "./notebook";
 import { INotebook } from "../types";
 
 const middlewares: any[] = [];
 const mockStore = configureMockStore(middlewares);
 
-describe("notebook store", () => {
+describe("Notebook store", () => {
   const { expect, assert } = chai;
   let store: EnhancedStore;
   let state: INotebook;
 
+  /**
+   * Helper function test
+   */
   describe("helper functions", () => {
     const helperState = {
       cells: [
@@ -76,8 +84,30 @@ describe("notebook store", () => {
         expect(result).to.eql({ id: "cell1" });
       });
     });
+
+    describe("getCellIndex", () => {
+      it("select non existant cell", () => {
+        const result = getCellIndex(state, "foo");
+
+        assert(result === null, "cell is undefined");
+      });
+
+      it("select correct cell", () => {
+        let result = getCellIndex(state, "cell1");
+        assert(result === 0, "first cell is selected");
+
+        result = getCellIndex(state, "cell2");
+        assert(result === 1, "second cell is selected");
+
+        result = getCellIndex(state, "cell5");
+        assert(result === 4, "last is selected");
+      });
+    });
   });
 
+  /**
+   * Store state test
+   */
   describe("state", () => {
     beforeEach(() => {
       store = mockStore(initialState);

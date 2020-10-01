@@ -40,7 +40,7 @@ export const selectCell = (state: any, cellId: string) => {
   }
 };
 
-const getCellIndex = (state: any, cellId: string): number | null => {
+export const getCellIndex = (state: any, cellId: string): number | null => {
   for (let i = 0; i < state.cells.length; i++) {
     if (cellId === state.cells[i].id) {
       return i;
