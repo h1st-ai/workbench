@@ -12,7 +12,7 @@ const staging = {
     URL: 'https://staging.h1st.ai/api',
   },
   AUTH: {
-    URL: 'https://staging.h1st.ai/auth',
+    URL: 'https://login.h1st.ai/auth',
   },
 };
 
