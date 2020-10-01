@@ -256,6 +256,10 @@ export class NotebookManager {
     }
   };
 
+  getAppState = () => {
+    return this.store.getState();
+  };
+
   /**
    * Execute the current cell in the queue.
    *
@@ -265,7 +269,7 @@ export class NotebookManager {
    */
   executeCells = async (input: string | number) => {
     const { addCellsAfterIndexToQueue, addCellRangeToQueue } = notebookActions;
-    const state = this.store.getState();
+    const state = this.getAppState();
 
     switch (typeof input) {
       case "number":
@@ -348,7 +352,7 @@ export class NotebookManager {
   }
 
   /**
-   * add a cell id to the queue and execute the queue if the kernel is idle
+   * add a cell id to the execution queue
    */
   addCellToQueue(cellId: string) {
     const { addCellToQueue } = this.store.getState().notebook;
@@ -356,22 +360,25 @@ export class NotebookManager {
     this.store.dispatch(addCellToQueue(cellId));
   }
 
+  /**
+   * add the current selected cell to queue (one mark with a blue border)
+   */
   addSelectedCellToQueue() {
     const { selectedCell: cellId } = this.store.getState().notebook;
 
     if (cellId) {
-      this.addCellToQueueAndStart(cellId);
+      this.addCellToQueue(cellId);
     }
   }
 
   /**
    * add a cell id to the queue and execute the queue if the kernel is idle
    */
-  async addCellToQueueAndStartSelectedCell() {
-    const { selectedCell } = this.store.getState().notebook;
+  // async addCellToQueueAndStartSelectedCell() {
+  //   const { selectedCell } = this.store.getState().notebook;
 
-    await this.addCellToQueueAndStart(selectedCell);
-  }
+  //   await this.addCellToQueueAndStart(selectedCell);
+  // }
 
   /**
    * Do execute a code cell by sending its code to Jupyter kernel and receive the response

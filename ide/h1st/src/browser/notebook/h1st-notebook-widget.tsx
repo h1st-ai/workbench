@@ -30,7 +30,7 @@ import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
-import { INotebook, INotebookContext } from "./types";
+import { INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
@@ -238,7 +238,8 @@ export class H1stNotebookWidget extends ReactWidget
         modifiers: [KeyModifier.CtrlCmd],
       }),
       async (ev: KeyboardEvent) => {
-        await this.notebookManager.addCellToQueueAndStartSelectedCell();
+        await this.notebookManager.addSelectedCellToQueue();
+        await this.notebookManager.executeQueue();
 
         // return false if you want the event to propagate
         return false;
@@ -246,11 +247,8 @@ export class H1stNotebookWidget extends ReactWidget
     );
   }
 
-  protected getAppState(): INotebook {
-    return this.store.getState();
-  }
-
   protected async init() {
+    console.log("inittialize widget ", this.uri.toString());
     await this.initContentFromNotebook();
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._model.value.cells }));

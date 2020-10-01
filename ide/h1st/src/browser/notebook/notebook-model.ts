@@ -59,10 +59,9 @@ export class NotebookModel implements Saveable {
   }
 
   protected initialize(value: string | undefined): void {
-    console.log("initialize value", value);
+    console.log("Loadig notebook content", this.uri.toString());
     if (value) {
       try {
-        console.log("notebookContent", value);
         const notebookContent = JSON.parse(value);
         notebookContent.cells.map((c: ICellModel) => (c.id = uniqid()));
         this._value = notebookContent;

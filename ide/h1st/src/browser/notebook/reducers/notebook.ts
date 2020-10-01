@@ -15,6 +15,23 @@ const initialState: INotebook = {
   executionQueue: [],
 };
 
+/**
+ * get a cell info and the one prev and after
+ * @param state - the notebook store
+ * @param cellId - the id of the cell we want to select
+ */
+const selectCellAndNeighbors = (state: any, cellId: string) => {
+  for (let i = 0; i < state.cells.length; i++) {
+    if (cellId === state.cells[i].id) {
+      return {
+        prev: state.cells[i - 1],
+        cell: state.cells[i],
+        next: state.cells[i + 1],
+      };
+    }
+  }
+};
+
 const selectCell = (state: any, cellId: string) => {
   for (let i = 0; i < state.cells.length; i++) {
     if (cellId === state.cells[i].id) {
@@ -55,6 +72,20 @@ export const NotebookSlice = createSlice({
     },
     setSelectedCell: (state, { payload }): void => {
       state.selectedCell = payload.cellId;
+    },
+    selectNextCellOf: (state, { payload }): void => {
+      const cellInfo = selectCellAndNeighbors(state, payload.cellId);
+
+      if (cellInfo && cellInfo.next) {
+        state.selectedCell = cellInfo.next.id;
+      }
+    },
+    selectPrevCellOf: (state, { payload }): void => {
+      const cellInfo = selectCellAndNeighbors(state, payload.cellId);
+
+      if (cellInfo && cellInfo.prev) {
+        state.selectedCell = cellInfo.prev.id;
+      }
     },
     setActiveCell: (state, { payload }): void => {
       state.activeCell = payload.cellId;
