@@ -256,7 +256,9 @@ export default function CellInput({ model }: any) {
     if (model.cell_type === CELL_TYPE.CODE) {
       // CmdCtrl + Enter
       editor.addCommand(monaco.KeyMod.CtrlCmd + monaco.KeyCode.Enter, () => {
-        context.manager?.addCellToQueueAndStart(model.id);
+        // context.manager?.setSelectedCell(model.id);
+        context.manager?.addCellToQueue(model.id);
+        context.manager?.executeQueue();
       });
 
       editor.addCommand(monaco.KeyCode.UpArrow, () => {

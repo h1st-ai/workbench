@@ -300,29 +300,37 @@ export class NotebookManager {
    *
    */
   executeQueue = async () => {
-    const state = this.store.getState();
-    const { removeCellFromQueue, setSelectedCell } = notebookActions;
+    const state = this.getAppState();
+    const { removeCellFromQueue } = notebookActions;
 
     // const kernelStatus = state.kernel.status;
     const exeQueue = state.notebook.executionQueue;
 
     if (exeQueue.length > 0) {
-      console.log("execute next cell");
+      const { connectionStatus, status: kernelStatus } = state.kernel;
+
+      if (connectionStatus !== "connected" || kernelStatus !== "idle") {
+        return;
+      }
 
       let cellInfo = null;
       let cellId = exeQueue[0];
       cellInfo = this.getCodeCellInfoFromId(cellId, state.notebook);
 
       // only execute code cell
-      if (cellInfo && cellInfo.type === CELL_TYPE.CODE) {
-        this.scrollTo(`#cell-${cellId}`);
-        await this.store.dispatch(setSelectedCell({ cellId }));
-        await this.executeCodeCell(cellInfo.code, cellId);
+      if (cellInfo) {
+        if (cellInfo.type === CELL_TYPE.CODE) {
+          console.log("execute next cell");
+          this.scrollTo(`#cell-${cellId}`);
+          // await this.store.dispatch(setSelectedCell({ cellId }));
+          await this.executeCodeCell(cellInfo.code, cellId);
+        }
+
         // remove the first cell from queue
-      } else {
-        // remove cell from the queue and do nothing
-        await this.store.dispatch(removeCellFromQueue());
       }
+
+      // remove cell from the queue and do nothing
+      await this.store.dispatch(removeCellFromQueue());
 
       // process the next item in the queue
       await this.executeQueue();
@@ -339,37 +347,38 @@ export class NotebookManager {
     this.store.dispatch(selectNextCellOf(cellId));
   }
 
-  /**
-   * add a cell id to the queue and execute the queue if the kernel is idle
-   */
-  async addCellToQueueAndStart(cellId: string) {
-    const { addCellToQueue } = notebookActions;
-    const {
-      connectionStatus,
-      status: kernelStatus,
-    } = this.store.getState().kernel;
+  // /**
+  //  * add a cell id to the queue and execute the queue if the kernel is idle
+  //  */
+  // async addCellToQueueAndStart(cellId: string) {
+  //   const { addCellToQueue } = notebookActions;
+  //   const {
+  //     connectionStatus,
+  //     status: kernelStatus,
+  //   } = this.store.getState().kernel;
 
-    this.store.dispatch(addCellToQueue({ cellId }));
+  //   this.store.dispatch(addCellToQueue({ cellId }));
 
-    if (connectionStatus === "connected" && kernelStatus === "idle") {
-      await this.executeQueue();
-    }
-  }
+  //   if (connectionStatus === "connected" && kernelStatus === "idle") {
+  //     await this.executeQueue();
+  //   }
+  // }
 
   /**
    * add a cell id to the execution queue
    */
   addCellToQueue(cellId: string) {
-    const { addCellToQueue } = this.store.getState().notebook;
+    console.log("Adding cell to queue", cellId);
+    const { addCellToQueue } = notebookActions;
 
-    this.store.dispatch(addCellToQueue(cellId));
+    this.store.dispatch(addCellToQueue({ cellId }));
   }
 
   /**
    * add the current selected cell to queue (one mark with a blue border)
    */
   addSelectedCellToQueue() {
-    const { selectedCell: cellId } = this.store.getState().notebook;
+    const { selectedCell: cellId } = this.getAppState().notebook;
 
     if (cellId) {
       this.addCellToQueue(cellId);
@@ -390,15 +399,16 @@ export class NotebookManager {
     }
 
     if (this._session.kernel) {
+      const state = this.getAppState();
       const { updateCellOutput, clearCellOutput } = notebookActions;
       const { setKernelStatus } = kernelActions;
+      const { selectedCell } = state.notebook;
 
       console.log("Executing code", this._session.kernel.status);
-      // if (this._session.kernel.status !== "idle") {
-      //   this.messageService.warn("Kernel is not ready");
-      //   console.log("Kernel is not ready", this._session.kernel.status);
-      //   return;
-      // }
+
+      if (selectedCell !== cellId) {
+        this.setSelectedCell(cellId);
+      }
 
       await this.store.dispatch(clearCellOutput({ cellId }));
       const future = this._session.kernel.requestExecute({

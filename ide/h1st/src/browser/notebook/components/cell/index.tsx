@@ -73,10 +73,14 @@ export function NotebookCell(props: INotebookProps) {
 
   function execute(ev: any) {
     if (model.source.join("").trim() === "") {
+      console.log("omit empty cell");
       return;
     }
 
-    context.manager?.addCellToQueueAndStart(model.id);
+    // context.manager?.setSelectedCell(model.id);
+    context.manager?.addCellToQueue(model.id);
+    // context.manager?.selectNextCellOf(model.id);
+    context.manager?.executeQueue();
 
     ev.stopPropagation();
     ev.preventDefault();
