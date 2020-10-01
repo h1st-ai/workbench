@@ -230,7 +230,7 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected initCommandShortcuts() {
     console.log("Initializing command shortcuts");
-    // const sequence = [KeyCode.]
+    // Cmd/Ctrl + Enter to run current cell
     this.addKeyListener(
       this.node,
       KeyCode.createKeyCode({
@@ -265,7 +265,7 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async onAfterAttach(msg: Message): Promise<void> {
     if (this.isVisible) {
-      // if (!this._initialized) await this.init();
+      if (!this._initialized) await this.init();
 
       this.update();
     }
@@ -276,11 +276,11 @@ export class H1stNotebookWidget extends ReactWidget
   protected async onActivateRequest(msg: Message) {
     super.onActivateRequest(msg);
 
-    // if (!this._initialized) {
-    //   await this.init();
-    // } else {
-    //   this.update();
-    // }
+    if (!this._initialized) {
+      await this.init();
+    } else {
+      this.update();
+    }
     setTimeout(() => this.update(), 0);
   }
 
