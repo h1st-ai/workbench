@@ -18,10 +18,10 @@ const staging = {
 
 const prod = {
   API: {
-    URL: 'https://cloud.h1st.ai/api',
+    URL: 'https://cumulus.h1st.ai/api',
   },
   AUTH: {
-    URL: 'https://cloud.h1st.ai/auth',
+    URL: 'https://login.h1st.ai/auth',
   },
 };
 
