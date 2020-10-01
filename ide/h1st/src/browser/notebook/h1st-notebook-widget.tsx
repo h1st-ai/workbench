@@ -13,6 +13,8 @@ import {
   ShouldSaveDialog,
   setDirty,
   Key,
+  KeyCode,
+  KeyModifier,
   // StatefulWidget,
   // ReactRenderer,
 } from "@theia/core/lib/browser";
@@ -28,7 +30,7 @@ import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
-import { INotebookContext } from "./types";
+import { INotebook, INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
@@ -82,6 +84,8 @@ export class H1stNotebookWidget extends ReactWidget
       this.h1stBackendClient,
       this.messageService
     );
+
+    this.initCommandShortcuts();
   }
 
   private onDirtyChange() {
@@ -90,7 +94,10 @@ export class H1stNotebookWidget extends ReactWidget
 
   private async onContentLoad() {
     if (this.isVisible) {
-      await this.init();
+      if (!this._initialized) {
+        await this.init();
+      }
+
       this.update();
     }
   }
@@ -223,7 +230,24 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected initCommandShortcuts() {
     console.log("Initializing command shortcuts");
-    this.addKeyListener(this.node, Key.ENTER, () => console.log("enter"));
+    // const sequence = [KeyCode.]
+    this.addKeyListener(
+      this.node,
+      KeyCode.createKeyCode({
+        first: Key.ENTER,
+        modifiers: [KeyModifier.CtrlCmd],
+      }),
+      async (ev: KeyboardEvent) => {
+        await this.notebookManager.addCellToQueueAndStartSelectedCell();
+
+        // return false if you want the event to propagate
+        return false;
+      }
+    );
+  }
+
+  protected getAppState(): INotebook {
+    return this.store.getState();
   }
 
   protected async init() {
@@ -232,7 +256,6 @@ export class H1stNotebookWidget extends ReactWidget
     this.store.dispatch(setCells({ cells: this._model.value.cells }));
 
     await this.notebookManager.init();
-    this.initCommandShortcuts();
 
     // mark this widget as initialized
     this._initialized = true;
@@ -242,7 +265,7 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected async onAfterAttach(msg: Message): Promise<void> {
     if (this.isVisible) {
-      if (!this._initialized) await this.init();
+      // if (!this._initialized) await this.init();
 
       this.update();
     }
@@ -253,11 +276,12 @@ export class H1stNotebookWidget extends ReactWidget
   protected async onActivateRequest(msg: Message) {
     super.onActivateRequest(msg);
 
-    if (!this._initialized) {
-      await this.init();
-    } else {
-      this.update();
-    }
+    // if (!this._initialized) {
+    //   await this.init();
+    // } else {
+    //   this.update();
+    // }
+    setTimeout(() => this.update(), 0);
   }
 
   protected render(): React.ReactNode {

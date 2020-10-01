@@ -1,18 +1,18 @@
-export type IFile = {
+export interface IFile {
   uri: string;
   displayInfo: any;
-};
+}
 
-export type IDefaultLayout = {
+export interface IDefaultLayout {
   files: IFile[];
-};
+}
 
-export type INotebookServerInit = {
+export interface INotebookServerInit {
   cache: string;
   credentials: string;
-};
+}
 
-export type INotebookServerConfig = {
+export interface INotebookServerConfig {
   baseUrl: string;
   appUrl: string;
   wsUrl: string;
@@ -20,4 +20,9 @@ export type INotebookServerConfig = {
   init?: INotebookServerInit;
   cache: string;
   credentials: string;
-};
+}
+
+export interface ICellCodeInfo {
+  code: string;
+  type: string;
+}

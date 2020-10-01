@@ -17,8 +17,9 @@ import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
 import URI from "@theia/core/lib/common/uri";
 import { ApplicationLabels } from "./labels";
-import { INotebook } from "./types";
+import { CELL_TYPE, INotebook } from "./types";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
+import { ICellCodeInfo } from "../../common/types";
 
 export class NotebookManager {
   private _kernelManager: KernelManager;
@@ -304,17 +305,18 @@ export class NotebookManager {
     if (exeQueue.length > 0) {
       console.log("execute next cell");
 
-      let code = null;
+      let cellInfo = null;
       let cellId = exeQueue[0];
-      code = this.getSourceCodeFromId(cellId, state.notebook);
+      cellInfo = this.getCodeCellInfoFromId(cellId, state.notebook);
 
-      if (code) {
+      // only execute code cell
+      if (cellInfo && cellInfo.type === CELL_TYPE.CODE) {
         this.scrollTo(`#cell-${cellId}`);
         await this.store.dispatch(setSelectedCell({ cellId }));
-        await this.executeCodeCell(code, cellId);
+        await this.executeCodeCell(cellInfo.code, cellId);
         // remove the first cell from queue
       } else {
-        // if the code is empty, Jupyter will note execute anything, we have to remove it manually
+        // remove cell from the queue and do nothing
         await this.store.dispatch(removeCellFromQueue());
       }
 
@@ -323,19 +325,52 @@ export class NotebookManager {
     }
   };
 
+  setSelectedCell(cellId: string) {
+    const { setSelectedCell } = notebookActions;
+    this.store.dispatch(setSelectedCell({ cellId }));
+  }
+
   /**
    * add a cell id to the queue and execute the queue if the kernel is idle
    */
   async addCellToQueueAndStart(cellId: string) {
-    const { setSelectedCell, addCellToQueue } = notebookActions;
-    const { connectionStatus, kernelStatus } = this.store.getState().notebook;
+    const { addCellToQueue } = notebookActions;
+    const {
+      connectionStatus,
+      status: kernelStatus,
+    } = this.store.getState().kernel;
 
-    this.store.dispatch(setSelectedCell({ cellId }));
     this.store.dispatch(addCellToQueue({ cellId }));
 
     if (connectionStatus === "connected" && kernelStatus === "idle") {
       await this.executeQueue();
     }
+  }
+
+  /**
+   * add a cell id to the queue and execute the queue if the kernel is idle
+   */
+  addCellToQueue(cellId: string) {
+    const { addCellToQueue } = this.store.getState().notebook;
+
+    this.store.dispatch(addCellToQueue(cellId));
+  }
+
+  addSelectedCellToQueue() {
+    const { selectedCell: cellId } = this.store.getState().notebook;
+
+    if (cellId) {
+      this.addCellToQueueAndStart(cellId);
+    }
+  }
+
+  /**
+   * add a cell id to the queue and execute the queue if the kernel is idle
+   */
+  async addCellToQueueAndStartSelectedCell() {
+    const { selectedCell } = this.store.getState().notebook;
+
+    await this.addCellToQueueAndStart(selectedCell);
   }
 
   /**
@@ -401,10 +436,16 @@ export class NotebookManager {
   /**
    * get the source code of a cell identified by cellId
    */
-  private getSourceCodeFromId(cellId: string, state: INotebook): string | null {
+  private getCodeCellInfoFromId(
+    cellId: string,
+    state: INotebook
+  ): ICellCodeInfo | null {
     for (let i = 0; i < state.cells.length; i++) {
       if (cellId === state.cells[i].id) {
-        return state.cells[i].source.join("\n");
+        return {
+          code: state.cells[i].source.join("\n"),
+          type: state.cells[i].cell_type,
+        };
       }
     }
 

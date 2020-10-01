@@ -63,14 +63,17 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
       switch (output.output_type) {
         case CELL_OUTPUT_TYPE.ERROR:
           return (
-            <div className="output output-error">
+            <div key={output.output_type} className="output output-error">
               <KernelOutputError output={output} />
             </div>
           );
 
         case CELL_OUTPUT_TYPE.STREAM:
           return (
-            <div className={`output output-data stream ${output.name}`}>
+            <div
+              key={output.output_type}
+              className={`output output-data stream ${output.name}`}
+            >
               <pre>
                 {Array.isArray(output.text)
                   ? output.text.join("")
@@ -82,6 +85,7 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
         default:
           return (
             <div
+              key={output.output_type}
               className={`output output-data rich_media ${output.output_type}`}
             >
               <RichMedia data={output.data}>
