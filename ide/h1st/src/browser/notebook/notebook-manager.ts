@@ -300,37 +300,34 @@ export class NotebookManager {
     const state = this.getAppState();
     const { removeCellFromQueue } = notebookActions;
 
-    // const kernelStatus = state.kernel.status;
     const exeQueue = state.notebook.executionQueue;
+    console.log("queue length", exeQueue.length);
 
     if (exeQueue.length > 0) {
       const { connectionStatus, status: kernelStatus } = state.kernel;
 
-      if (connectionStatus !== "connected" || kernelStatus !== "idle") {
-        return;
-      }
+      if (connectionStatus === "connected" && kernelStatus === "idle") {
+        console.log("executing cell");
+        let cellInfo = null;
+        let cellId = exeQueue[0];
+        cellInfo = this.getCodeCellInfoFromId(cellId, state.notebook);
 
-      let cellInfo = null;
-      let cellId = exeQueue[0];
-      cellInfo = this.getCodeCellInfoFromId(cellId, state.notebook);
-
-      // only execute code cell
-      if (cellInfo) {
-        if (cellInfo.type === CELL_TYPE.CODE) {
-          console.log("execute next cell");
-          this.scrollTo(`#cell-${cellId}`);
-          // await this.store.dispatch(setSelectedCell({ cellId }));
-          await this.executeCodeCell(cellInfo.code, cellId);
+        // only execute code cell
+        if (cellInfo) {
+          if (cellInfo.type === CELL_TYPE.CODE) {
+            console.log("execute next cell");
+            this.scrollTo(`#cell-${cellId}`);
+            // await this.store.dispatch(setSelectedCell({ cellId }));
+            await this.executeCodeCell(cellInfo.code, cellId);
+          }
         }
 
-        // remove the first cell from queue
+        // remove cell from the queue and do nothing
+        await this.store.dispatch(removeCellFromQueue());
+
+        // process the next item in the queue
+        await this.executeQueue();
       }
-
-      // remove cell from the queue and do nothing
-      await this.store.dispatch(removeCellFromQueue());
-
-      // process the next item in the queue
-      await this.executeQueue();
     }
   };
 
@@ -416,8 +413,6 @@ export class NotebookManager {
 
       future.onReply = async (msg) => {
         console.log("Execution completed", msg);
-        const { removeCellFromQueue } = notebookActions;
-        await this.store.dispatch(removeCellFromQueue());
         // await this.store.dispatch(updateCellExecutionCount({ cellId }));
       };
 
