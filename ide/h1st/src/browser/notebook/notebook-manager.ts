@@ -336,6 +336,18 @@ export class NotebookManager {
     this.store.dispatch(setSelectedCell({ cellId }));
   }
 
+  enterEditMode() {
+    const state = this.getAppState();
+    const cellId = state.notebook.selectedCell;
+    console.log("entering edit mode");
+
+    if (cellId && cellId !== state.notebook.activeCell) {
+      const { setActiveCell, focusOnCell } = notebookActions;
+      this.store.dispatch(setActiveCell({ cellId }));
+      this.store.dispatch(focusOnCell({ cellId }));
+    }
+  }
+
   selectNextCellOf(cellId: string) {
     const { selectNextCellOf } = notebookActions;
     this.store.dispatch(selectNextCellOf(cellId));
@@ -492,6 +504,9 @@ export class NotebookManager {
     return !notVisible;
   }
 
+  /**
+   * Scroll to the item identify by the selector string .classname #id etc...
+   */
   scrollTo(selector: string) {
     const node: HTMLElement | null = this.widget.node.querySelector(selector);
     console.log("scrolling to", node);

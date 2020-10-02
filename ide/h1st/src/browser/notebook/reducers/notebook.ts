@@ -165,19 +165,19 @@ export const reducers = {
           // const output = cell.outputs[cell.outputs.length]
           break;
 
-        case "display_data":
-          cell.outputs.push({
-            output_type: output.msg_type,
-            ...output.content,
-          });
-          break;
+        // case "display_data":
+        //   cell.outputs.push({
+        //     output_type: output.msg_type,
+        //     ...output.content,
+        //   });
+        //   break;
 
-        case "error":
-          cell.outputs.push({
-            output_type: output.msg_type,
-            ...output.content,
-          });
-          break;
+        // case "error":
+        //   cell.outputs.push({
+        //     output_type: output.msg_type,
+        //     ...output.content,
+        //   });
+        //   break;
 
         default:
           cell.outputs.push({

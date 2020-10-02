@@ -238,13 +238,20 @@ export class H1stNotebookWidget extends ReactWidget
         modifiers: [KeyModifier.CtrlCmd],
       }),
       async (ev: KeyboardEvent) => {
-        await this.notebookManager.addSelectedCellToQueue();
+        this.notebookManager.addSelectedCellToQueue();
         await this.notebookManager.executeQueue();
 
         // return false if you want the event to propagate
         return false;
       }
     );
+
+    this.addKeyListener(this.node, Key.ENTER, (ev: KeyboardEvent) => {
+      this.notebookManager.enterEditMode();
+
+      // return false if you want the event to propagate
+      return false;
+    });
   }
 
   protected async init() {
