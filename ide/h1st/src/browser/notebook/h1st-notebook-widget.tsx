@@ -230,7 +230,14 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected initCommandShortcuts() {
     console.log("Initializing command shortcuts");
-    // Cmd/Ctrl + Enter to run current cell
+    /**
+     * Cmd/Ctrl + Enter to run current cell. Important: if you have an
+     * async funciton, make sure it has an await operation or the event
+     * won't propagate.
+     *
+     * In short, the function must return false for the event to propagate
+     * to other listeners
+     */
     this.addKeyListener(
       this.node,
       KeyCode.createKeyCode({
