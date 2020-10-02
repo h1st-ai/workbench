@@ -41,6 +41,10 @@ export class NotebookManager {
     protected readonly messageService: MessageService
   ) {}
 
+  static getDomCellId(cellId: string): string {
+    return `#cell-${cellId}`;
+  }
+
   setDirty(dirty: boolean) {
     this.model.setDirty(dirty);
   }
@@ -325,7 +329,7 @@ export class NotebookManager {
         if (cellInfo) {
           if (cellInfo.type === CELL_TYPE.CODE) {
             console.log("execute next cell");
-            this.scrollTo(`#cell-${cellId}`);
+            this.scrollTo(NotebookManager.getDomCellId(cellId));
             // await this.store.dispatch(setSelectedCell({ cellId }));
             await this.executeCodeCell(cellInfo.code, cellId);
           }
@@ -398,9 +402,34 @@ export class NotebookManager {
     }
   }
 
+  selectNextCell() {
+    const cellId = this.getSelectedCell();
+
+    if (cellId) {
+      this.selectNextCellOf(cellId);
+
+      setTimeout(() => this.scrollTo(NotebookManager.getDomCellId(cellId)), 0);
+    }
+  }
+
   selectNextCellOf(cellId: string) {
     const { selectNextCellOf } = notebookActions;
-    this.store.dispatch(selectNextCellOf(cellId));
+    this.store.dispatch(selectNextCellOf({ cellId }));
+  }
+
+  selectPrevCell() {
+    const cellId = this.getSelectedCell();
+
+    if (cellId) {
+      this.selectPrevCellOf(cellId);
+
+      setTimeout(() => this.scrollTo(NotebookManager.getDomCellId(cellId)), 0);
+    }
+  }
+
+  selectPrevCellOf(cellId: string) {
+    const { selectPrevCellOf } = notebookActions;
+    this.store.dispatch(selectPrevCellOf({ cellId }));
   }
 
   /**
@@ -542,7 +571,7 @@ export class NotebookManager {
       // or when node.offsetTop > widget.scrollTop + widget.height
 
       // but the thing can be partial visible, we want to add some padding
-      const padding = -50;
+      const padding = 0;
 
       notVisible =
         node.offsetTop + node.clientHeight + padding <

@@ -84,6 +84,24 @@ export const reducers = {
       state.selectedCell = cellInfo.prev.id;
     }
   },
+  focusNextCellOf: (state: INotebook, { payload }: any): void => {
+    const cellInfo = selectCellAndNeighbors(state, payload.cellId);
+
+    if (cellInfo && cellInfo.next) {
+      const nextCellId = cellInfo.next.id;
+      state.selectedCell = nextCellId;
+      state.activeCell = nextCellId;
+    }
+  },
+  focusPrevCellOf: (state: INotebook, { payload }: any): void => {
+    const cellInfo = selectCellAndNeighbors(state, payload.cellId);
+
+    if (cellInfo && cellInfo.prev) {
+      const prevCellId = cellInfo.prev.id;
+      state.selectedCell = prevCellId;
+      state.activeCell = prevCellId;
+    }
+  },
   setActiveCell: (state: INotebook, { payload }: any): void => {
     state.activeCell = payload.cellId;
   },

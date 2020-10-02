@@ -51,6 +51,7 @@ export class H1stNotebookWidget extends ReactWidget
   private notebookManager: NotebookManager;
   private CSS_CLASS: string = "h1st-notebook-widget";
   private _pendingKeys: Key | undefined;
+  private PENDING_KEY_DELAY = 300;
 
   constructor(
     readonly uri: URI,
@@ -332,6 +333,36 @@ export class H1stNotebookWidget extends ReactWidget
           return false;
         },
       },
+
+      /**
+       * Listen to the arrow keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.ARROW_DOWN,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.selectNextCell();
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the arrow keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.ARROW_UP,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.selectPrevCell();
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
     ];
 
     events.forEach((event) => {
@@ -346,10 +377,10 @@ export class H1stNotebookWidget extends ReactWidget
   protected setPendingKey(key: Key) {
     this._pendingKeys = key;
 
-    // clear it after 200ms;
+    // clear it after PENDING_KEY_DELAY;
     setTimeout(() => {
       this._pendingKeys = undefined;
-    }, 150);
+    }, this.PENDING_KEY_DELAY);
   }
 
   protected async init() {
