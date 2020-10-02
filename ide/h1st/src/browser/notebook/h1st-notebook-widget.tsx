@@ -50,6 +50,7 @@ export class H1stNotebookWidget extends ReactWidget
   private _model: NotebookModel;
   private notebookManager: NotebookManager;
   private CSS_CLASS: string = "h1st-notebook-widget";
+  private _pendingKeys: Key | undefined;
 
   constructor(
     readonly uri: URI,
@@ -264,6 +265,8 @@ export class H1stNotebookWidget extends ReactWidget
       {
         key: Key.ENTER,
         handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
           this.notebookManager.enterEditMode();
 
           // return false if you want the event to propagate
@@ -277,7 +280,10 @@ export class H1stNotebookWidget extends ReactWidget
       {
         key: Key.KEY_A,
         handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
           this.notebookManager.insertCellAroundSelectedCell("before");
+          this.notebookManager.setDirty(true);
 
           // return false if you want the event to propagate
           return false;
@@ -290,7 +296,38 @@ export class H1stNotebookWidget extends ReactWidget
       {
         key: Key.KEY_B,
         handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
           this.notebookManager.insertCellAroundSelectedCell("after");
+          this.notebookManager.setDirty(true);
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the B keypress to insert cell after the selected cell
+       */
+      {
+        key: Key.KEY_D,
+        handler: (ev: KeyboardEvent) => {
+          console.log("this.isAnyCellFocused()", this.isAnyCellFocused());
+          if (this.isAnyCellFocused()) {
+            return false;
+          }
+
+          // the behavior is doubling press D within 400ms to activate
+          // on the first keystroke, we store the pending key
+
+          if (!this._pendingKeys) {
+            this.setPendingKey(Key.KEY_D);
+            return false;
+          }
+
+          // on the second key stroke, we're gonna delete the cell
+
+          this.notebookManager.deleteSelectedCell();
 
           // return false if you want the event to propagate
           return false;
@@ -301,6 +338,19 @@ export class H1stNotebookWidget extends ReactWidget
     events.forEach((event) => {
       this.addKeyListener(this.node, event.key, event.handler);
     });
+  }
+
+  protected isAnyCellFocused(): boolean {
+    return this.store.getState().notebook.activeCell;
+  }
+
+  protected setPendingKey(key: Key) {
+    this._pendingKeys = key;
+
+    // clear it after 200ms;
+    setTimeout(() => {
+      this._pendingKeys = undefined;
+    }, 150);
   }
 
   protected async init() {

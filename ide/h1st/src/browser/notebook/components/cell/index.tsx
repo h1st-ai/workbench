@@ -33,7 +33,6 @@ export function NotebookCell(props: INotebookProps) {
     setSelectedCell,
     setActiveCell,
     setCellType,
-    deleteCell,
     moveCellUp,
     moveCellDown,
     insertCellAfter,
@@ -125,7 +124,7 @@ export function NotebookCell(props: INotebookProps) {
   }
 
   function deleteCodeCell() {
-    dispatch(deleteCell({ cellId: model.id }));
+    context.manager?.deleteCell(model.id);
     context.manager?.setDirty(true);
   }
 

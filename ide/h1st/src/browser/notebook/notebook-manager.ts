@@ -381,8 +381,20 @@ export class NotebookManager {
       // focusing on the new cell
       this.store.dispatch(setCurrentCell({ cellId: cell.id }));
       this.store.dispatch(focusOnCell({ cellId: cell.id }));
+    }
+  }
 
-      this.setDirty(true);
+  deleteCell(cellId: string) {
+    const { deleteCell } = notebookActions;
+
+    this.store.dispatch(deleteCell({ cellId }));
+  }
+
+  deleteSelectedCell() {
+    const cellId = this.getSelectedCell();
+
+    if (cellId) {
+      this.deleteCell(cellId);
     }
   }
 
