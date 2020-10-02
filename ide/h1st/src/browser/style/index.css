@@ -312,6 +312,10 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   border-left: none;
   border-right: none;
   text-align: right;
+  cursor: pointer;
+}
+
+.cell-output:hover {
 }
 
 .cell-prompt .execution-count {
@@ -320,8 +324,8 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 /* var(--vscode-notifications-background) */
 .cell-wrapper:hover .cell-focusbar {
-  background: var(--theia-tab-inactiveBackground);
-  border-color: var(--theia-tab-inactiveBackground);
+  background: var(--theia-editor-findRangeHighlightBackground);
+  border-color: var(--theia-editor-findRangeHighlightBackground);
 }
 
 .cell-focusbar {
@@ -344,7 +348,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-wrapper:hover .cell-form {
-  border-color: var(--theia-tab-inactiveBackground);
+  border-color: var(--theia-editor-findRangeHighlightBackground);
 }
 
 .cell-wrapper.selected .cell-form,
@@ -353,7 +357,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-wrapper:hover .cell-prompt {
-  border-color: var(--theia-tab-inactiveBackground);
+  border-color: var(--theia-editor-findRangeHighlightBackground);
 }
 
 .cell-wrapper.selected .cell-prompt,
@@ -498,6 +502,10 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-output-wrapper .execute_result .csieaG {
   color: var(--theia-foreground);
+}
+
+.cell-output-wrapper table {
+  min-width: 100%;
 }
 
 .cell-output-wrapper table,
