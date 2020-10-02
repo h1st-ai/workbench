@@ -230,34 +230,76 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected initCommandShortcuts() {
     console.log("Initializing command shortcuts");
-    /**
-     * Cmd/Ctrl + Enter to run current cell. Important: if you have an
-     * async funciton, make sure it has an await operation or the event
-     * won't propagate.
-     *
-     * In short, the function must return false for the event to propagate
-     * to other listeners
-     */
-    this.addKeyListener(
-      this.node,
-      KeyCode.createKeyCode({
-        first: Key.ENTER,
-        modifiers: [KeyModifier.CtrlCmd],
-      }),
-      async (ev: KeyboardEvent) => {
-        this.notebookManager.addSelectedCellToQueue();
-        await this.notebookManager.executeQueue();
 
-        // return false if you want the event to propagate
-        return false;
-      }
-    );
+    const events = [
+      /**
+       * Cmd/Ctrl + Enter to run current cell. Important: if you have an
+       * async funciton, make sure it has an await operation or the event
+       * won't propagate.
+       *
+       * In short, the function must return false for the event to propagate
+       * to other listeners
+       */
 
-    this.addKeyListener(this.node, Key.ENTER, (ev: KeyboardEvent) => {
-      this.notebookManager.enterEditMode();
+      /**
+       * Listen to the enter keypress to enter edit mode
+       */
+      {
+        key: KeyCode.createKeyCode({
+          first: Key.ENTER,
+          modifiers: [KeyModifier.CtrlCmd],
+        }),
+        handler: async (ev: KeyboardEvent) => {
+          this.notebookManager.addSelectedCellToQueue();
+          await this.notebookManager.executeQueue();
 
-      // return false if you want the event to propagate
-      return false;
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the ENTER keypress to insert cell before selected cell
+       */
+      {
+        key: Key.ENTER,
+        handler: (ev: KeyboardEvent) => {
+          this.notebookManager.enterEditMode();
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the A keypress to insert cell before the selected cell
+       */
+      {
+        key: Key.KEY_A,
+        handler: (ev: KeyboardEvent) => {
+          this.notebookManager.insertCellAroundSelectedCell("before");
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the B keypress to insert cell after the selected cell
+       */
+      {
+        key: Key.KEY_B,
+        handler: (ev: KeyboardEvent) => {
+          this.notebookManager.insertCellAroundSelectedCell("after");
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+    ];
+
+    events.forEach((event) => {
+      this.addKeyListener(this.node, event.key, event.handler);
     });
   }
 

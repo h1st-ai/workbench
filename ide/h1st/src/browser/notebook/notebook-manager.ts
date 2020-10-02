@@ -20,6 +20,7 @@ import { ApplicationLabels } from "./labels";
 import { CELL_TYPE, INotebook } from "./types";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
 import { ICellCodeInfo } from "../../common/types";
+import { NotebookFactory } from "./notebook-factory";
 
 export class NotebookManager {
   private _kernelManager: KernelManager;
@@ -260,6 +261,14 @@ export class NotebookManager {
     return this.store.getState();
   };
 
+  getSelectedCell = () => {
+    return this.getAppState().notebook.selectedCell;
+  };
+
+  getActiveCell = () => {
+    return this.getAppState().notebook.activeCell;
+  };
+
   /**
    * Execute the current cell in the queue.
    *
@@ -336,15 +345,44 @@ export class NotebookManager {
     this.store.dispatch(setSelectedCell({ cellId }));
   }
 
+  // Enter keypress on notebook
   enterEditMode() {
-    const state = this.getAppState();
-    const cellId = state.notebook.selectedCell;
+    const cellId = this.getSelectedCell();
     console.log("entering edit mode");
 
-    if (cellId && cellId !== state.notebook.activeCell) {
-      const { setActiveCell, focusOnCell } = notebookActions;
-      this.store.dispatch(setActiveCell({ cellId }));
+    if (cellId && cellId !== this.getAppState().notebook.activeCell) {
+      const { setCurrentCell, focusOnCell } = notebookActions;
+      this.store.dispatch(setCurrentCell({ cellId }));
       this.store.dispatch(focusOnCell({ cellId }));
+    }
+  }
+
+  insertCellAroundSelectedCell(position: string = "after") {
+    const cellId = this.getSelectedCell();
+
+    // do not run this command when there is a current focused cell
+    if (cellId && !this.getAppState().notebook.activeCell) {
+      console.log("inserting new cell before selected cell", cellId);
+
+      const {
+        insertCellBefore,
+        insertCellAfter,
+        setCurrentCell,
+        focusOnCell,
+      } = notebookActions;
+      const cell = NotebookFactory.makeNewCell();
+
+      if (position === "before") {
+        this.store.dispatch(insertCellBefore({ cellId, cell }));
+      } else {
+        this.store.dispatch(insertCellAfter({ cellId, cell }));
+      }
+
+      // focusing on the new cell
+      this.store.dispatch(setCurrentCell({ cellId: cell.id }));
+      this.store.dispatch(focusOnCell({ cellId: cell.id }));
+
+      this.setDirty(true);
     }
   }
 

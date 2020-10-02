@@ -239,6 +239,7 @@ export const reducers = {
       state.cells.push(cell);
     }
   },
+
   insertCellAt: (state: INotebook, { payload }: any): void => {
     const { cell, cellIndex } = payload;
 
@@ -248,6 +249,7 @@ export const reducers = {
       console.log("Failed to insert");
     }
   },
+
   addCellToQueue: (state: INotebook, { payload }: any): void => {
     state.executionQueue = state.executionQueue.concat(payload.cellId);
   },
