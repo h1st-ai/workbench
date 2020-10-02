@@ -319,15 +319,14 @@ export class H1stNotebookWidget extends ReactWidget
 
           // the behavior is doubling press D within 400ms to activate
           // on the first keystroke, we store the pending key
-
           if (!this._pendingKeys) {
             this.setPendingKey(Key.KEY_D);
             return false;
           }
 
           // on the second key stroke, we're gonna delete the cell
-
           this.notebookManager.deleteSelectedCell();
+          this.notebookManager.setDirty(true);
 
           // return false if you want the event to propagate
           return false;
