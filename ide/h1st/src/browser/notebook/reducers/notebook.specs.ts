@@ -144,7 +144,7 @@ describe("Notebook store", () => {
       const cells = [
         {
           cell_type: "code",
-          execution_count: 82,
+          execution_count: 1,
           metadata: {},
           outputs: [
             {
@@ -153,7 +153,7 @@ describe("Notebook store", () => {
                 "text/plain": "1",
               },
               metadata: {},
-              execution_count: 82,
+              execution_count: 2,
             },
           ],
           source: [" hello1"],
@@ -161,24 +161,15 @@ describe("Notebook store", () => {
         },
         {
           cell_type: "code",
-          execution_count: 82,
+          execution_count: 2,
           metadata: {},
-          outputs: [
-            {
-              output_type: "execute_result",
-              data: {
-                "text/plain": "1",
-              },
-              metadata: {},
-              execution_count: 82,
-            },
-          ],
+          outputs: [],
           source: [" hello2"],
           id: "cell2",
         },
         {
           cell_type: "code",
-          execution_count: 82,
+          execution_count: 3,
           metadata: {},
           outputs: [
             {
@@ -195,7 +186,7 @@ describe("Notebook store", () => {
         },
         {
           cell_type: "code",
-          execution_count: 82,
+          execution_count: 4,
           metadata: {},
           outputs: [
             {
@@ -284,6 +275,198 @@ describe("Notebook store", () => {
       store.dispatch(selectNextCellOf({ cellId: "cell1" }));
       state = store.getState();
       expect(state.notebook.selectedCell).to.equal("cell2");
+    });
+
+    it("selectPrevCellOf", () => {
+      const { selectPrevCellOf } = notebookActions;
+
+      //@ts-ignore
+      store.dispatch(selectPrevCellOf({ cellId: "cell1" }));
+      state = store.getState();
+
+      expect(state.notebook.selectedCell).to.equal(null);
+
+      //@ts-ignore
+      store.dispatch(selectPrevCellOf({ cellId: "cell4" }));
+      state = store.getState();
+      expect(state.notebook.selectedCell).to.equal("cell3");
+    });
+
+    it("setActiveCell", () => {
+      const { setActiveCell } = notebookActions;
+
+      //@ts-ignore
+      store.dispatch(setActiveCell({ cellId: "cell1" }));
+      state = store.getState();
+
+      expect(state.notebook.activeCell).to.equal("cell1");
+
+      //@ts-ignore
+      store.dispatch(setActiveCell({ cellId: "cell4" }));
+      state = store.getState();
+      expect(state.notebook.activeCell).to.equal("cell4");
+    });
+
+    it("setCurrentCell", () => {
+      const { setCurrentCell } = notebookActions;
+
+      //@ts-ignore
+      store.dispatch(setCurrentCell({ cellId: "cell1" }));
+      state = store.getState();
+
+      expect(state.notebook.activeCell).to.equal("cell1");
+      expect(state.notebook.selectedCell).to.equal("cell1");
+
+      //@ts-ignore
+      store.dispatch(setCurrentCell({ cellId: "cell4" }));
+      state = store.getState();
+      expect(state.notebook.activeCell).to.equal("cell4");
+      expect(state.notebook.selectedCell).to.equal("cell4");
+    });
+
+    it("setActiveTheme", () => {
+      const { setActiveTheme } = notebookActions;
+
+      //@ts-ignore
+      store.dispatch(setActiveTheme("theme-white"));
+      state = store.getState();
+
+      expect(state.notebook.activeTheme).to.equal("theme-white");
+    });
+
+    it("setCellInput", () => {
+      const { setCellInput } = notebookActions;
+
+      store.dispatch(
+        //@ts-ignore
+        setCellInput({ cellId: "cell1", code: "hello\nworld\ntest" })
+      );
+      state = store.getState();
+
+      const cell = state.notebook.cells[0];
+      expect(cell.source.length).to.equal(3);
+      expect(cell.source[0]).to.equal("hello\n");
+      expect(cell.source[1]).to.equal("world\n");
+      expect(cell.source[2]).to.equal("test");
+    });
+
+    it("setCellType", () => {
+      const { setCellType } = notebookActions;
+
+      store.dispatch(
+        //@ts-ignore
+        setCellType({ cellId: "cell1", type: "markdown" })
+      );
+      store.dispatch(
+        //@ts-ignore
+        setCellType({ cellId: "cell4", type: "markdown" })
+      );
+      state = store.getState();
+
+      expect(state.notebook.cells[0].cell_type).to.equal("markdown");
+      expect(state.notebook.cells[3].cell_type).to.equal("markdown");
+    });
+
+    it("clearCellOutput", () => {
+      const { clearCellOutput } = notebookActions;
+
+      store.dispatch(
+        //@ts-ignore
+        clearCellOutput({ cellId: "cell1" })
+      );
+      store.dispatch(
+        //@ts-ignore
+        clearCellOutput({ cellId: "cell4" })
+      );
+      state = store.getState();
+
+      expect(state.notebook.cells[0].outputs.length).to.equal(0);
+      expect(state.notebook.cells[3].outputs.length).to.equal(0);
+    });
+
+    describe("updateCellOutput", () => {
+      it("update execution count on message input event", () => {
+        const { updateCellOutput } = notebookActions;
+        const executionInput = {
+          msg_type: "execute_input",
+          content: {
+            execution_count: 10,
+          },
+        };
+
+        store.dispatch(
+          //@ts-ignore
+          updateCellOutput({ cellId: "cell1", output: executionInput })
+        );
+        state = store.getState();
+        expect(state.notebook.cells[0].execution_count).to.equal(10);
+      });
+
+      it("update stream content", () => {
+        const { updateCellOutput } = notebookActions;
+        const stream1 = {
+          msg_type: "stream",
+          content: {
+            name: "stdout",
+            text: "foo↵",
+          },
+        };
+        const stream2 = {
+          msg_type: "stream",
+          content: {
+            name: "stdout",
+            text: "bar↵",
+          },
+        };
+
+        store.dispatch(
+          //@ts-ignore
+          updateCellOutput({ cellId: "cell2", output: stream1 })
+        );
+        store.dispatch(
+          //@ts-ignore
+          updateCellOutput({ cellId: "cell2", output: stream2 })
+        );
+
+        state = store.getState();
+        expect(state.notebook.cells[1].outputs.length).to.equal(1);
+        expect(state.notebook.cells[1].outputs[0].text.length).to.equal(2);
+        expect(state.notebook.cells[1].outputs[0].text[0]).to.equal("foo↵");
+        expect(state.notebook.cells[1].outputs[0].text[1]).to.equal("bar↵");
+      });
+
+      it("update error", () => {
+        const { updateCellOutput } = notebookActions;
+        const errorMessage = {
+          content: {
+            ename: "NameError",
+            evalue: "name 'pasf' is not defined",
+            traceback: [
+              "[0;31m---------------------------------------------------------------------------[0m",
+              "[0;31mNameError[0m                                 Traceback (most recent call last)",
+              "[0;32m<ipython-input-113-0389f4a9c9d9>[0m",
+              "[0;31mNameError[0m: name 'pasf' is not defined",
+            ],
+          },
+          msg_type: "error",
+        };
+
+        store.dispatch(
+          //@ts-ignore
+          updateCellOutput({ cellId: "cell2", output: errorMessage })
+        );
+
+        state = store.getState();
+        console.log(state.notebook.cells[1].outputs);
+        expect(state.notebook.cells[1].outputs[0].ename).to.equal("NameError");
+        expect(state.notebook.cells[1].outputs[0].evalue).to.equal(
+          "name 'pasf' is not defined"
+        );
+        expect(state.notebook.cells[1].outputs[0].traceback.length).to.equal(4);
+        expect(state.notebook.cells[1].outputs[0].traceback).to.equal(
+          errorMessage.content.traceback
+        );
+      });
     });
   });
 });

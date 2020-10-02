@@ -123,7 +123,6 @@ export const reducers = {
     const cell = selectCell(state, cellId);
 
     if (cell) {
-      console.log("clearning cell output", cellId);
       cell.outputs = [];
     }
   },
