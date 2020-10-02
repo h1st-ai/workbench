@@ -259,6 +259,9 @@ export function ProjectGridItem({
 
     return (
       <div className={styles.actions}>
+        <div className={styles.renderStatusWrapper}>
+        {renderStatus()} {btn}
+        </div>
         <nav className={styles.actionsDropdownWrapper}>
           <button className={styles.menuTrigger}>
             <svg width="31" height="7" viewBox="0 0 31 7" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -282,7 +285,7 @@ export function ProjectGridItem({
                 </button>
             </li>
             <li className={styles.actionDelete}>
-              <button> 
+              <button  onClick={deleteProject}> 
                 <span className={styles.menuIcon}>
                   <svg  viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M16 3H12V0H4V3H0V5H1V16H15V5H16V3ZM6 2H10V3H6V2ZM13 14H3V5H13V14Z" fill="#C22F25"/>

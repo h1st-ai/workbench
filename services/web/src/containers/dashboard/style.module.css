@@ -382,3 +382,7 @@
 .actionDelete svg, .actionDelete svg * {
 
 }
+.renderStatusWrapper {
+  display: flex;
+  align-items: center;
+}
