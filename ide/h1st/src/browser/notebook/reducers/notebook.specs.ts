@@ -176,6 +176,40 @@ describe("Notebook store", () => {
           source: [" hello2"],
           id: "cell2",
         },
+        {
+          cell_type: "code",
+          execution_count: 82,
+          metadata: {},
+          outputs: [
+            {
+              output_type: "execute_result",
+              data: {
+                "text/plain": "1",
+              },
+              metadata: {},
+              execution_count: 82,
+            },
+          ],
+          source: [" hello3"],
+          id: "cell3",
+        },
+        {
+          cell_type: "code",
+          execution_count: 82,
+          metadata: {},
+          outputs: [
+            {
+              output_type: "execute_result",
+              data: {
+                "text/plain": "1",
+              },
+              metadata: {},
+              execution_count: 82,
+            },
+          ],
+          source: [" hello4"],
+          id: "cell4",
+        },
       ];
 
       notebookSlice = createSlice({
@@ -195,21 +229,61 @@ describe("Notebook store", () => {
       notebookActions = notebookSlice.actions;
     });
 
-    describe("focusOnCell", () => {
-      it("focus on cell", () => {
-        const { focusOnCell } = notebookActions;
-        //@ts-ignore
-        store.dispatch(focusOnCell({ cellId: "foo" }));
-        state = store.getState();
+    it("focusOnCell", () => {
+      const { focusOnCell } = notebookActions;
+      //@ts-ignore
+      store.dispatch(focusOnCell({ cellId: "foo" }));
+      state = store.getState();
 
-        expect(state.notebook.focusedCell).to.equal("foo");
+      expect(state.notebook.focusedCell).to.equal("foo");
 
-        //@ts-ignore
-        store.dispatch(focusOnCell({ cellId: "bar" }));
-        state = store.getState();
+      //@ts-ignore
+      store.dispatch(focusOnCell({ cellId: "bar" }));
+      state = store.getState();
 
-        expect(state.notebook.focusedCell).to.equal("bar");
-      });
+      expect(state.notebook.focusedCell).to.equal("bar");
+    });
+
+    it("setSelectedCell", () => {
+      const { setSelectedCell } = notebookActions;
+      //@ts-ignore
+      store.dispatch(setSelectedCell({ cellId: "selectedFoo" }));
+      state = store.getState();
+
+      expect(state.notebook.selectedCell).to.equal("selectedFoo");
+
+      //@ts-ignore
+      store.dispatch(setSelectedCell({ cellId: "selectedBar" }));
+      state = store.getState();
+
+      expect(state.notebook.selectedCell).to.equal("selectedBar");
+    });
+
+    it("setCells", () => {
+      const { setCells } = notebookActions;
+
+      const cells = [{ id: "foo", source: ["hello"], outputs: ["test\n"] }];
+      //@ts-ignore
+      store.dispatch(setCells({ cells }));
+      state = store.getState();
+
+      expect(state.notebook.cells.length).to.equal(1);
+      expect(state.notebook.cells).to.equal(cells);
+    });
+
+    it("selectNextCellOf", () => {
+      const { selectNextCellOf } = notebookActions;
+
+      //@ts-ignore
+      store.dispatch(selectNextCellOf({ cellId: "cell4" }));
+      state = store.getState();
+
+      expect(state.notebook.selectedCell).to.equal(null);
+
+      //@ts-ignore
+      store.dispatch(selectNextCellOf({ cellId: "cell1" }));
+      state = store.getState();
+      expect(state.notebook.selectedCell).to.equal("cell2");
     });
   });
 });
