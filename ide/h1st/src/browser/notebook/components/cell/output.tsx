@@ -13,6 +13,7 @@ import {
   MediaPNG,
   MediaSVG,
   Plain,
+  KernelOutputError as KernelOutputErrors,
 } from "./media";
 import { MediaUnsupported } from "./media/wildcard";
 
@@ -65,6 +66,7 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
           return (
             <div key={output.output_type} className="output output-error">
               <KernelOutputError output={output} />
+              <KernelOutputErrors data={output} />
             </div>
           );
 

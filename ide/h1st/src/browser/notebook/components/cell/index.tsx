@@ -187,7 +187,7 @@ export function NotebookCell(props: INotebookProps) {
   function renderPromptContent() {
     if (model.id) {
       return executionQueue.indexOf(model.id) === -1
-        ? model.execution_count || "-"
+        ? model.execution_count || " "
         : "*";
     }
   }
@@ -197,7 +197,9 @@ export function NotebookCell(props: INotebookProps) {
       case CELL_CODE:
         return (
           <div className="cell-prompt" ref={promptRef}>
-            <div className="execution-count">[{renderPromptContent()}]</div>
+            <div className="execution-count">
+              In [{renderPromptContent()}]:{" "}
+            </div>
           </div>
         );
 

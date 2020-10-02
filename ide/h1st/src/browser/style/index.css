@@ -304,11 +304,14 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-prompt {
-  width: 34px;
+  width: 100px;
   min-width: 34px;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding: 16px 4px;
   display: block;
+  border: 1px solid transparent;
+  border-left: none;
+  border-right: none;
+  text-align: right;
 }
 
 .cell-prompt .execution-count {
@@ -318,26 +321,44 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 /* var(--vscode-notifications-background) */
 .cell-wrapper:hover .cell-focusbar {
   background: var(--theia-tab-inactiveBackground);
+  border-color: var(--theia-tab-inactiveBackground);
 }
 
 .cell-focusbar {
   width: 8px;
+  border: 1px solid transparent;
+  border-left: none;
+  border-right: none;
 }
 
 .cell-wrapper.selected .cell-focusbar,
 .cell-wrapper.selected:hover .cell-focusbar {
   background: var(--theia-inputValidation-infoBorder);
+  border-color: var(--theia-inputValidation-infoBorder);
 }
 
 .cell-wrapper.active .cell-focusbar,
 .cell-wrapper.active:hover .cell-focusbar {
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 3px,
-    var(--theia-ansi-green-color) 3px,
-    var(--theia-ansi-green-color) 6px
-  );
+  border-color: var(--theia-ansi-green-color);
+  background: var(--theia-ansi-green-color);
+}
+
+.cell-wrapper:hover .cell-form {
+  border-color: var(--theia-tab-inactiveBackground);
+}
+
+.cell-wrapper.selected .cell-form,
+.cell-wrapper.active .cell-form {
+  border-color: var(--theia-editor-wordHighlightBackground);
+}
+
+.cell-wrapper:hover .cell-prompt {
+  border-color: var(--theia-tab-inactiveBackground);
+}
+
+.cell-wrapper.selected .cell-prompt,
+.cell-wrapper.active .cell-prompt {
+  border-color: var(--theia-editor-wordHighlightBackground);
 }
 
 .cell-wrapper .monaco-editor .margin,
@@ -410,6 +431,10 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-form {
   flex: 1;
+  padding: 16px 16px 16px 0px;
+  border: 1px solid transparent;
+  border-left: none;
+  box-sizing: border-box;
 }
 
 .cell-editor-wrapper {
@@ -447,8 +472,24 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-output-wrapper .output-error {
-  background: #fff;
-  padding: 8px 16px;
+  /* background: #fff;
+  padding: 8px 16px; */
+}
+
+.cell-output-wrapper .output-error .code-red {
+  color: var(--theia-editorMarkerNavigationError-background);
+}
+
+.cell-output-wrapper .output-error .code-green {
+  color: var(--theia-terminal-ansiBrightGreen);
+}
+
+.cell-output-wrapper .output-error .code-blue {
+  color: var(--theia-editorOverviewRuler-infoForeground);
+}
+
+.cell-output-wrapper .output-error .code-teal {
+  color: var(--theia-minimap-findMatchHighlight);
 }
 
 .cell-output-wrapper .output-error ::selection {
