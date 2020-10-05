@@ -22,7 +22,7 @@ export namespace ApplicationLabels {
     MOVE_UP: "Move selected cells up",
     MOVE_DOWN: "Move selected cells down",
     RUN_SELECTED: "Run the selecte cells",
-    INTERRUP_KERNEL: "Run all cells",
+    INTERRUP_KERNEL: "Interrupt the kernel",
     RUN_ALL_CELL: "Run all cells",
     RUN_ALL_CELL_AFTER: "Run all cells after the select one",
     CELL_CLEAR_OUTPUTS: "Clear all cell outputs",

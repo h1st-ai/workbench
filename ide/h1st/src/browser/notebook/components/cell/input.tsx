@@ -492,7 +492,7 @@ const EDITOR_OPTIONS: Partial<monaco.editor.IStandaloneEditorConstructionOptions
   folding: false,
   occurrencesHighlight: false,
   selectionHighlight: false,
-  lineDecorationsWidth: 8,
+  lineDecorationsWidth: 16,
   contextmenu: false,
   matchBrackets: "always",
 };
