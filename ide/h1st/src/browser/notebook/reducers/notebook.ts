@@ -166,6 +166,7 @@ export const reducers = {
 
     if (cellInfo && cellInfo.next) {
       state.selectedCell = cellInfo.next.id;
+      state.selectedCells = [cellInfo.next.id];
     }
   },
   selectPrevCellOf: (state: INotebook, { payload }: any): void => {
@@ -173,6 +174,7 @@ export const reducers = {
 
     if (cellInfo && cellInfo.prev) {
       state.selectedCell = cellInfo.prev.id;
+      state.selectedCells = [cellInfo.next.id];
     }
   },
   focusNextCellOf: (state: INotebook, { payload }: any): void => {
@@ -212,6 +214,7 @@ export const reducers = {
   setCurrentCell: (state: INotebook, { payload }: any): void => {
     state.activeCell = payload.cellId;
     state.selectedCell = payload.cellId;
+    state.selectedCells = [payload.cellId];
   },
   setActiveTheme: (state: INotebook, { payload }: any): void => {
     state.activeTheme = payload;

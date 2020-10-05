@@ -1,5 +1,6 @@
 export const ApplicationLabels = {
   KERNEL: {
+    MSG_RESTARTING: "Restarting kernel...",
     MSG_RESTART:
       "Do you want to restart the current kernel? All variables will be lost.",
     MSG_RESTART_SUCCESS: "Kernel restarted",

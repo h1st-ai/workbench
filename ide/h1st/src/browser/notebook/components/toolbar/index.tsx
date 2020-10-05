@@ -80,7 +80,7 @@ export default function Toolbar() {
   }, []);
 
   const doRestartKernel = async (ev: any) => {
-    await context.manager?.restartKernel();
+    await context.manager?.restartKernel(false);
   };
 
   const executeAll = async () => {
@@ -145,6 +145,11 @@ export default function Toolbar() {
     context.manager?.setDirty(true);
   };
 
+  const executeSelectedCells = async () => {
+    await context.manager?.executeSelectedCells();
+    await context.manager?.selectNextCell();
+  };
+
   return (
     <div className="toolbar">
       <ul>
@@ -182,11 +187,11 @@ export default function Toolbar() {
         </li>
 
         <li>
-          <button>
+          <button onClick={executeSelectedCells}>
             <FontAwesomeIcon icon={faStepForward} style={ICON_STYLE} />{" "}
             <span>Run</span>
           </button>
-          <button>
+          <button onClick={interruptKernel}>
             <FontAwesomeIcon icon={faStop} style={ICON_STYLE} />
           </button>
           <button onClick={doRestartKernel}>

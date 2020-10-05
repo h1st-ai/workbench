@@ -257,6 +257,9 @@ export class NotebookManager {
     if (answer === "Yes") {
       if (this._session.kernel) {
         try {
+          this.messageService.info(ApplicationLabels.KERNEL.MSG_RESTARTING, {
+            timeout: 4000,
+          });
           await this._session.kernel.restart();
           this.messageService.info(
             ApplicationLabels.KERNEL.MSG_RESTART_SUCCESS,
@@ -329,6 +332,10 @@ export class NotebookManager {
     return this.getAppState().notebook.selectedCell;
   };
 
+  getSelectedCells = (): string[] => {
+    return this.getAppState().notebook.selectedCells;
+  };
+
   getActiveCell = () => {
     return this.getAppState().notebook.activeCell;
   };
@@ -380,6 +387,12 @@ export class NotebookManager {
       this.scrollTo(NotebookManager.getDomCellId(selectedCell));
       this.setSelectedCell(selectedCell);
     }, 100);
+  };
+
+  executeSelectedCells = async () => {
+    const selectedCells = this.getSelectedCells();
+
+    await this.executeCells(selectedCells);
   };
 
   /**
