@@ -293,7 +293,7 @@ export default function CellInput({ model }: any) {
       // CmdCtrl + Enter
       editor.addCommand(monaco.KeyMod.CtrlCmd + monaco.KeyCode.Enter, () => {
         // context.manager?.setSelectedCell(model.id);
-        context.manager?.addCellToQueue(model.id);
+        context.manager?.addCellsToQueue([model.id]);
         context.manager?.executeQueue();
       });
     }

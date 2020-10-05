@@ -333,22 +333,21 @@ export class NotebookManager {
    * @returns none
    *
    */
-  executeCells = async (input: string | number) => {
+  executeCells = async (input: string | number | string[]) => {
     const {
       addCellsAfterIndexToQueue,
       addCellsAfterCellToQueue,
+      addCellsToQueue,
     } = notebookActions;
 
-    switch (typeof input) {
-      case "number":
-        await this.store.dispatch(
-          addCellsAfterIndexToQueue({ startIndex: input })
-        );
-        break;
-
-      default:
-        await this.store.dispatch(addCellsAfterCellToQueue({ cellId: input }));
-        break;
+    if (typeof input === "number") {
+      await this.store.dispatch(
+        addCellsAfterIndexToQueue({ startIndex: input })
+      );
+    } else if (Array.isArray(input)) {
+      await this.store.dispatch(addCellsToQueue({ cellIds: input }));
+    } else {
+      await this.store.dispatch(addCellsAfterCellToQueue({ cellId: input }));
     }
 
     await this.executeQueue();
@@ -508,23 +507,23 @@ export class NotebookManager {
   }
 
   /**
-   * add a cell id to the execution queue
+   * add cell ids to the execution queue
    */
-  addCellToQueue(cellId: string) {
-    console.log("Adding cell to queue", cellId);
-    const { addCellToQueue } = notebookActions;
+  addCellsToQueue(cellIds: string[]) {
+    console.log("Adding cell to queue", cellIds);
+    const { addCellsToQueue } = notebookActions;
 
-    this.store.dispatch(addCellToQueue({ cellId }));
+    this.store.dispatch(addCellsToQueue({ cellIds }));
   }
 
   /**
    * add the current selected cell to queue (one mark with a blue border)
    */
   addSelectedCellToQueue() {
-    const { selectedCell: cellId } = this.getAppState().notebook;
+    const { selectedCells: cellIds } = this.getAppState().notebook;
 
-    if (cellId) {
-      this.addCellToQueue(cellId);
+    if (cellIds) {
+      this.addCellsToQueue(cellIds);
     }
   }
 

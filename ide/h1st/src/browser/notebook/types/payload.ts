@@ -18,3 +18,9 @@ export interface IPasteCellPayload {
     position: "top" | "bottom";
   };
 }
+
+export interface IAddCellsToQueuePayload {
+  payload: {
+    cellIds: string[];
+  };
+}

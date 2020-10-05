@@ -78,7 +78,7 @@ export function NotebookCell(props: INotebookProps) {
 
     console.log("omit empty cell");
     // context.manager?.setSelectedCell(model.id);
-    context.manager?.addCellToQueue(model.id);
+    context.manager?.addCellsToQueue([model.id]);
     // context.manager?.selectNextCellOf(model.id);
     context.manager?.executeQueue();
 

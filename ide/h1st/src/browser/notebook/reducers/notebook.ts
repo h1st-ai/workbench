@@ -7,6 +7,7 @@ import { NotebookFactory } from "../notebook-factory";
 
 import { CELL_TYPE, INotebook, IStore } from "../types";
 import {
+  IAddCellsToQueuePayload,
   ICutCellPayload,
   IPasteCellPayload,
   ISetClipboardCellPayload,
@@ -477,8 +478,11 @@ export const reducers = {
     }
   },
 
-  addCellToQueue: (state: INotebook, { payload }: any): void => {
-    state.executionQueue = state.executionQueue.concat(payload.cellId);
+  addCellsToQueue: (
+    state: INotebook,
+    { payload }: IAddCellsToQueuePayload
+  ): void => {
+    state.executionQueue = state.executionQueue.concat(...payload.cellIds);
   },
   removeCellFromQueue: (state: INotebook): void => {
     console.log("removing cell from queue", state.executionQueue[0]);
