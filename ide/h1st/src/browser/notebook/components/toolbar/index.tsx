@@ -6,7 +6,7 @@ import {
   faPlus,
   faCut,
   faCopy,
-  faPaste,
+  faClipboard,
   faArrowUp,
   faArrowDown,
   faStepForward,
@@ -15,12 +15,14 @@ import {
   faFastForward,
   faForward,
 } from "@fortawesome/free-solid-svg-icons";
+import ReactTooltip from "react-tooltip";
 import Icon from "../icon";
 import { useSelector, useDispatch } from "react-redux";
 import { IStore } from "../../types";
 import NotebookContext from "../../context";
 import { notebookActions } from "../../reducers/notebook";
 import { NotebookFactory } from "../../notebook-factory";
+import { ApplicationLabels } from "../../labels";
 
 function KernelStatus() {
   const { status } = useSelector((store: IStore) => store.kernel);
@@ -155,64 +157,121 @@ export default function Toolbar() {
     <div className="toolbar">
       <ul>
         <li>
-          <button onClick={save}>
+          <button
+            onClick={save}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.SAVE}
+          >
             <FontAwesomeIcon icon={faSave} style={ICON_STYLE} />
           </button>
         </li>
 
         <li>
-          <button onClick={createNewCell}>
+          <button
+            onClick={createNewCell}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.ADD_CELL_BELOW}
+          >
             <FontAwesomeIcon icon={faPlus} style={ICON_STYLE} />
           </button>
         </li>
 
         <li>
-          <button onClick={cutCells}>
+          <button
+            onClick={cutCells}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.CUT_CELLS}
+          >
             <FontAwesomeIcon icon={faCut} style={ICON_STYLE} />
           </button>
-          <button onClick={copyCells}>
+          <button
+            onClick={copyCells}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.COPY_CELLS}
+          >
             <FontAwesomeIcon icon={faCopy} style={ICON_STYLE} />
           </button>
-          <button onClick={pasteCells}>
-            <FontAwesomeIcon icon={faPaste} style={ICON_STYLE} />
+          <button
+            onClick={pasteCells}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.PASTE_CELLS}
+          >
+            <FontAwesomeIcon icon={faClipboard} style={ICON_STYLE} />
           </button>
         </li>
 
         <li>
-          <button onClick={moveUp}>
+          <button
+            onClick={moveUp}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.MOVE_UP}
+          >
             <FontAwesomeIcon icon={faArrowUp} style={ICON_STYLE} />
           </button>
-          <button onClick={moveDown}>
+          <button
+            onClick={moveDown}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.MOVE_DOWN}
+          >
             <FontAwesomeIcon icon={faArrowDown} style={ICON_STYLE} />
           </button>
         </li>
 
         <li>
-          <button onClick={executeSelectedCells}>
+          <button
+            onClick={executeSelectedCells}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.RUN_SELECTED}
+          >
             <FontAwesomeIcon icon={faStepForward} style={ICON_STYLE} />{" "}
             <span>Run</span>
           </button>
-          <button disabled={!selectedCell} onClick={executeAfter}>
+          <button
+            disabled={!selectedCell}
+            onClick={executeAfter}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.RUN_ALL_CELL_AFTER}
+          >
             <Icon width={16} height={16} icon="play-down" />
           </button>
-          <button onClick={executeAll}>
+          <button
+            onClick={executeAll}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.RUN_ALL_CELL}
+          >
             <FontAwesomeIcon icon={faForward} style={ICON_STYLE} />
           </button>
         </li>
         <li>
-          <button onClick={interruptKernel}>
+          <button
+            onClick={interruptKernel}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.INTERRUP_KERNEL}
+          >
             <FontAwesomeIcon icon={faStop} style={ICON_STYLE} />
           </button>
-          <button onClick={doRestartKernel}>
+          <button
+            onClick={doRestartKernel}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.RESTART_KERNEL}
+          >
             <FontAwesomeIcon icon={faRedo} style={ICON_STYLE} />
           </button>
-          <button onClick={restartKernelAndRunAll}>
+          <button
+            onClick={restartKernelAndRunAll}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.RESTART_KERNAL_AND_RUN_ALL}
+          >
             <FontAwesomeIcon icon={faFastForward} style={ICON_STYLE} />
           </button>
         </li>
 
         <li>
-          <button onClick={clearAllCellOutputs}>
+          <button
+            onClick={clearAllCellOutputs}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.CELL_CLEAR_OUTPUTS}
+          >
             <Icon width={24} height={24} icon="cell-clear" />
           </button>
         </li>
@@ -222,6 +281,14 @@ export default function Toolbar() {
         <JupyterServer />
         <JupyterKernel />
       </div>
+
+      <ReactTooltip
+        id="toolbar-tip"
+        effect="solid"
+        place="bottom"
+        delayShow={400}
+        multiline={true}
+      />
     </div>
   );
 }
