@@ -51,6 +51,12 @@ export enum KERNEL_STATUS {
   DISC = "disconnected",
 }
 
+export enum KERNEL_CONNECTION_STATUS {
+  CONNECTING = "connecting",
+  DISCONNECTED = "disconnected",
+  CONNECTED = "connected",
+}
+
 export interface IKernel {
   currentKernel: any | undefined;
   connectionStatus: string;

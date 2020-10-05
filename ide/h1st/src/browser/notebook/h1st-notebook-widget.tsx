@@ -273,6 +273,7 @@ export class H1stNotebookWidget extends ReactWidget
         handler: async (ev: KeyboardEvent) => {
           this.notebookManager.addSelectedCellToQueue();
           await this.notebookManager.executeQueue();
+          await this.notebookManager.selectNextCell();
 
           // return false if you want the event to propagate
           return false;
@@ -360,7 +361,7 @@ export class H1stNotebookWidget extends ReactWidget
 
           // on the second key stroke, we're gonna delete the cell
           this.notebookManager.deleteSelectedCell();
-          this.notebookManager.setDirty(true);
+          // this.notebookManager.setDirty(true);
 
           // return false if you want the event to propagate
           return false;

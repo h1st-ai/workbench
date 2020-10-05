@@ -17,7 +17,12 @@ import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
 import URI from "@theia/core/lib/common/uri";
 import { ApplicationLabels } from "./labels";
-import { CELL_TYPE, INotebook, KERNEL_STATUS } from "./types";
+import {
+  CELL_TYPE,
+  INotebook,
+  KERNEL_CONNECTION_STATUS,
+  KERNEL_STATUS,
+} from "./types";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
 import { ICellCodeInfo } from "../../common/types";
 import { NotebookFactory } from "./notebook-factory";
@@ -241,7 +246,7 @@ export class NotebookManager {
   /**
    * Restart the current kernel
    */
-  restartKernel = async (confirm: boolean = true) => {
+  restartKernel = async (confirm: boolean = true): Promise<boolean | null> => {
     console.log("restarting Kernel");
 
     let answer: string | undefined = "Yes";
@@ -255,7 +260,7 @@ export class NotebookManager {
     }
 
     if (answer === "Yes") {
-      if (this._session.kernel) {
+      if (this._session && this._session.kernel) {
         try {
           this.messageService.info(ApplicationLabels.KERNEL.MSG_RESTARTING, {
             timeout: 4000,
@@ -265,13 +270,21 @@ export class NotebookManager {
             ApplicationLabels.KERNEL.MSG_RESTART_SUCCESS,
             { timeout: 4000 }
           );
+
+          return true;
         } catch (ex) {
           this.messageService.error(
             ApplicationLabels.KERNEL.MSG_RESTART_FAILURE
           );
+
+          return null;
         }
       }
+
+      return false; // return false indicate error
     }
+
+    return null;
   };
 
   restartKernelAndRunAll = async () => {
@@ -291,13 +304,20 @@ export class NotebookManager {
 
     if (await dialog.open()) {
       this.toogleActionOverlay(true);
-      await this.restartKernel(false);
+      const result = await this.restartKernel(false);
+
+      if (result === false) {
+        this.messageService.error("Kernel failed to restart", "OK");
+        this.toogleActionOverlay(false);
+        return;
+      }
+
       let tries = 0;
 
       const intervalId = setInterval(async () => {
         // give up after 10 second
         if (tries === 10) {
-          this.messageService.error("Kernel failed to restart");
+          this.messageService.error("Kernel connection timeout.", "OK");
           clearInterval(intervalId);
           this.toogleActionOverlay(false);
         }
@@ -403,6 +423,13 @@ export class NotebookManager {
    *
    */
   executeCells = async (input: string | number | string[]) => {
+    const connected = this.checkIfKernelIsConnected();
+
+    if (!connected) {
+      this.showDisconnectedMessage();
+      return;
+    }
+
     const {
       addCellsAfterIndexToQueue,
       addCellsAfterCellToQueue,
@@ -558,7 +585,7 @@ export class NotebookManager {
     this.store.dispatch(toggleCellLineNumber());
   }
 
-  selectNextCell() {
+  selectNextCell(): string {
     const cellId = this.getSelectedCell();
 
     if (cellId) {
@@ -566,6 +593,8 @@ export class NotebookManager {
 
       setTimeout(() => this.scrollTo(NotebookManager.getDomCellId(cellId)), 0);
     }
+
+    return cellId;
   }
 
   selectNextCellOf(cellId: string) {
@@ -607,10 +636,31 @@ export class NotebookManager {
     }
   }
 
+  private checkIfKernelIsConnected() {
+    const state = this.getAppState();
+    const { connectionStatus } = state.kernel;
+
+    return connectionStatus === KERNEL_CONNECTION_STATUS.CONNECTED;
+  }
+
+  private async showDisconnectedMessage() {
+    await this.messageService.error(
+      "Can not execute cells while disconnected",
+      "OK"
+    );
+  }
+
   /**
    * add cell ids to the execution queue
    */
-  addCellsToQueue(cellIds: string[]) {
+  async addCellsToQueue(cellIds: string[]) {
+    const connected = this.checkIfKernelIsConnected();
+
+    if (!connected) {
+      this.showDisconnectedMessage();
+      return;
+    }
+
     console.log("Adding cell to queue", cellIds);
     const { addCellsToQueue } = notebookActions;
 
@@ -649,7 +699,7 @@ export class NotebookManager {
       return;
     }
 
-    if (this._session.kernel) {
+    if (this._session && this._session.kernel) {
       const state = this.getAppState();
       const { updateCellOutput, clearCellOutput } = notebookActions;
       const { setKernelStatus } = kernelActions;

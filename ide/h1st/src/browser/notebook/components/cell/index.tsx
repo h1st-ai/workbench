@@ -50,7 +50,6 @@ export function NotebookCell(props: INotebookProps) {
     insertCellAfter,
     focusOnCell,
   } = notebookActions;
-  const { currentKernel } = useSelector((store: IStore) => store.kernel);
   const { selectedCell, activeCell, executionQueue } = useSelector(
     (store: IStore) => store.notebook
   );
@@ -82,17 +81,16 @@ export function NotebookCell(props: INotebookProps) {
     }
   }, [width]);
 
-  function execute() {
+  async function execute() {
     if (model.source.join("").trim() === "") {
       console.log("omit empty cell");
       return;
     }
 
-    console.log("omit empty cell");
-    // context.manager?.setSelectedCell(model.id);
-    context.manager?.addCellsToQueue([model.id]);
-    // context.manager?.selectNextCellOf(model.id);
-    context.manager?.executeQueue();
+    await context.manager?.addCellsToQueue([model.id]);
+    await context.manager?.executeQueue();
+
+    await context.manager?.selectNextCell();
 
     // ev.stopPropagation();
     // ev.preventDefault();
@@ -128,7 +126,7 @@ export function NotebookCell(props: INotebookProps) {
           data-tip="Run this cell"
           data-for={`toolbar-cell-header-${model.id}`}
           className="btn-cell-play"
-          disabled={!currentKernel}
+          // disabled={!currentKernel}
           onClick={execute}
         >
           <FontAwesomeIcon size="sm" icon={faPlay} style={SVG_STYLE} />
