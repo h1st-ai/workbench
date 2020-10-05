@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 import NotebookContext from "../../context";
+import { NotebookManager } from "../../notebook-manager";
 // import { editor } from "monaco-editor";
 // import { editor } from "monaco-editor";
 
@@ -65,19 +66,6 @@ export default function CellInput({ model }: any) {
     }
   }, [focusedCell]);
 
-  // React.useEffect(() => {
-  //   if (activeCell === model.id && model.cell_type == CELL_TYPE.MD) {
-  //     // const editor = editorRef.current;
-
-  //     console.log("focusing cell");
-  //     setTimeout(() => {
-  //       if (editorRef.current) {
-  //         editorRef.current.focus();
-  //       }
-  //     }, 0);
-  //   }
-  // }, [activeCell]);
-
   // initialize editor
   React.useEffect(() => {
     if (model.cell_type === CELL_TYPE.CODE) {
@@ -88,11 +76,8 @@ export default function CellInput({ model }: any) {
   }, [model.cell_type]);
 
   React.useEffect(() => {
-    // alert(editorRef.current);
-    // if (editorRef.current) editorRef.current.dispose();
-    // editorRef?.current?.dispose();
     if (model.cell_type === CELL_TYPE.MD && activeCell === model.id) {
-      // alert("initialize editor");
+      console.log("initializing markdown editor");
       initMarkdownEditor();
       setTimeout(() => editorRef.current?.focus(), 0);
     }
@@ -139,13 +124,6 @@ export default function CellInput({ model }: any) {
         // const model = editorRef.current?.getModel();
 
         if (cursorPos) {
-          // console.log("Looking up");
-          // const offset = model.getOffsetAt({
-          //   lineNumber: cursorPos.lineNumber,
-          //   column: cursorPos.column,
-          // });
-          // console.log("current offset", offset);
-
           const wordUntilPosition = editor
             ?.getModel()
             ?.getWordAtPosition(cursorPos);
@@ -253,6 +231,61 @@ export default function CellInput({ model }: any) {
    * initialize keyboard shortcuts for codecell
    */
   function initEditorCommands(editor: monaco.editor.IStandaloneCodeEditor) {
+    // const cursortReachesTheTop = editor.createContextKey(
+    //   /*key name*/ "cursortReachesTheTop",
+    //   /*default value*/ false
+    // );
+    // const cursortReachesTheBottom = editor.createContextKey(
+    //   /*key name*/ "cursortReachesTheBottom",
+    //   /*default value*/ false
+    // );
+
+    // cursortReachesTheBottom.set(false);
+
+    editor.onKeyDown((e) => {
+      const caretPosition = editor.getPosition();
+
+      if (e.keyCode === monaco.KeyCode.UpArrow) {
+        if (
+          caretPosition &&
+          caretPosition.column === 1 &&
+          caretPosition.lineNumber === 1
+          // lastCusor &&
+          // lastCusor.column === caretPosition.column &&
+          // lastCusor.lineNumber === caretPosition.lineNumber
+        ) {
+          console.log("focus on the prev cell");
+          setTimeout(() => {
+            context.manager?.focusPrevCellOf(model.id);
+            context.manager?.scrollTo(NotebookManager.getDomCellId(model.id));
+          }, 0);
+        }
+      }
+
+      if (e.keyCode === monaco.KeyCode.DownArrow) {
+        const totalLines = editor.getModel()?.getLineCount();
+
+        if (totalLines) {
+          const lastCol = editor.getModel()?.getLineMaxColumn(totalLines);
+
+          if (
+            caretPosition &&
+            caretPosition.column === lastCol &&
+            caretPosition.lineNumber === totalLines
+            // lastCusor &&
+            // lastCusor.column === caretPosition.column &&
+            // lastCusor.lineNumber === caretPosition.lineNumber
+          ) {
+            console.log("focus on the next cell");
+            setTimeout(() => {
+              context.manager?.focusNextCellOf(model.id);
+              context.manager?.scrollTo(NotebookManager.getDomCellId(model.id));
+            }, 0);
+          }
+        }
+      }
+    });
+
     if (model.cell_type === CELL_TYPE.CODE) {
       // CmdCtrl + Enter
       editor.addCommand(monaco.KeyMod.CtrlCmd + monaco.KeyCode.Enter, () => {
@@ -260,19 +293,37 @@ export default function CellInput({ model }: any) {
         context.manager?.addCellToQueue(model.id);
         context.manager?.executeQueue();
       });
-
-      editor.addCommand(monaco.KeyCode.UpArrow, () => {
-        const caretPosition = editor.getPosition();
-
-        if (
-          caretPosition &&
-          caretPosition.column === 0 &&
-          caretPosition.lineNumber === 0
-        ) {
-          alert("transfer to previous codeCell");
-        }
-      });
     }
+
+    // editor.addCommand(
+    //   monaco.KeyCode.UpArrow,
+    //   () => {
+    //     const caretPosition = editor.getPosition();
+    //     if (
+    //       caretPosition &&
+    //       caretPosition.column === 0 &&
+    //       caretPosition.lineNumber === 0
+    //     ) {
+    //       alert("transfer to previous codeCell");
+    //     }
+    //   },
+    //   "cursortReachesTheTop"
+    // );
+
+    // editor.addCommand(
+    //   monaco.KeyCode.UpArrow,
+    //   () => {
+    //     const caretPosition = editor.getPosition();
+    //     if (
+    //       caretPosition &&
+    //       caretPosition.column === 0 &&
+    //       caretPosition.lineNumber === 0
+    //     ) {
+    //       alert("transfer to next codeCell");
+    //     }
+    //   },
+    //   "cursortReachesTheBottom"
+    // );
   }
 
   function updateCellContent() {

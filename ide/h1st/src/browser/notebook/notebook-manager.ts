@@ -432,6 +432,17 @@ export class NotebookManager {
     this.store.dispatch(selectPrevCellOf({ cellId }));
   }
 
+  focusPrevCellOf(cellId: string) {
+    const { focusPrevCellOf } = notebookActions;
+
+    this.store.dispatch(focusPrevCellOf({ cellId }));
+  }
+
+  focusNextCellOf(cellId: string) {
+    const { focusNextCellOf } = notebookActions;
+    this.store.dispatch(focusNextCellOf({ cellId }));
+  }
+
   /**
    * add a cell id to the execution queue
    */
@@ -588,7 +599,7 @@ export class NotebookManager {
    */
   scrollTo(selector: string) {
     const node: HTMLElement | null = this.widget.node.querySelector(selector);
-    console.log("scrolling to", node);
+
     if (node) {
       if (!this.isVisibleWithinWidget(node)) {
         node.scrollIntoView({ block: "center" });

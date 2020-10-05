@@ -445,7 +445,7 @@ export class H1stMenuContribution implements MenuContribution {
       menus.unregisterMenuAction(CommonMenus.VIEW.slice(-1)[0]);
       menus.unregisterMenuAction(CommonMenus.HELP.slice(-1)[0]);
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
     }
 
     menus.registerMenuAction(CommonMenus.FILE_NEW, {
