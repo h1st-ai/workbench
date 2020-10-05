@@ -314,9 +314,10 @@ export class NotebookManager {
     this.store.dispatch(copyCells({}));
   };
 
-  pasteCells = () => {
+  pasteCells = (position: string = "bottom") => {
     const { pasteCells } = notebookActions;
-    this.store.dispatch(pasteCells());
+    // @ts-ignore
+    this.store.dispatch(pasteCells({ position }));
   };
 
   /**

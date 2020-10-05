@@ -382,6 +382,49 @@ export class H1stNotebookWidget extends ReactWidget
           return false;
         },
       },
+
+      /**
+       * Listen to the X keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.KEY_X,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+          this.notebookManager.cutCells();
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the X keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: KeyCode.createKeyCode({
+          first: Key.KEY_V,
+          modifiers: [KeyModifier.SHIFT],
+        }),
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.pasteCells("top");
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+      {
+        key: Key.KEY_V,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.pasteCells("bottom");
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
     ];
 
     events.forEach((event) => {

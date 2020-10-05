@@ -6,7 +6,11 @@ import { NotebookFactory } from "../notebook-factory";
 // } from '../const';
 
 import { CELL_TYPE, INotebook, IStore } from "../types";
-import { ICutCellPayload, ISetClipboardCellPayload } from "../types/payload";
+import {
+  ICutCellPayload,
+  IPasteCellPayload,
+  ISetClipboardCellPayload,
+} from "../types/payload";
 
 const uniqid = require("uniqid");
 
@@ -399,14 +403,19 @@ export const reducers = {
     }
   },
 
-  pasteCells: (state: INotebook): void => {
+  pasteCells: (state: INotebook, { payload }: IPasteCellPayload): void => {
     const selectedCell = state.selectedCell;
+    const { position } = payload;
 
     if (selectedCell !== null) {
       const cellIndex = getCellIndex(state, selectedCell);
 
       if (cellIndex !== undefined && state.clipboard.cells.length > 0) {
-        state.cells.splice(cellIndex + 1, 0, ...state.clipboard.cells);
+        if (position === "bottom") {
+          state.cells.splice(cellIndex + 1, 0, ...state.clipboard.cells);
+        } else {
+          state.cells.splice(cellIndex, 0, ...state.clipboard.cells);
+        }
 
         // if the context is cut, empty the clipboard
         if (state.clipboard.context === "cut") {

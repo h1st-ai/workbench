@@ -12,3 +12,9 @@ export interface ISetClipboardCellPayload {
     context: "cut" | "copy";
   };
 }
+
+export interface IPasteCellPayload {
+  payload: {
+    position: "top" | "bottom";
+  };
+}
