@@ -526,12 +526,31 @@ export class NotebookManager {
 
     if (cellIds) {
       this.deleteCells(cellIds);
+      this.setDirty(true);
     }
   }
 
   toggleCellOutputs(cellIds: string[], show: boolean) {
     const { toggleCellOutputs } = notebookActions;
     this.store.dispatch(toggleCellOutputs({ cellIds, show }));
+  }
+
+  toggleSelectedCellOutputs() {
+    const selectedCell = this.getSelectedCell();
+
+    if (selectedCell) {
+      const show =
+        this.widget.node.querySelector(
+          `${NotebookManager.getDomCellId(selectedCell)} .output.collapsed`
+        ) === null;
+
+      console.log("toggleSelectedCellOutputs", show);
+      const cellIds = this.getSelectedCells();
+      const { toggleCellOutputs } = notebookActions;
+      this.store.dispatch(toggleCellOutputs({ cellIds, show }));
+
+      this.setDirty(true);
+    }
   }
 
   toggleCellLineNumber() {

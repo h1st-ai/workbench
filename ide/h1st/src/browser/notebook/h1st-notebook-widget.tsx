@@ -327,6 +327,20 @@ export class H1stNotebookWidget extends ReactWidget
       },
 
       /**
+       * Listen to the X keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.KEY_C,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+          this.notebookManager.copyCells();
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
        * Listen to the B keypress to insert cell after the selected cell
        */
       {
@@ -354,43 +368,13 @@ export class H1stNotebookWidget extends ReactWidget
       },
 
       /**
-       * Listen to the arrow keypress to select the next cell of the currently selected cell
-       */
-      {
-        key: Key.ARROW_DOWN,
-        handler: (ev: KeyboardEvent) => {
-          if (this.isAnyCellFocused()) return false;
-
-          this.notebookManager.selectNextCell();
-
-          // return false if you want the event to propagate
-          return false;
-        },
-      },
-
-      /**
-       * Listen to the arrow keypress to select the next cell of the currently selected cell
-       */
-      {
-        key: Key.ARROW_UP,
-        handler: (ev: KeyboardEvent) => {
-          if (this.isAnyCellFocused()) return false;
-
-          this.notebookManager.selectPrevCell();
-
-          // return false if you want the event to propagate
-          return false;
-        },
-      },
-
-      /**
        * Listen to the X keypress to select the next cell of the currently selected cell
        */
       {
-        key: Key.KEY_C,
+        key: Key.KEY_O,
         handler: (ev: KeyboardEvent) => {
           if (this.isAnyCellFocused()) return false;
-          this.notebookManager.copyCells();
+          this.notebookManager.toggleSelectedCellOutputs();
 
           // return false if you want the event to propagate
           return false;
@@ -463,6 +447,36 @@ export class H1stNotebookWidget extends ReactWidget
 
           this.notebookManager.undoDeleteCell();
           this.notebookManager.setDirty(true);
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the arrow keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.ARROW_DOWN,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.selectNextCell();
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the arrow keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.ARROW_UP,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.selectPrevCell();
 
           // return false if you want the event to propagate
           return false;

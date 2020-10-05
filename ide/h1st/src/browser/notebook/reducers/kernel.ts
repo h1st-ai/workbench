@@ -4,7 +4,7 @@ import { IStore, IKernel } from "../types";
 
 const initialState: IKernel = {
   currentKernel: undefined,
-  connectionStatus: "disconnected",
+  connectionStatus: "connecting",
   status: "disconnected",
 };
 
