@@ -299,6 +299,26 @@ export class NotebookManager {
     }
   };
 
+  ensureCellInNotebook = () => {
+    const { ensureCellInNotebook } = notebookActions;
+    this.store.dispatch(ensureCellInNotebook());
+  };
+
+  cutCells = () => {
+    const { cutCells } = notebookActions;
+    this.store.dispatch(cutCells({}));
+  };
+
+  copyCells = () => {
+    const { copyCells } = notebookActions;
+    this.store.dispatch(copyCells({}));
+  };
+
+  pasteCells = () => {
+    const { pasteCells } = notebookActions;
+    this.store.dispatch(pasteCells());
+  };
+
   /**
    * Execute the current cell in the queue.
    *

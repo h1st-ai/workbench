@@ -128,6 +128,18 @@ export default function Toolbar() {
     context.manager?.moveSelectedCellDown();
   };
 
+  const cutCells = () => {
+    context.manager?.cutCells();
+  };
+
+  const copyCells = () => {
+    context.manager?.copyCells();
+  };
+
+  const pasteCells = () => {
+    context.manager?.pasteCells();
+  };
+
   return (
     <div className="toolbar">
       <ul>
@@ -144,13 +156,13 @@ export default function Toolbar() {
         </li>
 
         <li>
-          <button>
+          <button onClick={cutCells}>
             <FontAwesomeIcon icon={faCut} style={ICON_STYLE} />
           </button>
-          <button>
+          <button onClick={copyCells}>
             <FontAwesomeIcon icon={faCopy} style={ICON_STYLE} />
           </button>
-          <button>
+          <button onClick={pasteCells}>
             <FontAwesomeIcon icon={faPaste} style={ICON_STYLE} />
           </button>
         </li>

@@ -1,15 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { NotebookFactory } from "../notebook-factory";
 
 // import {
 //   EXECUTE_CELL
 // } from '../const';
 
 import { CELL_TYPE, INotebook, IStore } from "../types";
-import {
-  ICutCellPayload,
-  IPasteCellsPayload,
-  ISetClipboardCellPayload,
-} from "../types/payload";
+import { ICutCellPayload, ISetClipboardCellPayload } from "../types/payload";
 
 const uniqid = require("uniqid");
 
@@ -45,12 +42,45 @@ export const selectCellAndNeighbors = (state: any, cellId: string) => {
   }
 };
 
+export const selectNeighborIdsOfRange = (state: any, cellIds: string[]) => {
+  if (Array.isArray(cellIds) && cellIds.length > 0) {
+    if (cellIds.length === 1) {
+      return selectCellAndNeighbors(state, cellIds[0]);
+    }
+
+    const first = cellIds[0];
+    const last = cellIds[cellIds.length - 1];
+    let prev;
+    let next;
+
+    for (let i = 0; i < state.cells.length; i++) {
+      if (first === state.cells[i]) {
+        prev = state.cells[i - 1];
+      }
+
+      if (last === state.cells[i]) {
+        next = state.cells[i + 1];
+      }
+    }
+
+    return {
+      prev,
+      next,
+    };
+  }
+};
+
 export const selectCell = (state: any, cellId: string) => {
   for (let i = 0; i < state.cells.length; i++) {
     if (cellId === state.cells[i].id) {
       return state.cells[i];
     }
   }
+};
+
+export const setSelectedCells = (state: any, cellId: string) => {
+  state.selectedCells = [cellId];
+  state.selectedCell = cellId;
 };
 
 export const getCellIndex = (
@@ -66,6 +96,15 @@ export const getCellIndex = (
   return undefined;
 };
 
+// export const makeSingleEmptySelectCellAnd = (
+//   state: any,
+// ): void => {
+//   const cell = NotebookFactory.makeNewCell();
+
+//   state.cells = [cell];
+//   state.selectedCell = []
+// };
+
 // const getCellAndIndex = (state: any, cellId: string) => {
 //   for (let i = 0; i < state.cells.length; i++) {
 //     if (cellId === state.cells[i].id) {
@@ -77,6 +116,13 @@ export const getCellIndex = (
 // };
 
 export const reducers = {
+  ensureCellInNotebook: (state: INotebook): void => {
+    const cell = NotebookFactory.makeNewCell();
+
+    state.cells = [cell];
+    state.selectedCells = [cell.id];
+    state.selectedCell = cell.id;
+  },
   focusOnCell: (state: INotebook, { payload }: any): void => {
     state.focusedCell = payload.cellId;
   },
@@ -299,20 +345,44 @@ export const reducers = {
   },
 
   cutCells: (state: INotebook, { payload }: ICutCellPayload): void => {
-    const { cellIds } = payload;
+    let { cellIds } = payload;
+
+    if (!cellIds) {
+      cellIds = state.selectedCells;
+    }
+
     const firstCellIndex = getCellIndex(state, cellIds[0]);
 
     if (firstCellIndex !== undefined) {
+      const neighbors = selectNeighborIdsOfRange(state, cellIds);
+
       const cells = state.cells.splice(firstCellIndex, cellIds.length);
       state.clipboard = {
         context: "cut",
         cells,
       };
+
+      // set the active cell to one of its neigbors
+      if (neighbors) {
+        if (neighbors.next) {
+          state.selectedCells = [neighbors.next.id];
+          state.selectedCell = neighbors.next.id;
+        } else if (neighbors.prev) {
+          // setSelectedCells(state, neighbors.prev);
+          state.selectedCells = [neighbors.prev.id];
+          state.selectedCell = neighbors.prev.id;
+        }
+      }
     }
   },
 
   copyCells: (state: INotebook, { payload }: ICutCellPayload): void => {
-    const { cellIds } = payload;
+    let { cellIds } = payload;
+
+    if (!cellIds) {
+      cellIds = state.selectedCells;
+    }
+
     const firstCellIndex = getCellIndex(state, cellIds[0]);
 
     if (firstCellIndex !== undefined) {
@@ -329,28 +399,31 @@ export const reducers = {
     }
   },
 
-  pasteCells: (state: INotebook, { payload }: IPasteCellsPayload): void => {
-    const { cellId } = payload;
+  pasteCells: (state: INotebook): void => {
+    const selectedCell = state.selectedCell;
 
-    const cellIndex = getCellIndex(state, cellId);
+    if (selectedCell !== null) {
+      const cellIndex = getCellIndex(state, selectedCell);
 
-    if (cellIndex !== undefined && state.clipboard.cells.length > 0) {
-      state.cells = state.cells.splice(cellIndex, 0, ...state.clipboard.cells);
+      if (cellIndex !== undefined && state.clipboard.cells.length > 0) {
+        state.cells.splice(cellIndex + 1, 0, ...state.clipboard.cells);
 
-      if (state.clipboard.context === "cut") {
-        state.clipboard = {
-          context: null,
-          cells: [],
-        };
-      } else {
-        // refresh new ids
-        state.clipboard = {
-          context: "copy",
-          cells: state.clipboard.cells.map((cell) => ({
-            ...cell,
-            id: uniqid(),
-          })),
-        };
+        // if the context is cut, empty the clipboard
+        if (state.clipboard.context === "cut") {
+          state.clipboard = {
+            context: null,
+            cells: [],
+          };
+        } else {
+          // refresh new ids
+          state.clipboard = {
+            context: "copy",
+            cells: state.clipboard.cells.map((cell) => ({
+              ...cell,
+              id: uniqid(),
+            })),
+          };
+        }
       }
     }
   },

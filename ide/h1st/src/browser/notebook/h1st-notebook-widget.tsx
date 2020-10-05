@@ -164,10 +164,12 @@ export class H1stNotebookWidget extends ReactWidget
     const content = this.store.getState();
 
     if (this._initialized && content) {
-      // console.log(
-      //   equal(content.notebook.cells, this._model.value.cells)
-      // );
+      // if there is no cells, initialize one
+      if (content.notebook.cells.length === 0) {
+        this.notebookManager.ensureCellInNotebook();
+      }
 
+      // update the model
       if (!equal(content.notebook.cells, this._model.value.cells)) {
         this._model.update(content.notebook);
         this.notebookManager.setDirty(true);
