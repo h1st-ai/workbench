@@ -10,7 +10,7 @@ import {
   LabelProvider,
   open,
   CommonCommands,
-  FrontendApplication,
+  // FrontendApplication,
 } from "@theia/core/lib/browser";
 
 import { TaskCommands } from "@theia/task/lib/browser/task-frontend-contribution";
@@ -52,11 +52,11 @@ import getModelFileTemplate from "../common/templates/models";
 // import getNotebookFileTemplate from "../common/templates/notebook";
 import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
 import { H1stAboutDialog } from "./style/about-dialog";
-import {
-  H1stNotebookWidget,
-  NotebookCommand,
-  NotebookMenu,
-} from "./notebook/h1st-notebook-widget";
+// import {
+//   // H1stNotebookWidget,
+//   NotebookCommand,
+//   NotebookMenu,
+// } from "./notebook/h1st-notebook-widget";
 
 export interface DidCreateNewResourceEvent {
   uri: URI;
@@ -80,7 +80,7 @@ export class H1stCommandContribution implements CommandContribution {
   protected readonly aboutDialog: H1stAboutDialog;
   @inject(H1stBackendWithClientService)
   private readonly h1stBackEndWithClientService: H1stBackendWithClientService;
-  @inject(FrontendApplication) private readonly app: FrontendApplication;
+  // @inject(FrontendApplication) private readonly app: FrontendApplication;
 
   private readonly onDidCreateNewModelEmitter = new Emitter<
     DidCreateNewResourceEvent
@@ -169,27 +169,27 @@ export class H1stCommandContribution implements CommandContribution {
     }
 
     // notebook command
-    registry.registerCommand(NotebookCommand.RestartKernelAndRunAll, {
-      isEnabled: () => {
-        const widget = this.app.shell.activeWidget;
+    // registry.registerCommand(NotebookCommand.RestartKernelAndRunAll, {
+    //   isEnabled: () => {
+    //     const widget = this.app.shell.activeWidget;
 
-        return widget instanceof H1stNotebookWidget;
-      },
-      execute: () => {
-        console.log(
-          "this.app.shell.activeWidget",
-          this.app.shell.activeWidget instanceof H1stNotebookWidget
-        );
-        const widget: H1stNotebookWidget | undefined = this.app.shell
-          .activeWidget as H1stNotebookWidget;
+    //     return widget instanceof H1stNotebookWidget;
+    //   },
+    //   execute: () => {
+    //     console.log(
+    //       "this.app.shell.activeWidget",
+    //       this.app.shell.activeWidget instanceof H1stNotebookWidget
+    //     );
+    //     const widget: H1stNotebookWidget | undefined = this.app.shell
+    //       .activeWidget as H1stNotebookWidget;
 
-        if (widget) {
-          const manager = widget.manager;
+    //     if (widget) {
+    //       const manager = widget.manager;
 
-          manager.test();
-        }
-      },
-    });
+    //       manager.test();
+    //     }
+    //   },
+    // });
 
     registry.registerCommand(CommonCommands.ABOUT_COMMAND, {
       execute: () => {
@@ -319,20 +319,20 @@ export class H1stMenuContribution implements MenuContribution {
       console.log("error", error);
     }
 
-    menus.registerSubmenu(NotebookMenu.NOTEBOOK, "Notebook");
-    menus.registerSubmenu(NotebookMenu.NOTEBOOK_KERNEL_SUBMENU, "Kernel");
+    // menus.registerSubmenu(NotebookMenu.NOTEBOOK, "Notebook");
+    // menus.registerSubmenu(NotebookMenu.NOTEBOOK_KERNEL_SUBMENU, "Kernel");
 
-    menus.registerMenuAction(NotebookMenu.NOTEBOOK, {
-      commandId: NotebookCommand.RestartKernelAndRunAll.id,
-      label: NotebookCommand.RestartKernelAndRunAll.label,
-      order: "11",
-    });
+    // menus.registerMenuAction(NotebookMenu.NOTEBOOK, {
+    //   commandId: NotebookCommand.RestartKernelAndRunAll.id,
+    //   label: NotebookCommand.RestartKernelAndRunAll.label,
+    //   order: "11",
+    // });
 
-    menus.registerMenuAction(NotebookMenu.FILE_SETTINGS_SUBMENU_OPEN, {
-      commandId: NotebookCommand.RestartKernelAndRunAll.id,
-      label: NotebookCommand.RestartKernelAndRunAll.label,
-      order: "111",
-    });
+    // menus.registerMenuAction(NotebookMenu.FILE_SETTINGS_SUBMENU_OPEN, {
+    //   commandId: NotebookCommand.RestartKernelAndRunAll.id,
+    //   label: NotebookCommand.RestartKernelAndRunAll.label,
+    //   order: "111",
+    // });
 
     menus.registerMenuAction(CommonMenus.FILE_NEW, {
       commandId: H1stNewModelCommand.id,
