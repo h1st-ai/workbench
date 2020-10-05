@@ -168,7 +168,13 @@ export class H1stCommandContribution implements CommandContribution {
       console.error(ex);
     }
 
+    // notebook command
     registry.registerCommand(NotebookCommand.RestartKernelAndRunAll, {
+      isEnabled: () => {
+        const widget = this.app.shell.activeWidget;
+
+        return widget instanceof H1stNotebookWidget;
+      },
       execute: () => {
         console.log(
           "this.app.shell.activeWidget",
@@ -314,11 +320,18 @@ export class H1stMenuContribution implements MenuContribution {
     }
 
     menus.registerSubmenu(NotebookMenu.NOTEBOOK, "Notebook");
+    menus.registerSubmenu(NotebookMenu.NOTEBOOK_KERNEL_SUBMENU, "Kernel");
 
     menus.registerMenuAction(NotebookMenu.NOTEBOOK, {
       commandId: NotebookCommand.RestartKernelAndRunAll.id,
       label: NotebookCommand.RestartKernelAndRunAll.label,
-      order: "a10",
+      order: "11",
+    });
+
+    menus.registerMenuAction(NotebookMenu.FILE_SETTINGS_SUBMENU_OPEN, {
+      commandId: NotebookCommand.RestartKernelAndRunAll.id,
+      label: NotebookCommand.RestartKernelAndRunAll.label,
+      order: "111",
     });
 
     menus.registerMenuAction(CommonMenus.FILE_NEW, {

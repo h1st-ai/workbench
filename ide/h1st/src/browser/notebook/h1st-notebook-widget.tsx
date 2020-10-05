@@ -37,6 +37,11 @@ const equal = require("fast-deep-equal");
 
 export namespace NotebookMenu {
   export const NOTEBOOK = [...MAIN_MENU_BAR, "7_notebook"];
+  export const NOTEBOOK_KERNEL_SUBMENU = [...NOTEBOOK, "1_notebook_submenu"];
+  export const FILE_SETTINGS_SUBMENU_OPEN = [
+    ...NOTEBOOK_KERNEL_SUBMENU,
+    "1_notebook_submenu_kernel",
+  ];
 }
 
 export namespace NotebookCommand {

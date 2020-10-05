@@ -19,7 +19,10 @@ export interface INotebook {
   activeTheme: Theme | null;
   executionQueue: string[];
   focusedCell: string | null;
-  clipboard: ICellModel[];
+  clipboard: {
+    context: "copy" | "cut" | null;
+    cells: ICellModel[];
+  };
   pivotCell: ICellModel | null; // the cell to pivot selection to select multiple cell
 }
 
