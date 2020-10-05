@@ -515,17 +515,17 @@ export class NotebookManager {
     this.store.dispatch(undoDeleteCell());
   }
 
-  deleteCell(cellId: string) {
-    const { deleteCell } = notebookActions;
+  deleteCells(cellIds: string[]) {
+    const { deleteCells } = notebookActions;
 
-    this.store.dispatch(deleteCell({ cellId }));
+    this.store.dispatch(deleteCells({ cellIds }));
   }
 
   deleteSelectedCell() {
-    const cellId = this.getSelectedCell();
+    const cellIds = this.getSelectedCells();
 
-    if (cellId) {
-      this.deleteCell(cellId);
+    if (cellIds) {
+      this.deleteCells(cellIds);
     }
   }
 

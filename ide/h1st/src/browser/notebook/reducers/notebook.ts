@@ -9,6 +9,7 @@ import { CELL_TYPE, INotebook, IStore } from "../types";
 import {
   IAddCellsToQueuePayload,
   ICutCellPayload,
+  IDeleteCellsPayload,
   IPasteCellPayload,
   ISetCellsTypePayload,
   ISetClipboardCellPayload,
@@ -316,13 +317,14 @@ export const reducers = {
     state.options.showLineNumber = !state.options.showLineNumber;
   },
 
-  deleteCell: (state: INotebook, { payload }: any): void => {
-    const { cellId } = payload;
+  deleteCells: (state: INotebook, { payload }: IDeleteCellsPayload): void => {
+    const { cellIds } = payload;
 
-    const cellIndex = getCellIndex(state, cellId);
+    const cellIndex = getCellIndex(state, cellIds[0]);
 
     if (cellIndex !== undefined) {
-      const cells = state.cells.splice(cellIndex, 1);
+      const neighbors = selectNeighborIdsOfRange(state, cellIds);
+      const cells = state.cells.splice(cellIndex, cellIds.length);
 
       state.deletedCells = state.deletedCells.concat(
         cells.map((cell, index) => ({
@@ -330,6 +332,18 @@ export const reducers = {
           cell,
         }))
       );
+
+      // set the active cell to one of its neigbors
+      if (neighbors) {
+        if (neighbors.next) {
+          state.selectedCells = [neighbors.next.id];
+          state.selectedCell = neighbors.next.id;
+        } else if (neighbors.prev) {
+          // setSelectedCells(state, neighbors.prev);
+          state.selectedCells = [neighbors.prev.id];
+          state.selectedCell = neighbors.prev.id;
+        }
+      }
     }
   },
   undoDeleteCell: (state: INotebook): void => {

@@ -129,7 +129,7 @@ export function NotebookCell(props: INotebookProps) {
   }
 
   function deleteCodeCell() {
-    context.manager?.deleteCell(model.id);
+    context.manager?.deleteCells([model.id]);
     context.manager?.setDirty(true);
   }
 

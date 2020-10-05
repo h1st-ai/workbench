@@ -32,6 +32,12 @@ export interface ISetCellsTypePayload {
   };
 }
 
+export interface IDeleteCellsPayload {
+  payload: {
+    cellIds: string[];
+  };
+}
+
 export interface IToggleActionOverlayPayload {
   payload: {
     show?: boolean;
