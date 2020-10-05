@@ -13,6 +13,7 @@ import {
   faStop,
   faRedo,
   faFastForward,
+  faForward,
 } from "@fortawesome/free-solid-svg-icons";
 import Icon from "../icon";
 import { useSelector, useDispatch } from "react-redux";
@@ -191,6 +192,14 @@ export default function Toolbar() {
             <FontAwesomeIcon icon={faStepForward} style={ICON_STYLE} />{" "}
             <span>Run</span>
           </button>
+          <button disabled={!selectedCell} onClick={executeAfter}>
+            <Icon width={16} height={16} icon="play-down" />
+          </button>
+          <button onClick={executeAll}>
+            <FontAwesomeIcon icon={faForward} style={ICON_STYLE} />
+          </button>
+        </li>
+        <li>
           <button onClick={interruptKernel}>
             <FontAwesomeIcon icon={faStop} style={ICON_STYLE} />
           </button>
@@ -199,37 +208,6 @@ export default function Toolbar() {
           </button>
           <button onClick={restartKernelAndRunAll}>
             <FontAwesomeIcon icon={faFastForward} style={ICON_STYLE} />
-          </button>
-        </li>
-      </ul>
-
-      <ul>
-        <li>
-          <button onClick={executeAll}>
-            <Icon width={16} height={16} icon="fast-forward" />
-          </button>
-        </li>
-        <li>
-          <button disabled={!selectedCell} onClick={executeAfter}>
-            <Icon width={16} height={16} icon="play-down" />
-          </button>
-        </li>
-
-        <li>
-          <button onClick={doRestartKernel}>
-            <Icon width={16} height={16} icon="reload" />
-          </button>
-        </li>
-
-        <li>
-          <button className="btn-toolbar-stop" onClick={interruptKernel}>
-            <Icon width={16} height={16} icon="stop" />
-          </button>
-        </li>
-
-        <li>
-          <button onClick={createNewCell}>
-            <Icon width={24} height={24} icon="plus" />
           </button>
         </li>
 
