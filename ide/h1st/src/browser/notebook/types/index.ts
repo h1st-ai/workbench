@@ -61,9 +61,11 @@ export interface ICellOutputError {
   traceback: string[];
 }
 
+export type ICellType = "markdown" | "code" | "raw";
+
 export interface ICellModel {
   source: string[];
-  cell_type: "markdown" | "code" | "raw";
+  cell_type: ICellType;
   metadata: any;
   id: string;
   outputs: any[];

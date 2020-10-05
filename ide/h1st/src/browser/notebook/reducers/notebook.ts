@@ -10,6 +10,7 @@ import {
   IAddCellsToQueuePayload,
   ICutCellPayload,
   IPasteCellPayload,
+  ISetCellsTypePayload,
   ISetClipboardCellPayload,
 } from "../types/payload";
 
@@ -213,13 +214,12 @@ export const reducers = {
       }
     }
   },
-  setCellType: (state: INotebook, { payload }: any): void => {
-    const { cellId, type } = payload;
+  setCellsType: (state: INotebook, { payload }: ISetCellsTypePayload): void => {
+    const { cellIds, type } = payload;
 
     for (let i = 0; i < state.cells.length; i++) {
-      if (cellId === state.cells[i].id) {
+      if (cellIds.includes(state.cells[i].id)) {
         state.cells[i].cell_type = type;
-        break;
       }
     }
   },

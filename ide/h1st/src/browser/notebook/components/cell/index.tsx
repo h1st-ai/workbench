@@ -32,7 +32,7 @@ export function NotebookCell(props: INotebookProps) {
   const {
     setSelectedCell,
     setActiveCell,
-    setCellType,
+    setCellsType,
     moveCellUp,
     moveCellDown,
     insertCellAfter,
@@ -87,13 +87,13 @@ export function NotebookCell(props: INotebookProps) {
   }
 
   function toMarkdown() {
-    dispatch(setCellType({ type: CELL_TYPE.MD, cellId: model.id }));
+    dispatch(setCellsType({ type: CELL_TYPE.MD, cellIds: [model.id] }));
     setTimeout(() => dispatch(setActiveCell({ cellId: model.id })), 0);
     context.manager?.setDirty(true);
   }
 
   function toCode() {
-    dispatch(setCellType({ type: CELL_TYPE.CODE, cellId: model.id }));
+    dispatch(setCellsType({ type: CELL_TYPE.CODE, cellIds: [model.id] }));
     setTimeout(() => dispatch(focusOnCell({ cellId: model.id })), 0);
     context.manager?.setDirty(true);
   }
@@ -117,9 +117,14 @@ export function NotebookCell(props: INotebookProps) {
 
   function renderMarkdownHeaderControl(): React.ReactNode {
     return (
-      <button className="btn-cell-toggle" onClick={toCode}>
-        <Icon icon="code" />
-      </button>
+      <div>
+        <button className="btn-cell-play">
+          <Icon icon="play" />
+        </button>
+        <button className="btn-cell-toggle" onClick={toCode}>
+          <Icon icon="code" />
+        </button>
+      </div>
     );
   }
 

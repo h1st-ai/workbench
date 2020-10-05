@@ -506,6 +506,14 @@ export class NotebookManager {
     this.store.dispatch(focusNextCellOf({ cellId }));
   }
 
+  changeCellType(type: string, cellIds: string[]) {
+    const { setCellsType } = notebookActions;
+
+    if (type === CELL_TYPE.MD) {
+      this.store.dispatch(setCellsType({ type: CELL_TYPE.MD, cellIds }));
+    }
+  }
+
   /**
    * add cell ids to the execution queue
    */

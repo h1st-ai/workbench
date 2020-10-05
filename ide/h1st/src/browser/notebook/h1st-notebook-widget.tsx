@@ -423,6 +423,7 @@ export class H1stNotebookWidget extends ReactWidget
           if (this.isAnyCellFocused()) return false;
 
           this.notebookManager.pasteCells("top");
+          this.notebookManager.setDirty(true);
 
           // return false if you want the event to propagate
           return false;
@@ -434,6 +435,7 @@ export class H1stNotebookWidget extends ReactWidget
           if (this.isAnyCellFocused()) return false;
 
           this.notebookManager.pasteCells("bottom");
+          this.notebookManager.setDirty(true);
 
           // return false if you want the event to propagate
           return false;
@@ -448,6 +450,7 @@ export class H1stNotebookWidget extends ReactWidget
           if (this.isAnyCellFocused()) return false;
 
           this.notebookManager.cutCells();
+          this.notebookManager.setDirty(true);
 
           // return false if you want the event to propagate
           return false;
@@ -459,6 +462,7 @@ export class H1stNotebookWidget extends ReactWidget
           if (this.isAnyCellFocused()) return false;
 
           this.notebookManager.undoDeleteCell();
+          this.notebookManager.setDirty(true);
 
           // return false if you want the event to propagate
           return false;

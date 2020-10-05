@@ -1,4 +1,4 @@
-import { ICellModel } from ".";
+import { ICellModel, ICellType } from ".";
 
 export interface ICutCellPayload {
   payload: {
@@ -22,5 +22,12 @@ export interface IPasteCellPayload {
 export interface IAddCellsToQueuePayload {
   payload: {
     cellIds: string[];
+  };
+}
+
+export interface ISetCellsTypePayload {
+  payload: {
+    cellIds: string[];
+    type: ICellType;
   };
 }
