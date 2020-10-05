@@ -159,7 +159,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   align-items: center;
 }
 
-.toolbar .kernel-info-wrapper div {
+.toolbar .kernel-info-wrapper > div {
   display: flex;
   align-items: center;
   padding: 8px 16px;

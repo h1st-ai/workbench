@@ -58,11 +58,19 @@ function JupyterServer() {
 
 function JupyterKernel() {
   const { currentKernel } = useSelector((store: IStore) => store.kernel);
+  const { status } = useSelector((store: IStore) => store.kernel);
 
   if (currentKernel) {
     return (
-      <div>
+      <div data-for="toolbar-kernel" data-tip={`Kernel status: ${status}`}>
         {currentKernel.display_name}: <KernelStatus />
+        <ReactTooltip
+          id="toolbar-kernel"
+          effect="solid"
+          place="bottom"
+          delayShow={400}
+          multiline={true}
+        />
       </div>
     );
   }
