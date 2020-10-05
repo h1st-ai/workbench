@@ -26,6 +26,7 @@ export namespace ApplicationLabels {
     RUN_ALL_CELL: "Run all cells",
     RUN_ALL_CELL_AFTER: "Run all cells after the select one",
     CELL_CLEAR_OUTPUTS: "Clear all cell outputs",
+    CELL_TOGGLE_OUTPUTS: "Toggle all cell outputs",
     RESTART_KERNEL: "Restart the kernel <br/>(no confirmation)",
     RESTART_KERNAL_AND_RUN_ALL:
       "Restart the kernel and run<br/> the whole notebook",

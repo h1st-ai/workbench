@@ -19,6 +19,7 @@ import URI from "@theia/core/lib/common/uri";
 import { ApplicationLabels } from "./labels";
 import {
   CELL_TYPE,
+  ICellModel,
   INotebook,
   KERNEL_CONNECTION_STATUS,
   KERNEL_STATUS,
@@ -555,6 +556,21 @@ export class NotebookManager {
       this.deleteCells(cellIds);
       this.setDirty(true);
     }
+  }
+
+  toggleAllCellOutputs() {
+    const cells = this.getAppState().notebook.cells.map(
+      (cell: ICellModel) => cell.id
+    );
+
+    const show =
+      this.widget.node.querySelector(
+        `${NotebookManager.getDomCellId(cells[0])} .output.collapsed`
+      ) === null;
+
+    console.log("toggleAllCellOutputs", cells, show);
+
+    this.toggleCellOutputs(cells, show);
   }
 
   toggleCellOutputs(cellIds: string[], show: boolean) {

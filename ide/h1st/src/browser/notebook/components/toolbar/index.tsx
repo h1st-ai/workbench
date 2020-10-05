@@ -14,6 +14,7 @@ import {
   faRedo,
   faFastForward,
   faForward,
+  faCompressArrowsAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactTooltip from "react-tooltip";
 import Icon from "../icon";
@@ -161,6 +162,10 @@ export default function Toolbar() {
     await context.manager?.selectNextCell();
   };
 
+  const toggleAllCellOutputs = () => {
+    context.manager?.toggleAllCellOutputs();
+  };
+
   return (
     <div className="toolbar">
       <ul>
@@ -275,6 +280,13 @@ export default function Toolbar() {
         </li>
 
         <li>
+          <button
+            onClick={toggleAllCellOutputs}
+            data-for="toolbar-tip"
+            data-tip={ApplicationLabels.TOOLTIP.CELL_TOGGLE_OUTPUTS}
+          >
+            <FontAwesomeIcon icon={faCompressArrowsAlt} style={ICON_STYLE} />
+          </button>
           <button
             onClick={clearAllCellOutputs}
             data-for="toolbar-tip"
