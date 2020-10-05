@@ -2,11 +2,8 @@ import * as React from "react";
 import {
   Message,
   NavigatableWidget,
-  // NavigatableWidget,
-  // Navigatable,
   ReactWidget,
   Widget,
-  // Saveable,
   SaveableSource,
   Saveable,
   SaveableWidget,
@@ -15,9 +12,8 @@ import {
   Key,
   KeyCode,
   KeyModifier,
-  // StatefulWidget,
-  // ReactRenderer,
 } from "@theia/core/lib/browser";
+import { MAIN_MENU_BAR, Command } from "@theia/core/lib/common";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
 import { MessageService, SelectionService } from "@theia/core";
@@ -38,6 +34,17 @@ import { NotebookModel } from "./notebook-model";
 import { NotebookManager } from "./notebook-manager";
 
 const equal = require("fast-deep-equal");
+
+export namespace NotebookMenu {
+  export const NOTEBOOK = [...MAIN_MENU_BAR, "7_notebook"];
+}
+
+export namespace NotebookCommand {
+  export const RestartKernelAndRunAll: Command = {
+    id: "h1st.notebook.kernel.restartAndRun",
+    label: "Restart And Run",
+  };
+}
 
 @injectable()
 export class H1stNotebookWidget extends ReactWidget
@@ -88,6 +95,10 @@ export class H1stNotebookWidget extends ReactWidget
     );
 
     this.initCommandShortcuts();
+  }
+
+  get manager(): NotebookManager {
+    return this.notebookManager;
   }
 
   private onDirtyChange() {
@@ -159,8 +170,9 @@ export class H1stNotebookWidget extends ReactWidget
     }
   };
 
-  // private readNotebookContent = async () =>
-  //   await this.h1stBackendClient.getFileContent(this.uri.path.toString());
+  save() {
+    this._model.save();
+  }
 
   private saveNotebook = async (content: string) => {
     console.log("saving content");
@@ -416,6 +428,8 @@ export class H1stNotebookWidget extends ReactWidget
       this.update();
     }
     setTimeout(() => this.update(), 0);
+
+    this.node.focus();
   }
 
   protected render(): React.ReactNode {

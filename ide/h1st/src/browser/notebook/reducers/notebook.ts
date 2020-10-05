@@ -101,15 +101,18 @@ export const reducers = {
     if (cellInfo && cellInfo.prev) {
       const prevCellId = cellInfo.prev.id;
 
-      // state.selectedCell = prevCellId;
-      // state.activeCell = prevCellId;
-
-      if (cellInfo.prev.cell_type === CELL_TYPE.CODE) {
+      if (cellInfo && cellInfo.next) {
+        // state.selectedCell = nextCellId;
+        // state.activeCell = nextCellId;
         state.focusedCell = prevCellId;
-      } else {
-        state.activeCell = prevCellId;
-        state.selectedCell = null;
       }
+
+      // if (cellInfo.prev.cell_type === CELL_TYPE.CODE) {
+      //   state.focusedCell = prevCellId;
+      // } else {
+      //   state.activeCell = prevCellId;
+      //   state.selectedCell = null;
+      // }
     }
   },
   setActiveCell: (state: INotebook, { payload }: any): void => {

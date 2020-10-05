@@ -1,11 +1,26 @@
 import * as React from "react";
 import stickybits from "stickybits";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSave,
+  faPlus,
+  faCut,
+  faCopy,
+  faPaste,
+  faArrowUp,
+  faArrowDown,
+  faStepForward,
+  faStop,
+  faRedo,
+  faFastForward,
+} from "@fortawesome/free-solid-svg-icons";
 import Icon from "../icon";
 import { useSelector, useDispatch } from "react-redux";
 import { IStore } from "../../types";
 import NotebookContext from "../../context";
 import { notebookActions } from "../../reducers/notebook";
 import { NotebookFactory } from "../../notebook-factory";
+import { NotebookManager } from "../../notebook-manager";
 
 function KernelStatus() {
   const { status } = useSelector((store: IStore) => store.kernel);
@@ -57,7 +72,13 @@ export default function Toolbar() {
   const { selectedCell } = useSelector((store: IStore) => store.notebook);
   const dispatch = useDispatch();
 
-  const { insertCellAfter, focusOnCell } = notebookActions;
+  const {
+    insertCellAfter,
+    focusOnCell,
+    moveCellUp,
+    moveCellDown,
+  } = notebookActions;
+  const ICON_STYLE = { color: "var(--theia-foreground)" };
 
   React.useEffect(() => {
     // sticky position for toolbar
@@ -101,8 +122,71 @@ export default function Toolbar() {
     context.manager?.setDirty(true);
   };
 
+  const save = () => {
+    context.manager?.widget.save();
+  };
+
+  const moveUp = () => {
+    context.manager?.moveSelectedCellUp();
+  };
+
+  const moveDown = () => {
+    context.manager?.moveSelectedCellDown();
+  };
+
   return (
     <div className="toolbar">
+      <ul>
+        <li>
+          <button onClick={save}>
+            <FontAwesomeIcon icon={faSave} style={ICON_STYLE} />
+          </button>
+        </li>
+
+        <li>
+          <button onClick={createNewCell}>
+            <FontAwesomeIcon icon={faPlus} style={ICON_STYLE} />
+          </button>
+        </li>
+
+        <li>
+          <button>
+            <FontAwesomeIcon icon={faCut} style={ICON_STYLE} />
+          </button>
+          <button>
+            <FontAwesomeIcon icon={faCopy} style={ICON_STYLE} />
+          </button>
+          <button>
+            <FontAwesomeIcon icon={faPaste} style={ICON_STYLE} />
+          </button>
+        </li>
+
+        <li>
+          <button onClick={moveUp}>
+            <FontAwesomeIcon icon={faArrowUp} style={ICON_STYLE} />
+          </button>
+          <button onClick={moveDown}>
+            <FontAwesomeIcon icon={faArrowDown} style={ICON_STYLE} />
+          </button>
+        </li>
+
+        <li>
+          <button>
+            <FontAwesomeIcon icon={faStepForward} style={ICON_STYLE} />{" "}
+            <span>Run</span>
+          </button>
+          <button>
+            <FontAwesomeIcon icon={faStop} style={ICON_STYLE} />
+          </button>
+          <button>
+            <FontAwesomeIcon icon={faRedo} style={ICON_STYLE} />
+          </button>
+          <button>
+            <FontAwesomeIcon icon={faFastForward} style={ICON_STYLE} />
+          </button>
+        </li>
+      </ul>
+
       <ul>
         <li>
           <button onClick={executeAll}>

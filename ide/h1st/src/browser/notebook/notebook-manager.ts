@@ -80,6 +80,10 @@ export class NotebookManager {
     };
   }
 
+  test() {
+    alert("test");
+  }
+
   protected initializeKernelManager(): void {
     this._kernelManager = new KernelManager({
       serverSettings: this._serverSettings,
@@ -273,6 +277,28 @@ export class NotebookManager {
     return this.getAppState().notebook.activeCell;
   };
 
+  moveSelectedCellUp = () => {
+    const cellId = this.getSelectedCell();
+
+    if (cellId) {
+      const { moveCellUp } = notebookActions;
+      this.store.dispatch(moveCellUp({ cellId }));
+      this.setDirty(true);
+      this.scrollTo(NotebookManager.getDomCellId(cellId));
+    }
+  };
+
+  moveSelectedCellDown = () => {
+    const cellId = this.getSelectedCell();
+
+    if (cellId) {
+      const { moveCellDown } = notebookActions;
+      this.store.dispatch(moveCellDown({ cellId }));
+      this.setDirty(true);
+      this.scrollTo(NotebookManager.getDomCellId(cellId));
+    }
+  };
+
   /**
    * Execute the current cell in the queue.
    *
@@ -463,6 +489,14 @@ export class NotebookManager {
       this.addCellToQueue(cellId);
     }
   }
+
+  // /**
+  //  * Execute code cell, this function can be comebine with other action like select next cell
+  //  * to accomodate different behavior of the notebook
+  //  */
+  // protected executeCell = async (cellId: string) => {
+  //   this.executeCodeCell
+  // })
 
   /**
    * Do execute a code cell by sending its code to Jupyter kernel and receive the response

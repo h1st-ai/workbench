@@ -8,13 +8,9 @@ import {
 } from "@theia/core/lib/common";
 import {
   LabelProvider,
-  // CommonCommands,
-  // FrontendApplication,
-  // CommonCommands,
   open,
   CommonCommands,
-  // CommonCommands,
-  // FrontendApplicationContribution,
+  FrontendApplication,
 } from "@theia/core/lib/browser";
 
 import { TaskCommands } from "@theia/task/lib/browser/task-frontend-contribution";
@@ -23,29 +19,16 @@ import {
   DebugCommands,
   DebugMenus,
 } from "@theia/debug/lib/browser/debug-frontend-application-contribution";
-// import { EditorManager } from "@theia/editr";
 import { EditorManager } from "@theia/editor/lib/browser";
 import URI from "@theia/core/lib/common/uri";
-import { MaybePromise } from "@theia/core/lib/common/types";
-// import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
-import {
-  CommonMenus,
-  OpenerService,
-  WidgetOpenHandler,
-  WidgetOpenerOptions,
-} from "@theia/core/lib/browser";
-
-// import { FrontendApplication } from "@theia/core/lib/browser";
-
+import { CommonMenus, OpenerService } from "@theia/core/lib/browser";
 import { SelectionService } from "@theia/core/lib/common/selection-service";
-
 import { FileSystemUtils } from "@theia/filesystem/lib/common";
 import { FileStat } from "@theia/filesystem/lib/common/files";
 
 import {
   NavigatorContextMenu,
   FileNavigatorContribution,
-  // FileNavigatorCommands,
 } from "@theia/navigator/lib/browser/navigator-contribution";
 
 import { WorkspaceInputDialog } from "./components/workspace-input-dialog";
@@ -69,33 +52,15 @@ import getModelFileTemplate from "../common/templates/models";
 // import getNotebookFileTemplate from "../common/templates/notebook";
 import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
 import { H1stAboutDialog } from "./style/about-dialog";
+import {
+  H1stNotebookWidget,
+  NotebookCommand,
+  NotebookMenu,
+} from "./notebook/h1st-notebook-widget";
 
 export interface DidCreateNewResourceEvent {
   uri: URI;
   parent: URI;
-}
-
-@injectable()
-export class H1stWidgetHandler extends WidgetOpenHandler<any> {
-  readonly id = "H1ST_WIDGET";
-
-  constructor() {
-    super();
-  }
-
-  canHandle(
-    uri: URI,
-    options?: WidgetOpenerOptions | undefined
-  ): MaybePromise<number> {
-    return Promise.resolve(1); // for now, handle everything
-  }
-
-  createWidgetOptions(
-    uri: URI,
-    options?: WidgetOpenerOptions | undefined
-  ): Object {
-    return {};
-  }
 }
 
 @injectable()
@@ -107,16 +72,15 @@ export class H1stCommandContribution implements CommandContribution {
   protected readonly selectionService: SelectionService;
   @inject(EditorManager) protected readonly editorManager: EditorManager;
   @inject(FileService) readonly fileService: FileService;
-
   @inject(FileNavigatorContribution)
   protected readonly fileNavigatorContribution: FileNavigatorContribution;
-
   @inject(WorkspaceService)
   protected readonly workspaceService: WorkspaceService;
   @inject(H1stAboutDialog)
   protected readonly aboutDialog: H1stAboutDialog;
   @inject(H1stBackendWithClientService)
   private readonly h1stBackEndWithClientService: H1stBackendWithClientService;
+  @inject(FrontendApplication) private readonly app: FrontendApplication;
 
   private readonly onDidCreateNewModelEmitter = new Emitter<
     DidCreateNewResourceEvent
@@ -204,6 +168,23 @@ export class H1stCommandContribution implements CommandContribution {
       console.error(ex);
     }
 
+    registry.registerCommand(NotebookCommand.RestartKernelAndRunAll, {
+      execute: () => {
+        console.log(
+          "this.app.shell.activeWidget",
+          this.app.shell.activeWidget instanceof H1stNotebookWidget
+        );
+        const widget: H1stNotebookWidget | undefined = this.app.shell
+          .activeWidget as H1stNotebookWidget;
+
+        if (widget) {
+          const manager = widget.manager;
+
+          manager.test();
+        }
+      },
+    });
+
     registry.registerCommand(CommonCommands.ABOUT_COMMAND, {
       execute: () => {
         this.aboutDialog.open();
@@ -264,123 +245,7 @@ export class H1stCommandContribution implements CommandContribution {
           }),
       })
     );
-
-    // registry.registerCommand(H1stNewModelCommand, {
-    //   execute: () => {
-    //     this.getRootDirectory().then(async (root) => {
-    //       console.log("current root", root);
-    //       this.fileNavigatorContribution.openView({ activate: true });
-
-    //       const rootUri = new URI(root);
-    //       let modelUri = rootUri.resolve("models");
-    //       let notebookUri = rootUri.resolve("notebooks");
-    //       const modelFileState = await this.fileService.resolve(modelUri);
-
-    //       const { fileName, fileExtension } = this.getDefaultFileConfig();
-    //       const vacantChildUri = FileSystemUtils.generateUniqueResourceURI(
-    //         modelUri,
-    //         modelFileState,
-    //         fileName,
-    //         fileExtension
-    //       );
-
-    //       const dialog = new WorkspaceInputDialog(
-    //         {
-    //           title: "New H1st Model",
-    //           parentUri: modelUri,
-    //           initialValue: vacantChildUri.path.base,
-    //           validate: (name) =>
-    //             this.validateModelFileName(name, modelFileState, true, "model"),
-    //         },
-    //         this.labelProvider
-    //       );
-
-    //       dialog.open().then(async (name) => {
-    //         if (name) {
-    //           const modelClassName = name.split(".")[0];
-
-    //           await this.fileService.create(
-    //             (modelUri = modelUri.resolve(name)),
-    //             getModelFileTemplate(modelClassName)
-    //           );
-
-    //           const workspaceName = await this.h1stBackEndWithClientService.getWorkspaceName();
-
-    //           try {
-    //             await this.fileService.create(
-    //               (notebookUri = notebookUri.resolve(
-    //                 `${modelClassName}.ipynb`
-    //               )),
-    //               getNotebookFileTemplate(workspaceName, modelClassName)
-    //             );
-    //           } catch (error) {
-    //             this.messageService.error(error);
-    //           }
-
-    //           this.fireCreateNewModel({
-    //             parent: rootUri.resolve("/models"),
-    //             uri: modelUri,
-    //           });
-
-    //           setTimeout(
-    //             async () =>
-    //               await this.editorManager.open(modelUri, {
-    //                 mode: "reveal",
-    //                 widgetOptions: { area: "bottom" },
-    //               }),
-    //             0
-    //           );
-
-    //           setTimeout(async () => {
-    //             await this.editorManager.open(notebookUri, {
-    //               mode: "activate",
-    //               widgetOptions: { area: "main" },
-    //             });
-
-    //             this.app.shell.resize(
-    //               global.window.innerHeight * 0.45,
-    //               "bottom"
-    //             );
-    //           }, 100);
-    //         }
-    //       });
-    //     });
-    //   },
-    // });
   }
-
-  // private async getRootDirectory(): Promise<string> {
-  //   return await this.h1stBackEndWithClientService.getWorkspacePath();
-  // }
-
-  // protected workspaceRootUriAwareCommandHandler(
-  //   handler: UriCommandHandler<URI>
-  // ): WorkspaceRootUriAwareCommandHandler {
-  //   return new WorkspaceRootUriAwareCommandHandler(
-  //     this.h1stfrontendApplicationContribution,
-  //     this.selectionService,
-  //     handler
-  //   );
-  // }
-
-  // protected async getDirectory(candidate: URI): Promise<FileStat | undefined> {
-  //   let stat: FileStat | undefined;
-  //   try {
-  //     stat = await this.h1stfrontendApplicationContribution.resolve(candidate);
-  //   } catch {}
-  //   if (stat && stat.isDirectory) {
-  //     return stat;
-  //   }
-  //   return this.getParent(candidate);
-  // }
-
-  // protected async getParent(candidate: URI): Promise<FileStat | undefined> {
-  //   try {
-  //     return await this.fileService.resolve(candidate.parent);
-  //   } catch {
-  //     return undefined;
-  //   }
-  // }
 
   protected getDefaultFileConfig(): {
     fileName: string;
@@ -447,6 +312,14 @@ export class H1stMenuContribution implements MenuContribution {
     } catch (error) {
       console.log("error", error);
     }
+
+    menus.registerSubmenu(NotebookMenu.NOTEBOOK, "Notebook");
+
+    menus.registerMenuAction(NotebookMenu.NOTEBOOK, {
+      commandId: NotebookCommand.RestartKernelAndRunAll.id,
+      label: NotebookCommand.RestartKernelAndRunAll.label,
+      order: "a10",
+    });
 
     menus.registerMenuAction(CommonMenus.FILE_NEW, {
       commandId: H1stNewModelCommand.id,
