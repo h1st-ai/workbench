@@ -6,10 +6,16 @@
   cursor: pointer;
   display: inline-block;
   line-height: 1;
+  appearance: none;
 }
+
 .button--primary {
   color: white;
-  background-color: #1ea7fd;
+  background-color:var(--color-dblue);
+  
+}
+.button--primary:hover{
+  background-color:var(--color-dblue);
 }
 .button--secondary {
   color: #333;

@@ -1,12 +1,11 @@
 import { injectable, inject } from "inversify";
-import { MenuModelRegistry } from "@theia/core";
 import { H1stHeaderWidget } from "./h1st-header-widget";
 import {
   AbstractViewContribution,
   FrontendApplicationContribution,
   FrontendApplication,
 } from "@theia/core/lib/browser";
-import { Command, CommandRegistry } from "@theia/core/lib/common/command";
+import { Command } from "@theia/core/lib/common/command";
 import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
 
 export const H1stHeaderCommand: Command = {
@@ -61,11 +60,11 @@ export class H1stHeaderContribution
      *
      * @param commands
      */
-  registerCommands(commands: CommandRegistry): void {
-    commands.registerCommand(H1stHeaderCommand, {
-      execute: () => super.openView({ activate: false, reveal: true }),
-    });
-  }
+  // registerCommands(commands: CommandRegistry): void {
+  //   commands.registerCommand(H1stHeaderCommand, {
+  //     execute: () => super.openView({ activate: false, reveal: true }),
+  //   });
+  // }
 
   /**
      * Example menu registration to contribute a menu item used to open the widget.
@@ -81,7 +80,7 @@ export class H1stHeaderContribution
      * 
      * @param menus
      */
-  registerMenus(menus: MenuModelRegistry): void {
-    super.registerMenus(menus);
-  }
+  // registerMenus(menus: MenuModelRegistry): void {
+  //   super.registerMenus(menus);
+  // }
 }

@@ -126,10 +126,10 @@ export default function CreateProjectDialog() {
               {error && <div className={styles.errorMessage}>{error}</div>}
               <div className="form-actions">
                 <button className="btn primary" onClick={createProject}>
-                  CREATE
+                  Create
                 </button>
                 <button
-                  className="btn"
+                  className="btn secondary empty"
                   onClick={() => {
                     setError('');
                     dispatch(toggleCreateProjectDialog({ value: false }));

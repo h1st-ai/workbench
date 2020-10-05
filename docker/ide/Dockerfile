@@ -3,7 +3,7 @@ FROM theiaide/theia-python
 
 COPY ./docker/ide/components/requirements.txt /tmp
 RUN pip3 install --no-cache -r /tmp/requirements.txt
-RUN pip3 install git+https://github.com/h1st-ai/h1st
+RUN pip3 install git+https://github.com/h1st-ai/h1st@master
 
 # switch to py3 as default
 RUN PYTHON_PATH=`which python` && \
@@ -25,6 +25,7 @@ RUN rm -rf *
 
 COPY ./ide/yarn.lock ./yarn.lock
 COPY ./ide/package.json   ./package.json
+COPY ./ide/yarn.lock   ./yarn.lock
 COPY ./ide/lerna.json   ./lerna.json
 
 COPY ./ide/h1st/package.json ./h1st/package.json
@@ -38,6 +39,14 @@ RUN yarn global add @theia/cli@1.5.0 && yarn
 WORKDIR /home/theia/browser-app
 RUN NODE_OPTIONS="--max_old_space_size=4096" yarn run build:pro && yarn run download:plugins
 
+RUN cd /tmp && curl -LO https://github.com/traefik/traefik/releases/download/v2.3.0/traefik_v2.3.0_linux_amd64.tar.gz && \
+  tar -xf traefik_v2.3.0_linux_amd64.tar.gz && \
+  mv traefik /usr/local/bin && mkdir -p /opt/traefik && mkdir -p /root/.jupyter
+
+COPY ./docker/ide/traefik.yml /opt
+COPY ./docker/ide/traefik-service.yml /opt/traefik
+COPY ./docker/ide/jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
+
 COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html
 
@@ -49,5 +58,5 @@ ENV SHELL=/bin/bash \
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 WORKDIR /home/theia/browser-app
-# CMD ["/app.sh"]
+
 CMD ["/app.sh"]

@@ -1,5 +1,5 @@
 import { JsonRpcServer } from "@theia/core/lib/common/messaging";
-import { IDefaultLayout } from "../common/types";
+import { IDefaultLayout, INotebookServerConfig } from "../common/types";
 
 export const H1stBackendService = Symbol("H1stBackendService");
 export const H1ST_BACKEND_PATH = "/services/helloBackend";
@@ -13,10 +13,12 @@ export const H1ST_BACKEND_WITH_CLIENT_PATH = "/services/withClient";
 
 export interface H1stBackendWithClientService
   extends JsonRpcServer<BackendClient> {
+  getFileContent(uri: string): Promise<string>;
   getWorkspaceName(): Promise<string>;
   getWorkspacePath(): Promise<string>;
   getDefaultWorkspaceSettings(): Promise<IDefaultLayout>;
   getConfig(name: string): Promise<string>;
+  getNotebookServerConfig(): Promise<INotebookServerConfig>;
 }
 export const BackendClient = Symbol("BackendClient");
 export interface BackendClient {

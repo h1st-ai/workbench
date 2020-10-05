@@ -4,7 +4,7 @@ import {
   FrontendApplicationContribution,
   bindViewContribution,
   WidgetFactory,
-  // bindViewContribution,
+  OpenHandler,
 } from "@theia/core/lib/browser";
 import { ContainerModule, injectable } from "inversify";
 import {
@@ -14,20 +14,14 @@ import {
   H1ST_BACKEND_PATH,
   H1ST_BACKEND_WITH_CLIENT_PATH,
 } from "../common/protocol";
-// import { FileNavigatorContribution } from "@theia/navigator/lib/browser/navigator-contribution";
+
 import {
   H1stCommandContribution,
   H1stMenuContribution,
-  // H1stFileNavigatorContribution,
 } from "./h1st-contribution";
-
-// import { H1stFrontendApplicationContribution } from "./h1st-frontend-contribution";
 
 import "./branding";
 
-// import { DebugFrontendApplicationContribution } from "@theia/debug/lib/browser/debug-frontend-application-contribution";
-
-// ../../src/browser is the root of this extension (theia magic)
 import "../../src/browser/style/index.css";
 import { H1stFrontendApplicationContribution } from "./h1st-frontend-contribution";
 import { H1stWorkspaceService } from "./h1st-workspace-contribution";
@@ -36,7 +30,18 @@ import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
 import { H1stTelemetryService } from "./h1st-telemetry-service";
 
+import { H1stNotebookWidgetFactory } from "./notebook/h1st-notebook-widget-factory";
+import { NotebookManager } from "./notebook/h1st-notebook-manager";
+
 export default new ContainerModule((bind, unbind) => {
+  bind(NotebookManager).toSelf();
+  bind(OpenHandler).toService(NotebookManager);
+
+  bind(H1stNotebookWidgetFactory)
+    .toSelf()
+    .inSingletonScope();
+  bind(WidgetFactory).toService(H1stNotebookWidgetFactory);
+
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stTelemetryService);
@@ -47,6 +52,7 @@ export default new ContainerModule((bind, unbind) => {
   bind(H1stHeaderWidget)
     .toSelf()
     .inSingletonScope();
+
   bind(WidgetFactory)
     .toDynamicValue((ctx) => ({
       id: H1stHeaderWidget.ID,

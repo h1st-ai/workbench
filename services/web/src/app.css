@@ -2,21 +2,60 @@
 
 :root {
   --color-primary: #30479b;
+  --color-blue-bright: #1837b8;
   --color-white-1: #f2f4f5;
   --color-dblue: #2c3d69;
-
+  --color-border:#eee;
   --color-grey-3: #6b7180;
   --color-grey-4: #8b98a1;
+  --color-red: #C22F25;
+  --color-light-yellow: #FFF8EE;
   --font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
 }
-
+html {
+  box-sizing: border-box;
+  font-size:62.5%;
+}
 body {
   font-family: var(--font-family);
   /* font-size: 100%; */
   background: var(--color-white-1);
   color: var(--color-grey-3);
+  font-size:1.6rem;
 }
-
+* {
+  font-family: var(--font-family);
+}
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+  }
+a, button {
+  transition: color 150ms ease-in-out, 
+  background-color 150ms ease-in-out, 
+  border-color 150ms ease-in-out,
+  box-shadow 150ms ease-in-out;
+}
+.btn {
+  letter-spacing: 0.1rem;
+}
+.btn.primary {
+  font-weight: 600;
+}
+.btn.primary.empty{
+  width:250px !important;
+}
+.btn.secondary {
+  color: var(--color-grey-3);
+}
+button:hover{
+  filter: brightness(105%) saturate(110%);
+  transition: filter 200ms ease-in-out, transform 100ms ease-in-out;
+}
+button:active{
+  transform:translateY(2px);
+}
 .text-input {
   /* height: 42px;
   background: #ffffff;
@@ -56,7 +95,7 @@ body {
 
 .btn.primary {
   color: #fff;
-  width: 100%;
+  
   background: #30479b;
 }
 
@@ -71,9 +110,20 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  
 }
-
+@keyframes modal-in{
+  from {
+    opacity:0;
+    transform: scale(.3);
+  }
+  to {
+    opacity:1;
+    transform: scale(1);
+  }
+}
 .dialog {
+  animation: modal-in 200ms cubic-bezier(.49,-0.15,.46,.49);
   background: #fff;
   border-radius: 10px;
   padding: 32px;
@@ -87,12 +137,12 @@ body {
 .dialog .form-actions {
   display: flex;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .dialog .form-actions button {
   flex: 1;
-  margin-right: 8px;
+  margin-right: 20px;
 }
 
 .dialog .form-actions button:last-child {

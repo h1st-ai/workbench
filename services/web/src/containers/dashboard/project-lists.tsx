@@ -61,7 +61,7 @@ function ProjectLists(): any {
     return (
       <div className={styles.emptyState}>
         <CreateProjectDialog />
-        <button
+        <button className="btn primary empty"
           onClick={() => dispatch(toggleCreateProjectDialog({ value: true }))}
         >
           Create your first project

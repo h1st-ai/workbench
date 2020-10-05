@@ -16,5 +16,16 @@ if [ ! -d "$WORKSPACE_PATH/$WORKBENCH_NAME" ]; then
     )
 fi
 
-# yarn run start $WORKSPACE_PATH --hostname=0.0.0.0
-exec node /home/theia/browser-app/src-gen/backend/main.js "$WORKSPACE_PATH/$WORKBENCH_NAME" --hostname=0.0.0.0
+# run these in background
+(
+    node /home/theia/browser-app/src-gen/backend/main.js "$WORKSPACE_PATH/$WORKBENCH_NAME" --hostname=0.0.0.0 --port 3001 &
+)
+
+(
+    cd $WORKSPACE_PATH
+    EXTRAPATH=$(find `pwd`/ -maxdepth 1 -type d | xargs -n 999 | tr -s ' ' ':')
+    export PYTHONPATH=$EXTRAPATH:$PYTHONPATH
+    jupyter-notebook --allow-root &
+)
+
+exec traefik --configfile /opt/traefik.yml
