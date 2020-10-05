@@ -426,10 +426,22 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   margin-bottom: 1px;
 }
 
+.input-header .input-buttons {
+  display: flex;
+  align-items: center;
+}
+
 .input-header button {
   background: none;
   border: none;
   outline: none;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+}
+
+.input-header button:hover {
+  opacity: 1;
 }
 
 .input-header svg {
@@ -437,21 +449,21 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .input-header button.btn-cell-play svg {
-  fill: #388a34 !important;
+  /* fill: #388a34 !important;
   fill-rule: evenodd !important;
-  clip-rule: evenodd !important;
+  clip-rule: evenodd !important; */
 }
 
 .input-header button.btn-cell-toggle {
-  fill: var(--theia-foreground) !important;
+  /* fill: var(--theia-foreground) !important;
   fill-rule: evenodd !important;
-  clip-rule: evenodd !important;
+  clip-rule: evenodd !important; */
 }
 
 .input-header button.btn-cell-delete svg {
-  fill: var(--theia-foreground) !important;
+  /* fill: var(--theia-foreground) !important;
   fill-rule: evenodd !important;
-  clip-rule: evenodd !important;
+  clip-rule: evenodd !important; */
 }
 
 .cell-input-spacing {

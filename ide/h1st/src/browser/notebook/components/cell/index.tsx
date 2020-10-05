@@ -1,4 +1,15 @@
 import * as React from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faExpandAlt,
+  faCompressAlt,
+  faCode,
+  faPlay,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import ReactTooltip from "react-tooltip";
+
 import Icon from "../icon";
 import { notebookActions } from "../../reducers/notebook";
 import klass from "classnames";
@@ -13,6 +24,7 @@ import { NotebookFactory } from "../../notebook-factory";
 
 const CELL_CODE = "code";
 const CELL_MD = "markdown";
+const SVG_STYLE = { color: "var(--theia-foreground)" };
 
 interface INotebookProps {
   index: number;
@@ -98,32 +110,89 @@ export function NotebookCell(props: INotebookProps) {
     context.manager?.setDirty(true);
   }
 
+  function toggleOuput() {}
+
   function renderCodeCellHeaderControl(): React.ReactNode {
     return (
-      <div>
+      <div className="input-buttons">
         <button
+          data-tip="Run this cell"
+          data-for={`toolbar-cell-header-${model.id}`}
           className="btn-cell-play"
           disabled={!currentKernel}
           onClick={execute}
         >
-          <Icon icon="play" />
+          <FontAwesomeIcon size="sm" icon={faPlay} style={SVG_STYLE} />
         </button>
-        <button className="btn-cell-md" onClick={toMarkdown}>
+        <button
+          data-tip="Change this cell to markdown"
+          data-for={`toolbar-cell-header-${model.id}`}
+          className="btn-cell-md"
+          onClick={toMarkdown}
+        >
           <Icon icon="markdown" />
         </button>
+        <button
+          data-tip="Toggle output for this cell"
+          data-for={`toolbar-cell-header-${model.id}`}
+          onClick={toggleOuput}
+        >
+          {!model.metadata.collapsed && (
+            <FontAwesomeIcon size="sm" icon={faCompressAlt} style={SVG_STYLE} />
+          )}
+          {model.metadata.collapsed && (
+            <FontAwesomeIcon size="sm" icon={faExpandAlt} style={SVG_STYLE} />
+          )}
+        </button>
+        <ReactTooltip
+          id={`toolbar-cell-header-${model.id}`}
+          effect="solid"
+          place="bottom"
+          delayShow={400}
+          multiline={true}
+        />
       </div>
     );
   }
 
   function renderMarkdownHeaderControl(): React.ReactNode {
     return (
-      <div>
-        <button className="btn-cell-play">
-          <Icon icon="play" />
+      <div className="input-buttons">
+        <button
+          className="btn-cell-play"
+          data-tip="Toggle output for this cell"
+          data-for={`toolbar-cell-header-${model.id}`}
+          onClick={execute}
+        >
+          <FontAwesomeIcon size="sm" icon={faPlay} style={SVG_STYLE} />
         </button>
-        <button className="btn-cell-toggle" onClick={toCode}>
-          <Icon icon="code" />
+        <button
+          className="btn-cell-toggle"
+          data-tip="Change this cell to code"
+          data-for={`toolbar-cell-header-${model.id}`}
+          onClick={toCode}
+        >
+          <FontAwesomeIcon size="sm" icon={faCode} style={SVG_STYLE} />
         </button>
+        <button
+          data-tip="Toggle output for this cell"
+          data-for={`toolbar-cell-header-${model.id}`}
+          onClick={toggleOuput}
+        >
+          {!model.metadata.collapsed && (
+            <FontAwesomeIcon size="sm" icon={faCompressAlt} style={SVG_STYLE} />
+          )}
+          {model.metadata.collapsed && (
+            <FontAwesomeIcon size="sm" icon={faExpandAlt} style={SVG_STYLE} />
+          )}
+        </button>
+        <ReactTooltip
+          id={`toolbar-cell-header-${model.id}`}
+          effect="solid"
+          place="bottom"
+          delayShow={400}
+          multiline={true}
+        />
       </div>
     );
   }
@@ -181,9 +250,21 @@ export function NotebookCell(props: INotebookProps) {
     return (
       <div className="input-header input-markdown">
         {headerControl}
-        <button className="btn-cell-delete" onClick={deleteCodeCell}>
-          <Icon icon="delete" />
+        <button
+          data-for={`toolbar-cell-header-delete-${model.id}`}
+          data-tip="Delete this cell"
+          className="btn-cell-delete"
+          onClick={deleteCodeCell}
+        >
+          <FontAwesomeIcon size="sm" icon={faTrashAlt} style={SVG_STYLE} />
         </button>
+        <ReactTooltip
+          id={`toolbar-cell-header-delete-${model.id}`}
+          effect="solid"
+          place="bottom"
+          delayShow={400}
+          multiline={true}
+        />
       </div>
     );
   }
