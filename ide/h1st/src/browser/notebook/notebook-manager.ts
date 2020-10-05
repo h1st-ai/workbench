@@ -36,6 +36,7 @@ export class NotebookManager {
   private _session: Session.ISessionConnection;
   private _sessionManager: SessionManager;
   private _serverSettings: ServerConnection.ISettings;
+  private _showAllCellOutputs: boolean = true;
 
   constructor(
     // the widget container
@@ -563,14 +564,13 @@ export class NotebookManager {
       (cell: ICellModel) => cell.id
     );
 
-    const show =
-      this.widget.node.querySelector(
-        `${NotebookManager.getDomCellId(cells[0])} .output.collapsed`
-      ) === null;
+    // const show =
+    //   this.widget.node.querySelector(
+    //     `${NotebookManager.getDomCellId(cells[0])} .output.collapsed`
+    //   ) === null;
+    this._showAllCellOutputs = !this._showAllCellOutputs;
 
-    console.log("toggleAllCellOutputs", cells, show);
-
-    this.toggleCellOutputs(cells, show);
+    this.toggleCellOutputs(cells, this._showAllCellOutputs);
   }
 
   toggleCellOutputs(cellIds: string[], show: boolean) {
@@ -582,15 +582,17 @@ export class NotebookManager {
     const selectedCell = this.getSelectedCell();
 
     if (selectedCell) {
-      const show =
-        this.widget.node.querySelector(
-          `${NotebookManager.getDomCellId(selectedCell)} .output.collapsed`
-        ) === null;
+      // const show =
+      //   this.widget.node.querySelector(
+      //     `${NotebookManager.getDomCellId(selectedCell)} .output.collapsed`
+      //   ) === null;
+      this._showAllCellOutputs = !this._showAllCellOutputs;
 
-      console.log("toggleSelectedCellOutputs", show);
       const cellIds = this.getSelectedCells();
       const { toggleCellOutputs } = notebookActions;
-      this.store.dispatch(toggleCellOutputs({ cellIds, show }));
+      this.store.dispatch(
+        toggleCellOutputs({ cellIds, show: this._showAllCellOutputs })
+      );
 
       this.setDirty(true);
     }
