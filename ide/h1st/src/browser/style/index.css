@@ -501,6 +501,10 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   padding: 8px 0px 0px 0px;
 }
 
+.cell-output-wrapper .output-html {
+  overflow-x: scroll;
+}
+
 .cell-output-wrapper .markdown-body blockquote {
   border: none;
   border-left: 5px solid var(--theia-textBlockQuote-border);
