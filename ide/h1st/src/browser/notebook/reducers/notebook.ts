@@ -133,7 +133,10 @@ export const reducers = {
     state.selectedCell = cell.id;
   },
   focusOnCell: (state: INotebook, { payload }: any): void => {
-    state.focusedCell = payload.cellId;
+    const { cellId } = payload;
+    state.focusedCell = cellId;
+    state.selectedCell = cellId;
+    state.selectedCells = [cellId];
   },
   setCells: (state: INotebook, { payload }: any): void => {
     state.cells = payload.cells;
