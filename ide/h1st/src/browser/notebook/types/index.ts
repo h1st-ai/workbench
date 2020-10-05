@@ -14,10 +14,13 @@ export interface Theme {
 export interface INotebook {
   cells: ICellModel[];
   selectedCell: string | null;
+  selectedCells: string[];
   activeCell: string | null;
   activeTheme: Theme | null;
   executionQueue: string[];
   focusedCell: string | null;
+  clipboard: ICellModel[];
+  pivotCell: ICellModel | null; // the cell to pivot selection to select multiple cell
 }
 
 export interface INotebookWidget {

@@ -9,10 +9,13 @@ import { CELL_TYPE, INotebook, IStore } from "../types";
 export const initialState: INotebook = {
   cells: [],
   selectedCell: null,
+  selectedCells: [],
   activeCell: null,
   activeTheme: null,
   focusedCell: null,
   executionQueue: [],
+  clipboard: [],
+  pivotCell: null,
 };
 
 /**
@@ -69,6 +72,7 @@ export const reducers = {
   },
   setSelectedCell: (state: INotebook, { payload }: any): void => {
     state.selectedCell = payload.cellId;
+    state.selectedCells = [payload.cellId];
   },
   selectNextCellOf: (state: INotebook, { payload }: any): void => {
     const cellInfo = selectCellAndNeighbors(state, payload.cellId);

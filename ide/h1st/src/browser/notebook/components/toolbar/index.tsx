@@ -20,7 +20,6 @@ import { IStore } from "../../types";
 import NotebookContext from "../../context";
 import { notebookActions } from "../../reducers/notebook";
 import { NotebookFactory } from "../../notebook-factory";
-import { NotebookManager } from "../../notebook-manager";
 
 function KernelStatus() {
   const { status } = useSelector((store: IStore) => store.kernel);
@@ -72,12 +71,7 @@ export default function Toolbar() {
   const { selectedCell } = useSelector((store: IStore) => store.notebook);
   const dispatch = useDispatch();
 
-  const {
-    insertCellAfter,
-    focusOnCell,
-    moveCellUp,
-    moveCellDown,
-  } = notebookActions;
+  const { insertCellAfter, focusOnCell } = notebookActions;
   const ICON_STYLE = { color: "var(--theia-foreground)" };
 
   React.useEffect(() => {
