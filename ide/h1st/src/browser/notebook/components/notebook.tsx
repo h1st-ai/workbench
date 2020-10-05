@@ -8,14 +8,18 @@ import { NotebookCell } from "./cell";
 import { ICellModel, IStore } from "../types";
 import Icon from "./icon";
 import { NotebookFactory } from "../notebook-factory";
+import NotebookContext from "../context";
 
 export default function(props: any) {
   console.log(props.model);
   // const uri: URI = props.uri;
   // const content = props.model;
+  const context = React.useContext(NotebookContext);
   const { cells, freeze } = useSelector((store: IStore) => store.notebook);
 
-  React.useEffect(() => {});
+  React.useEffect(() => {
+    context.manager?.setSelectedCell(cells[0].id);
+  }, []);
 
   const codeCells = cells.map((c: ICellModel, index: number) => (
     <NotebookCell
