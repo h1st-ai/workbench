@@ -74,7 +74,7 @@ export function ProjectGridItem({
   }
 
   function getProjectUrl(id: string) {
-    return `/project/${id}/`;
+    return `/project/${id}/#/home/project`;
   }
 
   function poll(
