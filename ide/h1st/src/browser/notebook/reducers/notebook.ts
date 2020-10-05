@@ -28,6 +28,9 @@ export const initialState: INotebook = {
     cells: [],
   },
   pivotCell: null,
+  options: {
+    showLineNumber: false,
+  },
 };
 
 /**
@@ -286,6 +289,11 @@ export const reducers = {
       }
     }
   },
+
+  toggleCellLineNumber: (state: INotebook): void => {
+    state.options.showLineNumber = !state.options.showLineNumber;
+  },
+
   deleteCell: (state: INotebook, { payload }: any): void => {
     const { cellId } = payload;
 

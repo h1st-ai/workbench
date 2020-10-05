@@ -16,6 +16,10 @@ export interface IDeletedCell {
   cell: ICellModel;
 }
 
+export interface INotebookOptions {
+  showLineNumber: boolean;
+}
+
 export interface INotebook {
   cells: ICellModel[];
   deletedCells: IDeletedCell[];
@@ -30,6 +34,7 @@ export interface INotebook {
     cells: ICellModel[];
   };
   pivotCell: ICellModel | null; // the cell to pivot selection to select multiple cell
+  options: INotebookOptions;
 }
 
 export interface INotebookWidget {

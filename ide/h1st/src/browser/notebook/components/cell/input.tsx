@@ -26,7 +26,7 @@ export default function CellInput({ model }: any) {
     setCurrentCell,
     focusOnCell,
   } = notebookActions;
-  const { activeCell, focusedCell } = useSelector(
+  const { activeCell, focusedCell, options: editorOptions } = useSelector(
     (store: IStore) => store.notebook
   );
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
@@ -60,7 +60,7 @@ export default function CellInput({ model }: any) {
 
           // now we have the focus, clear the request
           dispatch(focusOnCell({ cellId: null }));
-          context.manager?.scrollTo(`#cell-${model.id}`);
+          context.manager?.scrollTo(NotebookManager.getDomCellId(model.id));
         }
       }, 0);
     }
@@ -73,7 +73,7 @@ export default function CellInput({ model }: any) {
     }
 
     // return () => editorRef.current?.dispose();
-  }, [model.cell_type]);
+  }, [model.cell_type, editorOptions]);
 
   React.useEffect(() => {
     if (model.cell_type === CELL_TYPE.MD && activeCell === model.id) {
@@ -83,7 +83,7 @@ export default function CellInput({ model }: any) {
     }
 
     // return () => editorRef.current?.dispose();
-  }, [activeCell, model.cell_type]);
+  }, [activeCell, model.cell_type, editorOptions]);
 
   function initMarkdownEditor() {
     if (wrapperRef.current) {
@@ -98,9 +98,10 @@ export default function CellInput({ model }: any) {
 
       // @ts-ignore
       editorRef.current = monaco.editor.create(wrapperRef.current, {
+        ...EDITOR_OPTIONS,
         model: editorModel,
         language: "markdown",
-        ...EDITOR_OPTIONS,
+        lineNumbers: editorOptions.showLineNumber ? "on" : "off",
       });
 
       initEditorEventHandler(editorRef.current);
@@ -179,6 +180,7 @@ export default function CellInput({ model }: any) {
     });
 
     if (wrapperRef.current) {
+      editorRef.current?.dispose();
       // monaco.editor.onDidCreateEditor(handleEditorDidMount);
 
       const editorModel = monaco.editor.createModel(
@@ -190,9 +192,10 @@ export default function CellInput({ model }: any) {
 
       // @ts-ignore
       editorRef.current = monaco.editor.create(wrapperRef.current, {
+        ...EDITOR_OPTIONS,
         model: editorModel,
         language: "python",
-        ...EDITOR_OPTIONS,
+        lineNumbers: editorOptions.showLineNumber ? "on" : "off",
       });
 
       initEditorEventHandler(editorRef.current);
@@ -462,7 +465,7 @@ export default function CellInput({ model }: any) {
   return renderInput();
 }
 
-const EDITOR_OPTIONS = {
+const EDITOR_OPTIONS: Partial<monaco.editor.IStandaloneEditorConstructionOptions> = {
   glyphMargin: true,
   wordWrap: "on",
   scrollBeyondLastLine: false,
@@ -489,7 +492,7 @@ const EDITOR_OPTIONS = {
   folding: false,
   occurrencesHighlight: false,
   selectionHighlight: false,
-  lineDecorationsWidth: 0,
+  lineDecorationsWidth: 8,
   contextmenu: false,
   matchBrackets: "always",
 };

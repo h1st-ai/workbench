@@ -461,6 +461,11 @@ export class NotebookManager {
     }
   }
 
+  toggleCellLineNumber() {
+    const { toggleCellLineNumber } = notebookActions;
+    this.store.dispatch(toggleCellLineNumber());
+  }
+
   selectNextCell() {
     const cellId = this.getSelectedCell();
 

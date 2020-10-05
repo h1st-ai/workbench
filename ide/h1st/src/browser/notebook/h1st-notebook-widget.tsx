@@ -387,11 +387,10 @@ export class H1stNotebookWidget extends ReactWidget
        * Listen to the X keypress to select the next cell of the currently selected cell
        */
       {
-        key: Key.KEY_X,
+        key: Key.KEY_C,
         handler: (ev: KeyboardEvent) => {
           if (this.isAnyCellFocused()) return false;
-
-          this.notebookManager.cutCells();
+          this.notebookManager.copyCells();
 
           // return false if you want the event to propagate
           return false;
@@ -399,13 +398,13 @@ export class H1stNotebookWidget extends ReactWidget
       },
 
       /**
-       * Listen to the X keypress to select the next cell of the currently selected cell
+       * Listen to the L keypress to select the next cell of the currently selected cell
        */
       {
-        key: Key.KEY_C,
+        key: Key.KEY_L,
         handler: (ev: KeyboardEvent) => {
           if (this.isAnyCellFocused()) return false;
-          this.notebookManager.copyCells();
+          this.notebookManager.toggleCellLineNumber();
 
           // return false if you want the event to propagate
           return false;
@@ -435,6 +434,20 @@ export class H1stNotebookWidget extends ReactWidget
           if (this.isAnyCellFocused()) return false;
 
           this.notebookManager.pasteCells("bottom");
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+      /**
+       * Listen to the X keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.KEY_X,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.cutCells();
 
           // return false if you want the event to propagate
           return false;
