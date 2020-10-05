@@ -14,6 +14,7 @@ import {
   ISetCellsTypePayload,
   ISetClipboardCellPayload,
   IToggleActionOverlayPayload,
+  IToggleCellOutputPayload,
 } from "../types/payload";
 
 const uniqid = require("uniqid");
@@ -315,6 +316,19 @@ export const reducers = {
 
   toggleCellLineNumber: (state: INotebook): void => {
     state.options.showLineNumber = !state.options.showLineNumber;
+  },
+
+  toggleCellOutputs: (
+    state: INotebook,
+    { payload }: IToggleCellOutputPayload
+  ): void => {
+    const { cellIds, show } = payload;
+
+    state.cells.forEach((cell) => {
+      if (cellIds.includes(cell.id)) {
+        cell.metadata.collapsed = show;
+      }
+    });
   },
 
   deleteCells: (state: INotebook, { payload }: IDeleteCellsPayload): void => {

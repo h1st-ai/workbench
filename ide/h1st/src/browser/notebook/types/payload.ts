@@ -43,3 +43,10 @@ export interface IToggleActionOverlayPayload {
     show?: boolean;
   };
 }
+
+export interface IToggleCellOutputPayload {
+  payload: {
+    cellIds: string[];
+    show: boolean;
+  };
+}

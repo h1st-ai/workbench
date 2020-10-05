@@ -110,7 +110,16 @@ export function NotebookCell(props: INotebookProps) {
     context.manager?.setDirty(true);
   }
 
-  function toggleOuput() {}
+  function toggleOuput() {
+    context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
+  }
+
+  function toggleOuputOnly(e: React.MouseEvent) {
+    context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
+
+    e.preventDefault();
+    e.stopPropagation();
+  }
 
   function renderCodeCellHeaderControl(): React.ReactNode {
     return (
@@ -281,7 +290,11 @@ export function NotebookCell(props: INotebookProps) {
     switch (cellType) {
       case CELL_CODE:
         return (
-          <div className="cell-prompt" ref={promptRef}>
+          <div
+            className="cell-prompt"
+            ref={promptRef}
+            onDoubleClick={toggleOuput}
+          >
             <div className="execution-count">
               In [{renderPromptContent()}]:{" "}
             </div>
@@ -290,7 +303,11 @@ export function NotebookCell(props: INotebookProps) {
 
       case CELL_MD:
         return (
-          <div className="cell-prompt" ref={promptRef}>
+          <div
+            className="cell-prompt"
+            ref={promptRef}
+            onDoubleClick={toggleOuputOnly}
+          >
             <div className="execution-count"></div>
           </div>
         );

@@ -16,6 +16,7 @@ import {
   // KernelOutputError as KernelOutputErrors,
 } from "./media";
 import { MediaUnsupported } from "./media/wildcard";
+import NotebookContext from "../../context";
 
 const MarkDown = require("react-markdown");
 
@@ -31,6 +32,7 @@ export enum CELL_OUTPUT_TYPE {
 export default React.memo(function CellOuput(props: ICellOutputProps) {
   const { model } = props;
   const { activeCell } = useSelector((store: IStore) => store.notebook);
+  const context = React.useContext(NotebookContext);
 
   function renderMedia() {
     let output;
@@ -57,7 +59,26 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
     return output;
   }
 
+  function toggleOuput() {
+    context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
+  }
+
+  function toggleMarkdownOuput(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    toggleOuput();
+  }
+
   function renderCodeOutput(data: any[]) {
+    if (model.metadata.collapsed) {
+      return (
+        <div className="output collapsed" onDoubleClick={toggleOuput}>
+          Output collapsed. Double click to expand
+        </div>
+      );
+    }
+
     if (!data) return null;
 
     const outputs = data.map((output) => {
@@ -114,6 +135,14 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
   }
 
   function renderMarkdown(data: string) {
+    if (model.metadata.collapsed) {
+      return (
+        <div className="output collapsed" onDoubleClick={toggleMarkdownOuput}>
+          Output collapsed. Double click to expand
+        </div>
+      );
+    }
+
     return <div className="markdown-body">{<MarkDown source={data} />}</div>;
   }
 

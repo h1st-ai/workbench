@@ -529,6 +529,11 @@ export class NotebookManager {
     }
   }
 
+  toggleCellOutputs(cellIds: string[], show: boolean) {
+    const { toggleCellOutputs } = notebookActions;
+    this.store.dispatch(toggleCellOutputs({ cellIds, show }));
+  }
+
   toggleCellLineNumber() {
     const { toggleCellLineNumber } = notebookActions;
     this.store.dispatch(toggleCellLineNumber());
