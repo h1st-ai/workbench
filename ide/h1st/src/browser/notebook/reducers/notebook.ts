@@ -174,7 +174,7 @@ export const reducers = {
 
     if (cellInfo && cellInfo.prev) {
       state.selectedCell = cellInfo.prev.id;
-      state.selectedCells = [cellInfo.next.id];
+      state.selectedCells = [cellInfo.prev.id];
     }
   },
   focusNextCellOf: (state: INotebook, { payload }: any): void => {
