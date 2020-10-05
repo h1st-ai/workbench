@@ -1,6 +1,6 @@
-// import {Markdown} from "@nteract/presentational-components/lib/components/outputs";
 import * as React from "react";
-// import Markdown from "@nteract/outputs/lib/components/media/markdown";
+import ReactTooltip from "react-tooltip";
+
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
 import { KernelOutputError, Media, RichMedia } from "@nteract/outputs";
@@ -71,15 +71,27 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
   }
 
   function renderCodeOutput(data: any[]) {
+    if (!data) return null;
+
     if (model.metadata.collapsed) {
       return (
         <div className="output collapsed" onDoubleClick={toggleOuput}>
-          Output collapsed. Double click to expand
+          <div
+            data-tip="Output collapsed. Double click to expand"
+            data-for={`toolbar-cell-output-${model.id}`}
+          >
+            ...
+          </div>
+          <ReactTooltip
+            id={`toolbar-cell-output-${model.id}`}
+            effect="solid"
+            place="bottom"
+            delayShow={400}
+            multiline={true}
+          />
         </div>
       );
     }
-
-    if (!data) return null;
 
     const outputs = data.map((output) => {
       switch (output.output_type) {
@@ -135,10 +147,26 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
   }
 
   function renderMarkdown(data: string) {
+    if (!data) {
+      return;
+    }
+
     if (model.metadata.collapsed) {
       return (
         <div className="output collapsed" onDoubleClick={toggleMarkdownOuput}>
-          Output collapsed. Double click to expand
+          <div
+            data-tip="Output collapsed. Double click to expand"
+            data-for={`toolbar-cell-output-${model.id}`}
+          >
+            ...
+          </div>
+          <ReactTooltip
+            id={`toolbar-cell-output-${model.id}`}
+            effect="solid"
+            place="bottom"
+            delayShow={400}
+            multiline={true}
+          />
         </div>
       );
     }
