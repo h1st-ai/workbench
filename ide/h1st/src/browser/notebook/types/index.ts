@@ -35,6 +35,7 @@ export interface INotebook {
   };
   pivotCell: ICellModel | null; // the cell to pivot selection to select multiple cell
   options: INotebookOptions;
+  freeze: boolean;
 }
 
 export interface INotebookWidget {
@@ -42,10 +43,18 @@ export interface INotebookWidget {
   height: number | null;
 }
 
+export type IKernelStatus = "idle" | "busy" | "disconnected";
+
+export enum KERNEL_STATUS {
+  IDLE = "idle",
+  BUSY = "busy",
+  DISC = "disconnected",
+}
+
 export interface IKernel {
   currentKernel: any | undefined;
   connectionStatus: string;
-  status: string;
+  status: IKernelStatus;
 }
 
 export interface IStore {

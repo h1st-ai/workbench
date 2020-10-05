@@ -569,3 +569,24 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .notebook-extra-bar:hover button {
   visibility: visible;
 }
+
+.notebook-wrapper {
+  position: relative;
+}
+.action-overlay {
+  background: red;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  z-index: 50000;
+  background: var(--theia-editor-background);
+  background-image: var(--theia-preloader);
+  background-size: 60px 60px;
+  background-repeat: no-repeat;
+  background-position: 60% center;
+  background-attachment: fixed;
+  transition: opacity 0.8s;
+  opacity: 0.5;
+}

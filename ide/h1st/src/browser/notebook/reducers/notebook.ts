@@ -12,6 +12,7 @@ import {
   IPasteCellPayload,
   ISetCellsTypePayload,
   ISetClipboardCellPayload,
+  IToggleActionOverlayPayload,
 } from "../types/payload";
 
 const uniqid = require("uniqid");
@@ -33,6 +34,7 @@ export const initialState: INotebook = {
   options: {
     showLineNumber: false,
   },
+  freeze: false,
 };
 
 /**
@@ -126,6 +128,19 @@ export const getCellIndex = (
 // };
 
 export const reducers = {
+  toogleActionOverlay: (
+    state: INotebook,
+    { payload }: IToggleActionOverlayPayload
+  ): void => {
+    const { show } = payload;
+
+    if (show) {
+      state.freeze = show;
+    } else {
+      state.freeze = !state.freeze;
+    }
+  },
+
   ensureCellInNotebook: (state: INotebook): void => {
     const cell = NotebookFactory.makeNewCell();
 

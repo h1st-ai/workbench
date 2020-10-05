@@ -31,3 +31,9 @@ export interface ISetCellsTypePayload {
     type: ICellType;
   };
 }
+
+export interface IToggleActionOverlayPayload {
+  payload: {
+    show?: boolean;
+  };
+}

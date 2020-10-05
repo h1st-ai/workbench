@@ -13,7 +13,7 @@ export default function(props: any) {
   console.log(props.model);
   // const uri: URI = props.uri;
   // const content = props.model;
-  const { cells } = useSelector((store: IStore) => store.notebook);
+  const { cells, freeze } = useSelector((store: IStore) => store.notebook);
 
   React.useEffect(() => {});
 
@@ -28,13 +28,13 @@ export default function(props: any) {
   ));
 
   return (
-    <React.Fragment>
-      {/* <NotebookSteps /> */}
+    <div className="notebook-wrapper">
+      {freeze && <div className="action-overlay"></div>}
       <Toolbar />
       <ExtraBar position="top" />
       <div className="notebook-cells-container">{codeCells}</div>
       <ExtraBar position="bottom" />
-    </React.Fragment>
+    </div>
   );
 }
 

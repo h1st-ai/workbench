@@ -17,10 +17,11 @@ import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
 import URI from "@theia/core/lib/common/uri";
 import { ApplicationLabels } from "./labels";
-import { CELL_TYPE, INotebook } from "./types";
+import { CELL_TYPE, INotebook, KERNEL_STATUS } from "./types";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
 import { ICellCodeInfo } from "../../common/types";
 import { NotebookFactory } from "./notebook-factory";
+import { ConfirmDialog } from "@theia/core/lib/browser";
 
 export class NotebookManager {
   private _kernelManager: KernelManager;
@@ -240,14 +241,19 @@ export class NotebookManager {
   /**
    * Restart the current kernel
    */
-  restartKernel = async () => {
+  restartKernel = async (confirm: boolean = true) => {
     console.log("restarting Kernel");
 
-    const answer = await this.messageService.info(
-      ApplicationLabels.KERNEL.MSG_RESTART,
-      "No",
-      "Yes"
-    );
+    let answer: string | undefined = "Yes";
+
+    if (confirm) {
+      answer = await this.messageService.info(
+        ApplicationLabels.KERNEL.MSG_RESTART,
+        "No",
+        "Yes"
+      );
+    }
+
     if (answer === "Yes") {
       if (this._session.kernel) {
         try {
@@ -263,6 +269,56 @@ export class NotebookManager {
         }
       }
     }
+  };
+
+  restartKernelAndRunAll = async () => {
+    const {
+      TITLE_RESTART_AND_RUN_ALL,
+      MSG_RESTART_AND_RUN_ALL,
+      BTN_RESTART_AND_RUN_ALL,
+      BTN_CONTINUE_RUNNING,
+    } = ApplicationLabels.KERNEL;
+
+    const dialog = new ConfirmDialog({
+      title: TITLE_RESTART_AND_RUN_ALL,
+      msg: MSG_RESTART_AND_RUN_ALL,
+      ok: BTN_RESTART_AND_RUN_ALL,
+      cancel: BTN_CONTINUE_RUNNING,
+    });
+
+    if (await dialog.open()) {
+      this.toogleActionOverlay(true);
+      await this.restartKernel(false);
+      let tries = 0;
+
+      const intervalId = setInterval(async () => {
+        // give up after 10 second
+        if (tries === 10) {
+          this.messageService.error("Kernel failed to restart");
+          clearInterval(intervalId);
+          this.toogleActionOverlay(false);
+        }
+
+        console.log(
+          "this._session.kernel?.status",
+          this._session.kernel?.status
+        );
+
+        if (this._session.kernel?.status === KERNEL_STATUS.IDLE) {
+          clearInterval(intervalId);
+          this.toogleActionOverlay(false);
+          await this.executeCells(0);
+        }
+
+        tries += 1;
+      }, 2000);
+    }
+  };
+
+  toogleActionOverlay = (show?: boolean) => {
+    const { toogleActionOverlay } = notebookActions;
+
+    this.store.dispatch(toogleActionOverlay({ show }));
   };
 
   getAppState = () => {

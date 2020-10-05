@@ -140,6 +140,11 @@ export default function Toolbar() {
     context.manager?.pasteCells();
   };
 
+  const restartKernelAndRunAll = async () => {
+    await context.manager?.restartKernelAndRunAll();
+    context.manager?.setDirty(true);
+  };
+
   return (
     <div className="toolbar">
       <ul>
@@ -184,10 +189,10 @@ export default function Toolbar() {
           <button>
             <FontAwesomeIcon icon={faStop} style={ICON_STYLE} />
           </button>
-          <button>
+          <button onClick={doRestartKernel}>
             <FontAwesomeIcon icon={faRedo} style={ICON_STYLE} />
           </button>
-          <button>
+          <button onClick={restartKernelAndRunAll}>
             <FontAwesomeIcon icon={faFastForward} style={ICON_STYLE} />
           </button>
         </li>
