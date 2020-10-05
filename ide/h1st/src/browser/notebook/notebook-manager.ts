@@ -316,8 +316,14 @@ export class NotebookManager {
 
   pasteCells = (position: string = "bottom") => {
     const { pasteCells } = notebookActions;
+    const selectedCell = this.getSelectedCell();
     // @ts-ignore
     this.store.dispatch(pasteCells({ position }));
+
+    setTimeout(() => {
+      this.scrollTo(NotebookManager.getDomCellId(selectedCell));
+      this.setSelectedCell(selectedCell);
+    }, 100);
   };
 
   /**
@@ -433,6 +439,12 @@ export class NotebookManager {
       this.store.dispatch(setCurrentCell({ cellId: cell.id }));
       this.store.dispatch(focusOnCell({ cellId: cell.id }));
     }
+  }
+
+  undoDeleteCell() {
+    const { undoDeleteCell } = notebookActions;
+
+    this.store.dispatch(undoDeleteCell());
   }
 
   deleteCell(cellId: string) {

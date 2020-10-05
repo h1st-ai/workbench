@@ -16,6 +16,7 @@ const uniqid = require("uniqid");
 
 export const initialState: INotebook = {
   cells: [],
+  deletedCells: [],
   selectedCell: null,
   selectedCells: [],
   activeCell: null,
@@ -291,9 +292,26 @@ export const reducers = {
     const cellIndex = getCellIndex(state, cellId);
 
     if (cellIndex !== undefined) {
-      state.cells.splice(cellIndex, 1);
+      const cells = state.cells.splice(cellIndex, 1);
+
+      state.deletedCells = state.deletedCells.concat(
+        cells.map((cell, index) => ({
+          index: index + cellIndex,
+          cell,
+        }))
+      );
     }
   },
+  undoDeleteCell: (state: INotebook): void => {
+    if (state.deletedCells.length > 0) {
+      const last = state.deletedCells.pop();
+
+      if (last) {
+        state.cells.splice(last.index, 0, last.cell);
+      }
+    }
+  },
+
   moveCellUp: (state: INotebook, { payload }: any): void => {
     const cellIndex = getCellIndex(state, payload.cellId);
 

@@ -390,6 +390,7 @@ export class H1stNotebookWidget extends ReactWidget
         key: Key.KEY_X,
         handler: (ev: KeyboardEvent) => {
           if (this.isAnyCellFocused()) return false;
+
           this.notebookManager.cutCells();
 
           // return false if you want the event to propagate
@@ -399,6 +400,20 @@ export class H1stNotebookWidget extends ReactWidget
 
       /**
        * Listen to the X keypress to select the next cell of the currently selected cell
+       */
+      {
+        key: Key.KEY_C,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+          this.notebookManager.copyCells();
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+
+      /**
+       * Listen to the V keypress to select the next cell of the currently selected cell
        */
       {
         key: KeyCode.createKeyCode({
@@ -420,6 +435,17 @@ export class H1stNotebookWidget extends ReactWidget
           if (this.isAnyCellFocused()) return false;
 
           this.notebookManager.pasteCells("bottom");
+
+          // return false if you want the event to propagate
+          return false;
+        },
+      },
+      {
+        key: Key.KEY_Z,
+        handler: (ev: KeyboardEvent) => {
+          if (this.isAnyCellFocused()) return false;
+
+          this.notebookManager.undoDeleteCell();
 
           // return false if you want the event to propagate
           return false;

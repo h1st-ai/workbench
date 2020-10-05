@@ -11,8 +11,14 @@ export interface Theme {
   readonly editorTheme?: string;
 }
 
+export interface IDeletedCell {
+  index: number;
+  cell: ICellModel;
+}
+
 export interface INotebook {
   cells: ICellModel[];
+  deletedCells: IDeletedCell[];
   selectedCell: string | null;
   selectedCells: string[];
   activeCell: string | null;
