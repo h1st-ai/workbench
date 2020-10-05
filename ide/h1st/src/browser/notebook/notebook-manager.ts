@@ -681,7 +681,7 @@ export class NotebookManager {
     for (let i = 0; i < state.cells.length; i++) {
       if (cellId === state.cells[i].id) {
         return {
-          code: state.cells[i].source.join("\n"),
+          code: state.cells[i].source.join(""),
           type: state.cells[i].cell_type,
         };
       }
