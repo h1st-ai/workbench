@@ -3,7 +3,7 @@ import ReactTooltip from "react-tooltip";
 
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
-import { KernelOutputError, Media, RichMedia } from "@nteract/outputs";
+import { Media, RichMedia } from "@nteract/outputs";
 import {
   MediaGIF,
   MediaHTML,
@@ -13,7 +13,7 @@ import {
   MediaPNG,
   MediaSVG,
   Plain,
-  // KernelOutputError as KernelOutputErrors,
+  KernelOutputError,
 } from "./media";
 import { MediaUnsupported } from "./media/wildcard";
 import NotebookContext from "../../context";
@@ -98,8 +98,7 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
         case CELL_OUTPUT_TYPE.ERROR:
           return (
             <div key={output.output_type} className="output output-error">
-              <KernelOutputError output={output} />
-              {/* <KernelOutputErrors data={output} /> */}
+              <KernelOutputError data={output} />
             </div>
           );
 
