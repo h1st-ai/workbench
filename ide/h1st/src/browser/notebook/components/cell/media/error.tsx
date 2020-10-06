@@ -33,6 +33,7 @@ export const KernelOutputError = (props: any) => {
           //@ts-ignore
           (a, match) => `<span class="code-teal">${match}</span>`
         )
+        .replaceAll("", "")
         .replace(/?\[0m?/g, () => "<span></span>");
 
       divRef.current.innerHTML = `<div><pre>${html}</pre>`;
