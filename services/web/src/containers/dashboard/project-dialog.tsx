@@ -103,8 +103,11 @@ export default function CreateProjectDialog() {
   if (showCreateProjectDialog) {
     return (
       <div className="modal-wrapper">
-        <div className="dialog">
-          <h3 className="title">Create a new Project</h3>
+        <div className="dialog wide">
+          <div className="dialog-header">
+            <h3 className="title">Create a new Project</h3>
+          </div>
+          <div className="dialog-container">
           {loading && (
             <div className={styles.creatingPane}>
               <LoadingIndicator />
@@ -114,15 +117,111 @@ export default function CreateProjectDialog() {
 
           {!loading && (
             <div>
+              <label className="field-label" htmlFor="project-name">
+                Project name
+              </label>
               <input
                 className="text-input"
                 placeholder="Project Name"
+                name="project-name"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.keyCode === 13) createProject();
                 }}
               />
+              <label className="field-label">Instance size</label>
+              <div className="instance-wrapper">
+                <div className="instance-col is-selected">
+                  <h3>Small</h3>
+                    <ul className="instance-specs">
+                      <li>
+                        <div className="instance-specs-label">
+                          CPU
+                        </div>
+                        <div className="instance-specs-value">
+                          1 x 1 Ghz
+                        </div>
+                      </li>
+                      <li>
+                        <div className="instance-specs-label">
+                          RAM
+                        </div>
+                        <div className="instance-specs-value">
+                          256 Mb
+                        </div>
+                      </li>
+                      <li>
+                        <div className="instance-specs-label">
+                          GPU
+                        </div>
+                        <div className="instance-specs-value">
+                          4 Gb
+                        </div>
+                      </li>
+                    </ul>
+                </div>
+
+                <div className="instance-col">
+                  <h3>Medium</h3>
+                    <ul className="instance-specs">
+                      <li>
+                        <div className="instance-specs-label">
+                          CPU
+                        </div>
+                        <div className="instance-specs-value">
+                          1 x 1 Ghz
+                        </div>
+                      </li>
+                      <li>
+                        <div className="instance-specs-label">
+                          RAM
+                        </div>
+                        <div className="instance-specs-value">
+                          256 Mb
+                        </div>
+                      </li>
+                      <li>
+                        <div className="instance-specs-label">
+                          GPU
+                        </div>
+                        <div className="instance-specs-value">
+                          4 Gb
+                        </div>
+                      </li>
+                    </ul>
+                </div>
+
+                <div className="instance-col">
+                  <h3>Large</h3>
+                    <ul className="instance-specs">
+                      <li>
+                        <div className="instance-specs-label">
+                          CPU
+                        </div>
+                        <div className="instance-specs-value">
+                          1 x 1 Ghz
+                        </div>
+                      </li>
+                      <li>
+                        <div className="instance-specs-label">
+                          RAM
+                        </div>
+                        <div className="instance-specs-value">
+                          256 Mb
+                        </div>
+                      </li>
+                      <li>
+                        <div className="instance-specs-label">
+                          GPU
+                        </div>
+                        <div className="instance-specs-value">
+                          4 Gb
+                        </div>
+                      </li>
+                    </ul>
+                </div>
+              </div>
               {error && <div className={styles.errorMessage}>{error}</div>}
               <div className="form-actions">
                 <button className="btn primary" onClick={createProject}>
@@ -140,6 +239,7 @@ export default function CreateProjectDialog() {
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
     );
