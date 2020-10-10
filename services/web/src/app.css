@@ -51,10 +51,14 @@ a, button {
   width:250px !important;
 }
 .btn.secondary {
-  color: var(--color-grey-3);
+  color: var(--color-grey-3); 
+}
+.btn.secondary:hover{
+  background: var(--color-grey-5);
+  color: var(--color-primary);
 }
 button:hover{
-  filter: brightness(105%) saturate(110%);
+  transform:translateY(1px);
   transition: filter 200ms ease-in-out, transform 100ms ease-in-out;
 }
 button:active{
@@ -104,6 +108,9 @@ button:active{
   color: #fff;
   
   background: #30479b;
+}
+.btn.primary:hover {
+  filter: brightness(105%) saturate(110%);
 }
 
 .modal-wrapper {
