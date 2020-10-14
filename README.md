@@ -10,6 +10,7 @@ There are two main components:
 - yarn >= 1.13
 - docker
 - node == 12
+- nginx
 
 ## Setting up development environment:
 
@@ -25,10 +26,10 @@ There are some required environment variables:
 1. Starting docker: `cd ./docker && docker-compose -f dev.yml up`
 2. Starting api: `cd ./services/api && yarn start`
 3. Starting web ui: `cd ./services/web && yarn start`. Select yes when prompted
+4. Start nginx
 
 ### First time setup
 
 - Install nginx and use the config file from `services/auth/nginx.confg.template` to use nginx as the proxy for the local services
-- Start nginx
 - Visit http://localhost/access/auth and set up the local realm named `h1st` that can be used for the local authentication service
 - Now the web ui should be available at http://localhost
