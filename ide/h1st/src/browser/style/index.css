@@ -282,8 +282,8 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-wrapper {
   display: flex;
-  min-height: 56px;
-  margin: 8px 16px 8px 0px;
+  /* min-height: 56px; */
+  margin: 4px 16px;
 }
 
 .cell-wrapper:hover .cell-controls {
@@ -335,14 +335,13 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-prompt {
   width: 100px;
-  min-width: 34px;
-  padding: 16px 4px;
+  min-width: 100px;
+  padding: 6px 6px;
   display: block;
   border: 1px solid transparent;
   border-left: none;
   border-right: none;
   text-align: right;
-  cursor: pointer;
 }
 
 .cell-output:hover {
@@ -359,6 +358,8 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .cell-prompt .execution-count {
   color: var(--vscode-descriptionForeground);
   font-family: var(--code-font-family);
+  font-size: 12px;
+  margin-top: 10px;
 }
 /* var(--vscode-notifications-background) */
 .cell-wrapper:hover .cell-focusbar {
@@ -367,7 +368,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-focusbar {
-  width: 8px;
+  width: 6px;
   border: 1px solid transparent;
   border-left: none;
   border-right: none;
@@ -420,11 +421,15 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   visibility: visible;
 }
 
+.code-cell.code-cell .cell-prompt {
+  cursor: pointer;
+}
+
 .cell-content {
-  border-left: 8px solid transparent;
   display: flex;
   flex-direction: row;
   flex: 1;
+  max-width: 100%;
 }
 
 .input-header {
@@ -485,10 +490,12 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 
 .cell-form {
   flex: 1;
-  padding: 16px 16px 16px 0px;
+  padding: 6px 6px 6px 0px;
   border: 1px solid transparent;
   border-left: none;
   box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .cell-editor-wrapper {
@@ -498,7 +505,8 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 }
 
 .cell-output-wrapper {
-  padding: 8px 0px 0px 0px;
+  padding: 4px 0px 0px 0px;
+  max-width: 100%;
 }
 
 .cell-output-wrapper .output-html {
@@ -508,9 +516,13 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
 .cell-output-wrapper .markdown-body blockquote {
   border: none;
   border-left: 5px solid var(--theia-textBlockQuote-border);
-  margin: 0px;
+  margin: 12px 0px;
   padding: 8px 16px;
   background: var(--theia-editorIndentGuide-background);
+}
+
+.cell-output-wrapper .markdown-body p {
+  margin: 12px 0px;
 }
 
 .cell-output-wrapper pre {
@@ -534,20 +546,8 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   padding: 8px 16px; */
 }
 
-.cell-output-wrapper .output-error .code-red {
-  color: var(--theia-editorMarkerNavigationError-background);
-}
-
-.cell-output-wrapper .output-error .code-green {
-  color: var(--theia-terminal-ansiBrightGreen);
-}
-
-.cell-output-wrapper .output-error .code-blue {
-  color: var(--theia-editorOverviewRuler-infoForeground);
-}
-
-.cell-output-wrapper .output-error .code-teal {
-  color: var(--theia-minimap-findMatchHighlight);
+.cell-output-wrapper .output-error code {
+  color: var(--theia-foreground);
 }
 
 .cell-output-wrapper .output-error ::selection {

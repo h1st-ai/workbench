@@ -63,13 +63,6 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
     context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
   }
 
-  function toggleMarkdownOuput(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    toggleOuput();
-  }
-
   function renderCodeOutput(data: any[]) {
     if (!data) return null;
 
@@ -148,26 +141,6 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
   function renderMarkdown(data: string) {
     if (!data) {
       return;
-    }
-
-    if (model.metadata.collapsed) {
-      return (
-        <div className="output collapsed" onDoubleClick={toggleMarkdownOuput}>
-          <div
-            data-tip="Output collapsed. Double click to expand"
-            data-for={`toolbar-cell-output-${model.id}`}
-          >
-            ...
-          </div>
-          <ReactTooltip
-            id={`toolbar-cell-output-${model.id}`}
-            effect="solid"
-            place="bottom"
-            delayShow={400}
-            multiline={true}
-          />
-        </div>
-      );
     }
 
     return <div className="markdown-body">{<MarkDown source={data} />}</div>;

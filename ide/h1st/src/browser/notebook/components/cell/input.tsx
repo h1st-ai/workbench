@@ -102,6 +102,9 @@ export default function CellInput({ model }: any) {
         model: editorModel,
         language: "markdown",
         lineNumbers: editorOptions.showLineNumber ? "on" : "off",
+        lineDecorationsWidth: editorOptions.showLineNumber ? 16 : 0,
+        highlightActiveIndentGuide: false,
+        renderIndentGuides: false,
       });
 
       initEditorEventHandler(editorRef.current);
@@ -196,6 +199,7 @@ export default function CellInput({ model }: any) {
         model: editorModel,
         language: "python",
         lineNumbers: editorOptions.showLineNumber ? "on" : "off",
+        lineDecorationsWidth: editorOptions.showLineNumber ? 16 : 0,
       });
 
       initEditorEventHandler(editorRef.current);

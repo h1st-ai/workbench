@@ -1,16 +1,5 @@
 import * as React from "react";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faExpandAlt,
-  faCompressAlt,
-  faCode,
-  faPlay,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import ReactTooltip from "react-tooltip";
-
-import Icon from "../icon";
 import { notebookActions } from "../../reducers/notebook";
 import klass from "classnames";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,11 +9,10 @@ import CellOuput from "./output";
 
 // import { kernelActions } from "../../reducers/kernel";
 import NotebookContext from "../../context";
-import { NotebookFactory } from "../../notebook-factory";
+// import { NotebookFactory } from "../../notebook-factory";
 
 const CELL_CODE = "code";
 const CELL_MD = "markdown";
-const SVG_STYLE = { color: "var(--theia-foreground)" };
 
 interface INotebookProps {
   index: number;
@@ -34,22 +22,14 @@ interface INotebookProps {
 }
 
 export function NotebookCell(props: INotebookProps) {
-  const { model, index } = props;
+  const { model } = props;
 
   if (!model) {
     return null;
   }
 
   const cellType = model.cell_type;
-  const {
-    setSelectedCell,
-    setActiveCell,
-    setCellsType,
-    moveCellUp,
-    moveCellDown,
-    insertCellAfter,
-    focusOnCell,
-  } = notebookActions;
+  const { setSelectedCell, setActiveCell } = notebookActions;
   const { selectedCell, activeCell, executionQueue } = useSelector(
     (store: IStore) => store.notebook
   );
@@ -81,35 +61,10 @@ export function NotebookCell(props: INotebookProps) {
     }
   }, [width]);
 
-  async function execute() {
-    if (model.source.join("").trim() === "") {
-      console.log("omit empty cell");
-      return;
-    }
-
-    await context.manager?.addCellsToQueue([model.id]);
-    await context.manager?.executeQueue();
-
-    await context.manager?.selectNextCell();
-
-    // ev.stopPropagation();
-    // ev.preventDefault();
-  }
-
-  function toMarkdown() {
-    dispatch(setCellsType({ type: CELL_TYPE.MD, cellIds: [model.id] }));
-    setTimeout(() => dispatch(setActiveCell({ cellId: model.id })), 0);
-    context.manager?.setDirty(true);
-  }
-
-  function toCode() {
-    dispatch(setCellsType({ type: CELL_TYPE.CODE, cellIds: [model.id] }));
-    setTimeout(() => dispatch(focusOnCell({ cellId: model.id })), 0);
-    context.manager?.setDirty(true);
-  }
-
   function toggleOuput() {
-    context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
+    if (model.cell_type === CELL_TYPE.CODE) {
+      context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
+    }
   }
 
   function toggleOuputOnly(e: React.MouseEvent) {
@@ -119,162 +74,162 @@ export function NotebookCell(props: INotebookProps) {
     e.stopPropagation();
   }
 
-  function renderCodeCellHeaderControl(): React.ReactNode {
-    return (
-      <div className="input-buttons">
-        <button
-          data-tip="Run this cell"
-          data-for={`toolbar-cell-header-${model.id}`}
-          className="btn-cell-play"
-          // disabled={!currentKernel}
-          onClick={execute}
-        >
-          <FontAwesomeIcon size="sm" icon={faPlay} style={SVG_STYLE} />
-        </button>
-        <button
-          data-tip="Change this cell to markdown"
-          data-for={`toolbar-cell-header-${model.id}`}
-          className="btn-cell-md"
-          onClick={toMarkdown}
-        >
-          <Icon icon="markdown" />
-        </button>
-        <button
-          data-tip="Toggle output for this cell"
-          data-for={`toolbar-cell-header-${model.id}`}
-          onClick={toggleOuput}
-        >
-          {!model.metadata.collapsed && (
-            <FontAwesomeIcon size="sm" icon={faCompressAlt} style={SVG_STYLE} />
-          )}
-          {model.metadata.collapsed && (
-            <FontAwesomeIcon size="sm" icon={faExpandAlt} style={SVG_STYLE} />
-          )}
-        </button>
-        <ReactTooltip
-          id={`toolbar-cell-header-${model.id}`}
-          effect="solid"
-          place="bottom"
-          delayShow={400}
-          multiline={true}
-        />
-      </div>
-    );
-  }
+  // function renderCodeCellHeaderControl(): React.ReactNode {
+  //   return (
+  //     <div className="input-buttons">
+  //       <button
+  //         data-tip="Run this cell"
+  //         data-for={`toolbar-cell-header-${model.id}`}
+  //         className="btn-cell-play"
+  //         // disabled={!currentKernel}
+  //         onClick={execute}
+  //       >
+  //         <FontAwesomeIcon size="sm" icon={faPlay} style={SVG_STYLE} />
+  //       </button>
+  //       <button
+  //         data-tip="Change this cell to markdown"
+  //         data-for={`toolbar-cell-header-${model.id}`}
+  //         className="btn-cell-md"
+  //         onClick={toMarkdown}
+  //       >
+  //         <Icon icon="markdown" />
+  //       </button>
+  //       <button
+  //         data-tip="Toggle output for this cell"
+  //         data-for={`toolbar-cell-header-${model.id}`}
+  //         onClick={toggleOuput}
+  //       >
+  //         {!model.metadata.collapsed && (
+  //           <FontAwesomeIcon size="sm" icon={faCompressAlt} style={SVG_STYLE} />
+  //         )}
+  //         {model.metadata.collapsed && (
+  //           <FontAwesomeIcon size="sm" icon={faExpandAlt} style={SVG_STYLE} />
+  //         )}
+  //       </button>
+  //       <ReactTooltip
+  //         id={`toolbar-cell-header-${model.id}`}
+  //         effect="solid"
+  //         place="bottom"
+  //         delayShow={400}
+  //         multiline={true}
+  //       />
+  //     </div>
+  //   );
+  // }
 
-  function renderMarkdownHeaderControl(): React.ReactNode {
-    return (
-      <div className="input-buttons">
-        <button
-          className="btn-cell-play"
-          data-tip="Toggle output for this cell"
-          data-for={`toolbar-cell-header-${model.id}`}
-          onClick={execute}
-        >
-          <FontAwesomeIcon size="sm" icon={faPlay} style={SVG_STYLE} />
-        </button>
-        <button
-          className="btn-cell-toggle"
-          data-tip="Change this cell to code"
-          data-for={`toolbar-cell-header-${model.id}`}
-          onClick={toCode}
-        >
-          <FontAwesomeIcon size="sm" icon={faCode} style={SVG_STYLE} />
-        </button>
-        <button
-          data-tip="Toggle output for this cell"
-          data-for={`toolbar-cell-header-${model.id}`}
-          onClick={toggleOuput}
-        >
-          {!model.metadata.collapsed && (
-            <FontAwesomeIcon size="sm" icon={faCompressAlt} style={SVG_STYLE} />
-          )}
-          {model.metadata.collapsed && (
-            <FontAwesomeIcon size="sm" icon={faExpandAlt} style={SVG_STYLE} />
-          )}
-        </button>
-        <ReactTooltip
-          id={`toolbar-cell-header-${model.id}`}
-          effect="solid"
-          place="bottom"
-          delayShow={400}
-          multiline={true}
-        />
-      </div>
-    );
-  }
+  // function renderMarkdownHeaderControl(): React.ReactNode {
+  //   return (
+  //     <div className="input-buttons">
+  //       <button
+  //         className="btn-cell-play"
+  //         data-tip="Toggle output for this cell"
+  //         data-for={`toolbar-cell-header-${model.id}`}
+  //         onClick={execute}
+  //       >
+  //         <FontAwesomeIcon size="sm" icon={faPlay} style={SVG_STYLE} />
+  //       </button>
+  //       <button
+  //         className="btn-cell-toggle"
+  //         data-tip="Change this cell to code"
+  //         data-for={`toolbar-cell-header-${model.id}`}
+  //         onClick={toCode}
+  //       >
+  //         <FontAwesomeIcon size="sm" icon={faCode} style={SVG_STYLE} />
+  //       </button>
+  //       <button
+  //         data-tip="Toggle output for this cell"
+  //         data-for={`toolbar-cell-header-${model.id}`}
+  //         onClick={toggleOuput}
+  //       >
+  //         {!model.metadata.collapsed && (
+  //           <FontAwesomeIcon size="sm" icon={faCompressAlt} style={SVG_STYLE} />
+  //         )}
+  //         {model.metadata.collapsed && (
+  //           <FontAwesomeIcon size="sm" icon={faExpandAlt} style={SVG_STYLE} />
+  //         )}
+  //       </button>
+  //       <ReactTooltip
+  //         id={`toolbar-cell-header-${model.id}`}
+  //         effect="solid"
+  //         place="bottom"
+  //         delayShow={400}
+  //         multiline={true}
+  //       />
+  //     </div>
+  //   );
+  // }
 
-  function deleteCodeCell() {
-    context.manager?.deleteCells([model.id]);
-    context.manager?.setDirty(true);
-  }
+  // function deleteCodeCell() {
+  //   context.manager?.deleteCells([model.id]);
+  //   context.manager?.setDirty(true);
+  // }
 
-  function moveUp() {
-    dispatch(moveCellUp({ cellId: model.id }));
-    context.manager?.setDirty(true);
-    context.manager?.scrollTo(`#cell-${model.id}`);
-  }
+  // function moveUp() {
+  //   dispatch(moveCellUp({ cellId: model.id }));
+  //   context.manager?.setDirty(true);
+  //   context.manager?.scrollTo(`#cell-${model.id}`);
+  // }
 
-  function moveDown() {
-    dispatch(moveCellDown({ cellId: model.id }));
-    context.manager?.setDirty(true);
-    context.manager?.scrollTo(`#cell-${model.id}`);
-  }
+  // function moveDown() {
+  //   dispatch(moveCellDown({ cellId: model.id }));
+  //   context.manager?.setDirty(true);
+  //   context.manager?.scrollTo(`#cell-${model.id}`);
+  // }
 
-  function insertAfter(ev: any) {
-    ev.stopPropagation();
-    ev.preventDefault();
+  // function insertAfter(ev: any) {
+  //   ev.stopPropagation();
+  //   ev.preventDefault();
 
-    const newCell = NotebookFactory.makeNewCell();
-    dispatch(
-      insertCellAfter({
-        cellId: model.id,
-        cell: newCell,
-      })
-    );
+  //   const newCell = NotebookFactory.makeNewCell();
+  //   dispatch(
+  //     insertCellAfter({
+  //       cellId: model.id,
+  //       cell: newCell,
+  //     })
+  //   );
 
-    dispatch(focusOnCell({ cellId: newCell.id }));
-    context.manager?.setDirty(true);
-    context.manager?.scrollTo(`#cell-${newCell.id}`);
-  }
+  //   dispatch(focusOnCell({ cellId: newCell.id }));
+  //   context.manager?.setDirty(true);
+  //   context.manager?.scrollTo(`#cell-${newCell.id}`);
+  // }
 
-  function renderInputHeader() {
-    let headerControl = null;
-    switch (cellType) {
-      case CELL_CODE:
-        headerControl = renderCodeCellHeaderControl();
-        break;
+  // function renderInputHeader() {
+  //   let headerControl = null;
+  //   switch (cellType) {
+  //     case CELL_CODE:
+  //       headerControl = renderCodeCellHeaderControl();
+  //       break;
 
-      case CELL_MD:
-        headerControl = renderMarkdownHeaderControl();
-        break;
+  //     case CELL_MD:
+  //       headerControl = renderMarkdownHeaderControl();
+  //       break;
 
-      default:
-        break;
-    }
+  //     default:
+  //       break;
+  //   }
 
-    // return renderMarkdownHeader();
-    return (
-      <div className="input-header input-markdown">
-        {headerControl}
-        <button
-          data-for={`toolbar-cell-header-delete-${model.id}`}
-          data-tip="Delete this cell"
-          className="btn-cell-delete"
-          onClick={deleteCodeCell}
-        >
-          <FontAwesomeIcon size="sm" icon={faTrashAlt} style={SVG_STYLE} />
-        </button>
-        <ReactTooltip
-          id={`toolbar-cell-header-delete-${model.id}`}
-          effect="solid"
-          place="bottom"
-          delayShow={400}
-          multiline={true}
-        />
-      </div>
-    );
-  }
+  //   // return renderMarkdownHeader();
+  //   return (
+  //     <div className="input-header input-markdown">
+  //       {headerControl}
+  //       <button
+  //         data-for={`toolbar-cell-header-delete-${model.id}`}
+  //         data-tip="Delete this cell"
+  //         className="btn-cell-delete"
+  //         onClick={deleteCodeCell}
+  //       >
+  //         <FontAwesomeIcon size="sm" icon={faTrashAlt} style={SVG_STYLE} />
+  //       </button>
+  //       <ReactTooltip
+  //         id={`toolbar-cell-header-delete-${model.id}`}
+  //         effect="solid"
+  //         place="bottom"
+  //         delayShow={400}
+  //         multiline={true}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   function renderPromptContent() {
     if (model.id) {
@@ -330,7 +285,7 @@ export function NotebookCell(props: INotebookProps) {
   function renderInput() {
     return (
       <div className="cell-input">
-        {renderInputHeader()}
+        {/* {renderInputHeader()} */}
         <CellInput model={model} width={width} height={height} />
       </div>
     );
@@ -355,7 +310,7 @@ export function NotebookCell(props: INotebookProps) {
         onClick={_setSelectedCell}
         onDoubleClick={_handleDoubleClick}
       >
-        <div className="cell-controls" ref={controlRef}>
+        {/* <div className="cell-controls" ref={controlRef}>
           <button
             className="cell-btn-up"
             onClick={moveUp}
@@ -369,7 +324,7 @@ export function NotebookCell(props: INotebookProps) {
           <button className="cell-btn-plus" onClick={insertAfter}>
             <Icon icon="plus" />
           </button>
-        </div>
+        </div> */}
         <div className="cell-content">
           <div className="cell-focusbar" ref={focusRef} />
           {renderPrompt()}

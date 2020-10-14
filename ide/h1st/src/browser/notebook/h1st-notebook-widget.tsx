@@ -214,22 +214,6 @@ export class H1stNotebookWidget extends ReactWidget
     );
   }
 
-  // get onDispose(): Event<void> {
-  //   return this.toDispose.onDispose;
-  // }
-
-  // get saveable(): Saveable {
-  //   return this.editor.document;
-  // }
-
-  // storeState(): object {
-  //   return {};
-  // }
-
-  // restoreState(oldState: object): void {
-  //   console.log("restoring state", oldState);
-  // }
-
   getResourceUri(): URI | undefined {
     return this.uri;
   }
