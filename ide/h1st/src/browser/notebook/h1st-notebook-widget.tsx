@@ -181,7 +181,7 @@ export class H1stNotebookWidget extends ReactWidget
     this._model.save();
   }
 
-  private saveNotebook = async (content: string) => {
+  private = async (content: string) => {
     console.log("saving content");
 
     // await this.fileService.write(this.uri, content);
@@ -526,7 +526,6 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected render(): React.ReactNode {
     const contextValue: INotebookContext = {
-      saveNotebook: this.saveNotebook,
       manager: this.notebookManager,
       width: this._width,
       height: this._height,

@@ -67,13 +67,6 @@ export function NotebookCell(props: INotebookProps) {
     }
   }
 
-  function toggleOuputOnly(e: React.MouseEvent) {
-    context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
-
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
   // function renderCodeCellHeaderControl(): React.ReactNode {
   //   return (
   //     <div className="input-buttons">
@@ -256,11 +249,7 @@ export function NotebookCell(props: INotebookProps) {
 
       case CELL_MD:
         return (
-          <div
-            className="cell-prompt"
-            ref={promptRef}
-            onDoubleClick={toggleOuputOnly}
-          >
+          <div className="cell-prompt" ref={promptRef}>
             <div className="execution-count"></div>
           </div>
         );

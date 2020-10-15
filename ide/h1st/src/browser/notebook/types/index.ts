@@ -98,7 +98,6 @@ export enum CELL_TYPE {
 }
 
 export interface INotebookContext {
-  saveNotebook: Function;
   manager: NotebookManager | null;
   width: number;
   height: number;
