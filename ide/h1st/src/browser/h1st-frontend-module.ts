@@ -24,7 +24,7 @@ import "./branding";
 
 import "../../src/browser/style/index.css";
 import { H1stFrontendApplicationContribution } from "./h1st-frontend-contribution";
-// import { H1stWorkspaceService } from "./h1st-workspace-contribution";
+import { H1stWorkspaceService } from "./h1st-workspace-contribution";
 import { H1stAboutDialog } from "./style/about-dialog";
 import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
@@ -64,7 +64,7 @@ export default new ContainerModule((bind, unbind) => {
     .toSelf()
     .inSingletonScope();
   bind(FrontendApplicationContribution).to(H1stFrontendApplicationContribution);
-  // bind(FrontendApplicationContribution).to(H1stWorkspaceService);
+  bind(FrontendApplicationContribution).to(H1stWorkspaceService);
 
   bind(CommandContribution)
     .to(H1stCommandContribution)

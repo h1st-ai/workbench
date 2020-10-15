@@ -2,7 +2,7 @@ import { FileNavigatorContribution } from "@theia/navigator/lib/browser/navigato
 import { inject, injectable } from "inversify";
 
 import { WorkspaceService } from "@theia/workspace/lib/browser";
-import { H1stBackendWithClientService } from "../common/protocol";
+// import { H1stBackendWithClientService } from "../common/protocol";
 // import { FileOperation } from "@theia/filesystem/lib/common/files";
 import // FrontendApplication,
 // Widget,
@@ -20,8 +20,8 @@ import { H1stTelemetryService } from "./h1st-telemetry-service";
 @injectable()
 export class H1stWorkspaceService extends WorkspaceService {
   // @inject(FrontendApplication) private readonly app: FrontendApplication;
-  @inject(H1stBackendWithClientService)
-  private readonly h1stBackEndWithClientService: H1stBackendWithClientService;
+  // @inject(H1stBackendWithClientService)
+  // private readonly h1stBackEndWithClientService: H1stBackendWithClientService;
   @inject(EditorManager)
   protected readonly editorManager: EditorManager;
   @inject(FileNavigatorContribution)
@@ -42,7 +42,7 @@ export class H1stWorkspaceService extends WorkspaceService {
     });
   }
 
-  protected async doGetDefaultWorkspaceUri(): Promise<string | undefined> {
-    return await this.h1stBackEndWithClientService.getWorkspacePath();
-  }
+  // protected async doGetDefaultWorkspaceUri(): Promise<string | undefined> {
+  //   return await this.h1stBackEndWithClientService.getWorkspacePath();
+  // }
 }
