@@ -11,6 +11,7 @@ import {
   ICutCellPayload,
   IDeleteCellsPayload,
   IPasteCellPayload,
+  ISetActiveCellPayload,
   ISetCellsTypePayload,
   ISetClipboardCellPayload,
   IToggleActionOverlayPayload,
@@ -210,7 +211,10 @@ export const reducers = {
       // }
     }
   },
-  setActiveCell: (state: INotebook, { payload }: any): void => {
+  setActiveCell: (
+    state: INotebook,
+    { payload }: ISetActiveCellPayload
+  ): void => {
     state.activeCell = payload.cellId;
   },
   setCurrentCell: (state: INotebook, { payload }: any): void => {

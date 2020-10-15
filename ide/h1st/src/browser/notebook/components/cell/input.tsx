@@ -87,7 +87,9 @@ export default function CellInput({ model }: any) {
 
   function initMarkdownEditor() {
     if (wrapperRef.current) {
-      // monaco.editor.onDidCreateEditor(handleEditorDidMount);
+      if (editorRef.current) {
+        editorRef.current.dispose();
+      }
 
       const editorModel = monaco.editor.createModel(
         model.source.join(""),
@@ -184,7 +186,6 @@ export default function CellInput({ model }: any) {
 
     if (wrapperRef.current) {
       editorRef.current?.dispose();
-      // monaco.editor.onDidCreateEditor(handleEditorDidMount);
 
       const editorModel = monaco.editor.createModel(
         model.source.join(""),
@@ -251,6 +252,18 @@ export default function CellInput({ model }: any) {
 
     editor.onKeyDown((e) => {
       const caretPosition = editor.getPosition();
+
+      if (e.keyCode === monaco.KeyCode.Escape) {
+        context.manager?.unFocusCell();
+
+        // unfocus the editor
+        if (
+          editor.hasTextFocus() &&
+          document.activeElement instanceof HTMLElement
+        ) {
+          document.activeElement.blur();
+        }
+      }
 
       if (e.keyCode === monaco.KeyCode.UpArrow) {
         if (

@@ -331,6 +331,20 @@ export class H1stNotebookWidget extends ReactWidget
         },
       },
 
+      // /**
+      //  * Listen to the ESC keypress to unfocus any active cell
+      //  */
+      // {
+      //   key: Key.ESCAPE,
+      //   handler: (ev: KeyboardEvent) => {
+      //     if (this.isAnyCellFocused()) return false;
+      //     this.notebookManager.copyCells();
+
+      //     // return false if you want the event to propagate
+      //     return false;
+      //   },
+      // },
+
       /**
        * Listen to the B keypress to insert cell after the selected cell
        */

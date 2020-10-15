@@ -662,6 +662,11 @@ export class NotebookManager {
     this.changeCellType(type, cellIds);
   }
 
+  unFocusCell() {
+    const { setActiveCell } = notebookActions;
+    this.store.dispatch(setActiveCell({ cellId: null }));
+  }
+
   private checkIfKernelIsConnected() {
     const state = this.getAppState();
     const { connectionStatus } = state.kernel;
