@@ -21,7 +21,7 @@ export namespace ApplicationLabels {
     PASTE_CELLS: "Paste cells after the selected one",
     MOVE_UP: "Move selected cells up",
     MOVE_DOWN: "Move selected cells down",
-    RUN_SELECTED: "Run the selecte cells",
+    RUN_SELECTED: "Run the selected cells",
     INTERRUP_KERNEL: "Interrupt the kernel",
     RUN_ALL_CELL: "Run all cells",
     RUN_ALL_CELL_AFTER: "Run all cells after the select one",

@@ -171,11 +171,11 @@ export default function Toolbar() {
   };
 
   const moveUp = () => {
-    context.manager?.moveSelectedCellUp();
+    context.manager?.moveSelectedCellsUp();
   };
 
   const moveDown = () => {
-    context.manager?.moveSelectedCellDown();
+    context.manager?.moveSelectedCellsDown();
   };
 
   const cutCells = () => {

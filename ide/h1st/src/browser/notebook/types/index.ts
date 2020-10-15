@@ -33,7 +33,7 @@ export interface INotebook {
     context: "copy" | "cut" | null;
     cells: ICellModel[];
   };
-  pivotCell: ICellModel | null; // the cell to pivot selection to select multiple cell
+  pivotCell: string | null; // the cell to pivot selection to select multiple cell
   options: INotebookOptions;
   freeze: boolean;
 }

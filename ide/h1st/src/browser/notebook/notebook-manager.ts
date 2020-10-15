@@ -362,25 +362,25 @@ export class NotebookManager {
     return this.getAppState().notebook.activeCell;
   };
 
-  moveSelectedCellUp = () => {
-    const cellId = this.getSelectedCell();
+  moveSelectedCellsUp = () => {
+    const cellIds = this.getSelectedCells();
 
-    if (cellId) {
-      const { moveCellUp } = notebookActions;
-      this.store.dispatch(moveCellUp({ cellId }));
+    if (cellIds.length > 0) {
+      const { moveCellsUp } = notebookActions;
+      this.store.dispatch(moveCellsUp({ cellIds }));
       this.setDirty(true);
-      this.scrollTo(NotebookManager.getDomCellId(cellId));
+      this.scrollTo(NotebookManager.getDomCellId(cellIds[0]));
     }
   };
 
-  moveSelectedCellDown = () => {
-    const cellId = this.getSelectedCell();
+  moveSelectedCellsDown = () => {
+    const cellIds = this.getSelectedCells();
 
-    if (cellId) {
-      const { moveCellDown } = notebookActions;
-      this.store.dispatch(moveCellDown({ cellId }));
+    if (cellIds.length > 0) {
+      const { moveCellsDown } = notebookActions;
+      this.store.dispatch(moveCellsDown({ cellIds }));
       this.setDirty(true);
-      this.scrollTo(NotebookManager.getDomCellId(cellId));
+      this.scrollTo(NotebookManager.getDomCellId(cellIds[cellIds.length - 1]));
     }
   };
 

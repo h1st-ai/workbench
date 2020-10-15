@@ -29,10 +29,13 @@ export function NotebookCell(props: INotebookProps) {
   }
 
   const cellType = model.cell_type;
-  const { setSelectedCell, setActiveCell } = notebookActions;
-  const { selectedCell, activeCell, executionQueue } = useSelector(
-    (store: IStore) => store.notebook
-  );
+  const { setSelectedCell, setSelectedCells, setActiveCell } = notebookActions;
+  const {
+    selectedCell,
+    selectedCells,
+    activeCell,
+    executionQueue,
+  } = useSelector((store: IStore) => store.notebook);
 
   const context = React.useContext(NotebookContext);
 
@@ -259,9 +262,13 @@ export function NotebookCell(props: INotebookProps) {
     }
   }
 
-  function _setSelectedCell() {
+  function _setSelectedCell(event: React.MouseEvent) {
     if (selectedCell !== model.id) {
-      dispatch(setSelectedCell({ cellId: model.id }));
+      if (event.shiftKey) {
+        dispatch(setSelectedCells({ cellId: model.id }));
+      } else {
+        dispatch(setSelectedCell({ cellId: model.id }));
+      }
     }
   }
 
@@ -295,6 +302,8 @@ export function NotebookCell(props: INotebookProps) {
         className={klass("cell-wrapper", `${model.cell_type}-cell`, {
           active: activeCell === model.id,
           selected: selectedCell === model.id,
+          "multi-selected":
+            selectedCells.includes(model.id) && selectedCells.length > 1,
         })}
         onClick={_setSelectedCell}
         onDoubleClick={_handleDoubleClick}

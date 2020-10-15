@@ -492,6 +492,15 @@ export class H1stNotebookWidget extends ReactWidget
     events.forEach((event) => {
       this.addKeyListener(this.node, event.key, event.handler);
     });
+
+    // disable text select on Shift key pressed
+    ["keyup", "keydown"].forEach((event) => {
+      window.addEventListener(event, (e: KeyboardEvent) => {
+        document.onselectstart = function() {
+          return !(e.key === "Shift" && e.shiftKey);
+        };
+      });
+    });
   }
 
   protected isAnyCellFocused(): boolean {

@@ -68,13 +68,21 @@ export const selectNeighborIdsOfRange = (state: any, cellIds: string[]) => {
     let prev;
     let next;
 
+    console.log("selecting neighbors from", first, "to", last);
+
     for (let i = 0; i < state.cells.length; i++) {
-      if (first === state.cells[i]) {
-        prev = state.cells[i - 1];
+      if (first === state.cells[i].id) {
+        prev = {
+          cell: state.cells[i - 1],
+          index: i - 1,
+        };
       }
 
-      if (last === state.cells[i]) {
-        next = state.cells[i + 1];
+      if (last === state.cells[i].id) {
+        next = {
+          cell: state.cells[i + 1],
+          index: i + 1,
+        };
       }
     }
 
@@ -96,6 +104,41 @@ export const selectCell = (state: any, cellId: string) => {
 export const setSelectedCells = (state: any, cellId: string) => {
   state.selectedCells = [cellId];
   state.selectedCell = cellId;
+};
+
+export const getCellIdInSelectedRange = (
+  state: any,
+  fromId: string,
+  toId: string
+) => {
+  if (!fromId || !toId || fromId === toId) {
+    return [toId];
+  }
+
+  // we're gonna get the cell ranges between the pivot cell and the selected cell identified by cellId
+  let inRange = false;
+  const result: string[] = [];
+
+  for (let i = 0; i < state.cells.length; i++) {
+    const currentCell = state.cells[i];
+    if (currentCell.id === fromId || currentCell.id === toId) {
+      inRange = !inRange;
+
+      // if it has become out of range, add the current cell and break
+      if (!inRange) {
+        console.log("out of range detected", currentCell.id, result);
+        result.push(currentCell.id);
+        return result;
+      }
+    }
+
+    if (inRange) {
+      console.log("collecting", currentCell.id, result);
+      result.push(currentCell.id);
+    }
+  }
+
+  return result;
 };
 
 export const getCellIndex = (
@@ -161,8 +204,27 @@ export const reducers = {
     state.cells = payload.cells;
   },
   setSelectedCell: (state: INotebook, { payload }: any): void => {
-    state.selectedCell = payload.cellId;
-    state.selectedCells = [payload.cellId];
+    const { cellId } = payload;
+
+    state.selectedCell = cellId;
+    state.selectedCells = [cellId];
+    state.pivotCell = cellId;
+  },
+  setSelectedCells: (state: INotebook, { payload }: any): void => {
+    const { cellId } = payload;
+    state.selectedCell = cellId;
+
+    let inRangeCellIds = [cellId];
+
+    if (state.pivotCell && state.selectedCell) {
+      inRangeCellIds = getCellIdInSelectedRange(
+        state,
+        state.pivotCell,
+        state.selectedCell
+      );
+    }
+
+    state.selectedCells = inRangeCellIds;
   },
   selectNextCellOf: (state: INotebook, { payload }: any): void => {
     const cellInfo = selectCellAndNeighbors(state, payload.cellId);
@@ -353,13 +415,13 @@ export const reducers = {
 
       // set the active cell to one of its neigbors
       if (neighbors) {
-        if (neighbors.next) {
-          state.selectedCells = [neighbors.next.id];
-          state.selectedCell = neighbors.next.id;
+        if (neighbors.next.cell) {
+          state.selectedCells = [neighbors.next.cell.id];
+          state.selectedCell = neighbors.next.cell.id;
         } else if (neighbors.prev) {
           // setSelectedCells(state, neighbors.prev);
-          state.selectedCells = [neighbors.prev.id];
-          state.selectedCell = neighbors.prev.id;
+          state.selectedCells = [neighbors.prev.cell.id];
+          state.selectedCell = neighbors.prev.cell.id;
         }
       }
     }
@@ -384,6 +446,19 @@ export const reducers = {
       }
     }
   },
+
+  moveCellsUp: (state: INotebook, { payload }: any): void => {
+    const { cellIds } = payload;
+    const cellIndex = getCellIndex(state, cellIds[0]);
+
+    if (cellIndex !== undefined) {
+      if (cellIndex > 0) {
+        const cells = state.cells.splice(cellIndex, cellIds.length);
+        state.cells.splice(cellIndex - 1, 0, ...cells);
+      }
+    }
+  },
+
   moveCellDown: (state: INotebook, { payload }: any): void => {
     const cellIndex = getCellIndex(state, payload.cellId);
 
@@ -394,6 +469,19 @@ export const reducers = {
       }
     }
   },
+
+  moveCellsDown: (state: INotebook, { payload }: any): void => {
+    const { cellIds } = payload;
+    const cellIndex = getCellIndex(state, cellIds[0]);
+
+    if (cellIndex !== undefined) {
+      if (cellIndex < state.cells.length - 1) {
+        const cells = state.cells.splice(cellIndex, cellIds.length);
+        state.cells.splice(cellIndex + 1, 0, ...cells);
+      }
+    }
+  },
+
   insertCellBefore: (state: INotebook, { payload }: any): void => {
     const { cell, cellId } = payload;
 
@@ -441,20 +529,23 @@ export const reducers = {
       const neighbors = selectNeighborIdsOfRange(state, cellIds);
 
       const cells = state.cells.splice(firstCellIndex, cellIds.length);
+
       state.clipboard = {
         context: "cut",
         cells,
       };
 
+      console.log("cut cell neightbors", neighbors);
+
       // set the active cell to one of its neigbors
       if (neighbors) {
         if (neighbors.next) {
-          state.selectedCells = [neighbors.next.id];
-          state.selectedCell = neighbors.next.id;
+          state.selectedCells = [neighbors.next.cell.id];
+          state.selectedCell = neighbors.next.cell.id;
         } else if (neighbors.prev) {
           // setSelectedCells(state, neighbors.prev);
-          state.selectedCells = [neighbors.prev.id];
-          state.selectedCell = neighbors.prev.id;
+          state.selectedCells = [neighbors.prev.cell.id];
+          state.selectedCell = neighbors.prev.cell.id;
         }
       }
     }

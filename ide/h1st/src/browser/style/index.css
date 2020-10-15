@@ -368,6 +368,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   font-family: var(--code-font-family);
   font-size: 12px;
   margin-top: 10px;
+  user-select: none;
 }
 /* var(--vscode-notifications-background) */
 .cell-wrapper:hover .cell-focusbar {
@@ -380,6 +381,10 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   border: 1px solid transparent;
   border-left: none;
   border-right: none;
+}
+
+.cell-wrapper.multi-selected {
+  background: var(--theia-editor-selectionHighlightBackground);
 }
 
 .cell-wrapper.selected .cell-focusbar,
