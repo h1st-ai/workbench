@@ -25,7 +25,7 @@ import {
   KERNEL_STATUS,
 } from "./types";
 import { H1stNotebookWidget } from "./h1st-notebook-widget";
-import { ICellCodeInfo } from "../../common/types";
+import { ICellCodeInfo, ICellCompletionResponse } from "../../common/types";
 import { NotebookFactory } from "./notebook-factory";
 import { ConfirmDialog } from "@theia/core/lib/browser";
 
@@ -797,10 +797,14 @@ export class NotebookManager {
 
   async getAutoCompleteItems(
     code: string | undefined,
-    cursor_pos: number
-  ): Promise<string[]> {
-    if (!code) {
-      return [];
+    cursor_pos: number | undefined
+  ): Promise<ICellCompletionResponse> {
+    if (!code || !cursor_pos) {
+      return {
+        cursor_end: 0,
+        cursor_start: 0,
+        matches: [],
+      };
     }
 
     console.log("request complete items");
@@ -811,10 +815,18 @@ export class NotebookManager {
     const inspectReply = await this._session.kernel?.requestComplete(request);
 
     if (inspectReply?.content.status === "ok") {
-      return inspectReply?.content.matches;
+      return {
+        cursor_end: inspectReply?.content.cursor_end,
+        cursor_start: inspectReply?.content.cursor_start,
+        matches: inspectReply?.content.matches,
+      };
     }
 
-    return [];
+    return {
+      cursor_end: 0,
+      cursor_start: 0,
+      matches: [],
+    };
   }
 
   async init() {

@@ -10,10 +10,10 @@ import { NotebookManager } from "../../notebook-manager";
 // import { editor } from "monaco-editor";
 // import { editor } from "monaco-editor";
 
-const fuzzysearch = require("fuzzysearch");
+// const fuzzysearch = require("fuzzysearch");
 
-// const throttle = require("lodash.throttle");
-const debounce = require("lodash.debounce");
+const throttle = require("lodash.throttle");
+// const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
 export default function CellInput({ model }: any) {
@@ -120,7 +120,7 @@ export default function CellInput({ model }: any) {
   }
 
   function initCodeCellEditor() {
-    const createDependencyProposals = debounce(async function(range: any) {
+    const createDependencyProposals = throttle(async function(range: any) {
       // returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
       // here you could do a server side lookup
       const editor = editorRef.current;
@@ -138,23 +138,38 @@ export default function CellInput({ model }: any) {
             const suggestions = await context.manager?.getAutoCompleteItems(
               // editorRef.current?.getValue(),
               // offset
-              wordUntilPosition.word,
-              wordUntilPosition.word.length - 1
+              // wordUntilPosition.word,
+              editor.getValue(),
+              editor.getModel()?.getOffsetAt(cursorPos)
+              // wordUntilPosition.word.length - 1
             );
 
             console.log("suggestions", suggestions);
 
-            if (suggestions) {
-              return suggestions
-                .filter((match) => fuzzysearch(wordUntilPosition.word, match))
-                .map((match) => ({
-                  label: match,
-                  kind: monaco.languages.CompletionItemKind.Variable,
-                  documentation: "",
-                  insertText: match,
-                  range: range,
-                }));
-            } // endif
+            if (suggestions?.matches.length) {
+              const startPosition = editor
+                .getModel()
+                ?.getPositionAt(suggestions.cursor_start);
+              const endPosition = editor
+                .getModel()
+                ?.getPositionAt(suggestions.cursor_start);
+
+              const suggestionRange = new monaco.Range(
+                // @ts-ignore
+                startPosition?.lineNumber,
+                startPosition?.column,
+                endPosition?.lineNumber,
+                endPosition?.column
+              );
+
+              return suggestions?.matches.map((match) => ({
+                label: match,
+                kind: monaco.languages.CompletionItemKind.Variable,
+                documentation: "",
+                insertText: match,
+                range: suggestionRange,
+              }));
+            }
           } // end word at position
         }
       }
@@ -178,6 +193,7 @@ export default function CellInput({ model }: any) {
           };
 
           return {
+            incomplete: true,
             suggestions: await createDependencyProposals(range),
           };
         }
