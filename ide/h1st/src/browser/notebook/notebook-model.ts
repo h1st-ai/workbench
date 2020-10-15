@@ -7,7 +7,7 @@ import { Saveable } from "@theia/core/lib/browser";
 import URI from "@theia/core/lib/common/uri";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 import { H1stBackendWithClientService } from "../../common/protocol";
-import { ICellModel } from "./types";
+import { ICellModel, INotebookContent } from "./types";
 
 const uniqid = require("uniqid");
 
@@ -132,12 +132,12 @@ export class NotebookModel implements Saveable {
   }
 }
 
-const defaultNotebookModel = {
+export const defaultNotebookModel: INotebookContent = {
   cells: [
     {
       id: uniqid(),
       cell_type: "code",
-      execution_count: null,
+      execution_count: undefined,
       metadata: {},
       outputs: [],
       source: [],
@@ -165,30 +165,4 @@ const defaultNotebookModel = {
   },
   nbformat: 4,
   nbformat_minor: 2,
-};
-
-type INotebookContent = {
-  cells: any[];
-  metadata: {
-    session_id?: string;
-    kernelspec: {
-      display_name: string;
-      language: string;
-      name: string;
-    };
-    language_info: {
-      codemirror_mode: {
-        name: string;
-        version: number;
-      };
-      file_extension: string;
-      mimetype: string;
-      name: string;
-      nbconvert_exporter: string;
-      pygments_lexer: string;
-      version: string;
-    };
-  };
-  nbformat: number;
-  nbformat_minor: number;
 };

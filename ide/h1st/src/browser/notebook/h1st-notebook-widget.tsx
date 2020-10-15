@@ -26,7 +26,7 @@ import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
-import { INotebookContext } from "./types";
+import { INotebookContent, INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
@@ -180,6 +180,12 @@ export class H1stNotebookWidget extends ReactWidget
   save() {
     this._model.save();
   }
+
+  createSnapshot(): INotebookContent {
+    return this._model.value;
+  }
+
+  applySnapshot?(snapshot: object): void;
 
   private = async (content: string) => {
     console.log("saving content");

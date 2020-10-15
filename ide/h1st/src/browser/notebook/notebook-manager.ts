@@ -649,9 +649,17 @@ export class NotebookManager {
   changeCellType(type: string, cellIds: string[]) {
     const { setCellsType } = notebookActions;
 
-    if (type === CELL_TYPE.MD) {
-      this.store.dispatch(setCellsType({ type: CELL_TYPE.MD, cellIds }));
-    }
+    // @ts-ignore
+    this.store.dispatch(setCellsType({ type, cellIds }));
+  }
+
+  changeSelectedCellType(type: string) {
+    const state = this.getAppState();
+    const cellIds = state.notebook.selectedCells;
+
+    console.log("changing selected cell type", type, cellIds);
+
+    this.changeCellType(type, cellIds);
   }
 
   private checkIfKernelIsConnected() {
