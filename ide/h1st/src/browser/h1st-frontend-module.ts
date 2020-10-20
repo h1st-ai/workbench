@@ -30,17 +30,17 @@ import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
 import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
 import { H1stTelemetryService } from "./h1st-telemetry-service";
 
-import { H1stNotebookWidgetFactory } from "./notebook/h1st-notebook-widget-factory";
-import { NotebookManager } from "./notebook/h1st-notebook-manager";
+import { NotebookFactory } from "./notebook/notebook-factory";
+import { NotebookOpener } from "./notebook/opener";
 
 export default new ContainerModule((bind, unbind) => {
-  bind(NotebookManager).toSelf();
-  bind(OpenHandler).toService(NotebookManager);
+  bind(NotebookOpener).toSelf();
+  bind(OpenHandler).toService(NotebookOpener);
 
-  bind(H1stNotebookWidgetFactory)
+  bind(NotebookFactory)
     .toSelf()
     .inSingletonScope();
-  bind(WidgetFactory).toService(H1stNotebookWidgetFactory);
+  bind(WidgetFactory).toService(NotebookFactory);
 
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);

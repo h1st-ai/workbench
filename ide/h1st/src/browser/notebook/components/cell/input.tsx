@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 import NotebookContext from "../../context";
-import { NotebookManager } from "../../notebook-manager";
+import { NotebookManager } from "../../manager";
 // import { editor } from "monaco-editor";
 // import { editor } from "monaco-editor";
 
@@ -162,7 +162,7 @@ export default function CellInput({ model }: any) {
                 endPosition?.column
               );
 
-              return suggestions?.matches.map((match) => ({
+              return suggestions?.matches.map((match: string) => ({
                 label: match,
                 kind: monaco.languages.CompletionItemKind.Variable,
                 documentation: "",

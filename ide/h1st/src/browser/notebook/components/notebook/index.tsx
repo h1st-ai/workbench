@@ -11,9 +11,6 @@ import { NotebookFactory } from "../../notebook-factory";
 import NotebookContext from "../../context";
 
 export default function(props: any) {
-  console.log(props.model);
-  // const uri: URI = props.uri;
-  // const content = props.model;
   const context = React.useContext(NotebookContext);
   const { cells, freeze } = useSelector((store: IStore) => store.notebook);
 

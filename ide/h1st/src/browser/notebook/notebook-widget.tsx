@@ -30,8 +30,8 @@ import { INotebookContent, INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
-import { NotebookModel } from "./notebook-model";
-import { NotebookManager } from "./notebook-manager";
+import { NotebookModel } from "./model";
+import { NotebookManager } from "./manager";
 
 const equal = require("fast-deep-equal");
 

@@ -12,7 +12,7 @@ import {
 import { ISpecModels } from "@jupyterlab/services/lib/kernelspec/restapi";
 import { MessageService } from "@theia/core";
 import { H1stBackendWithClientService } from "../../common/protocol";
-import { NotebookModel } from "./notebook-model";
+import { NotebookModel } from "./model";
 import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
 import URI from "@theia/core/lib/common/uri";
@@ -24,7 +24,7 @@ import {
   KERNEL_CONNECTION_STATUS,
   KERNEL_STATUS,
 } from "./types";
-import { H1stNotebookWidget } from "./h1st-notebook-widget";
+import { H1stNotebookWidget } from "./notebook-widget";
 import { ICellCodeInfo, ICellCompletionResponse } from "../../common/types";
 import { NotebookFactory } from "./notebook-factory";
 import { ConfirmDialog } from "@theia/core/lib/browser";

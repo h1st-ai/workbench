@@ -1,5 +1,5 @@
 import { ThemeType } from "@theia/core/lib/browser/theming";
-import { NotebookManager } from "../notebook-manager";
+import { NotebookManager } from "../manager";
 
 export interface ICell {}
 
