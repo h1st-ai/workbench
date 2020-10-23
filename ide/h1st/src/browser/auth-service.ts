@@ -11,7 +11,7 @@ export class H1stAuthService implements FrontendApplicationContribution {
   constructor() {
     // TODO load from settings
     this.keycloak = new Keycloak({
-      url: "http://login.h1st.ai/auth",
+      url: "https://login.h1st.ai/auth",
       realm: "h1st",
       clientId: "h1st-workbench-web",
     });
@@ -21,13 +21,11 @@ export class H1stAuthService implements FrontendApplicationContribution {
     return this.keycloak;
   }
 
-  onStart() {
-    console.log("auth service started", this.keycloak);
-  }
-
   async initialize(): Promise<void> {
     await this.keycloak.init({
       onLoad: "login-required",
+      checkLoginIframe: true,
+      responseMode: "query",
     });
 
     console.log("auth service initialized", this.keycloak);
