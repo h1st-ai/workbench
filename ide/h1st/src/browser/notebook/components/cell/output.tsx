@@ -3,7 +3,7 @@ import ReactTooltip from "react-tooltip";
 
 import { CELL_TYPE, ICellOutputProps, IStore } from "../../types";
 import { useSelector } from "react-redux";
-import { KernelOutputError, Media, RichMedia } from "@nteract/outputs";
+import { Media, RichMedia } from "@nteract/outputs";
 import {
   MediaGIF,
   MediaHTML,
@@ -13,7 +13,7 @@ import {
   MediaPNG,
   MediaSVG,
   Plain,
-  // KernelOutputError as KernelOutputErrors,
+  KernelOutputError,
 } from "./media";
 import { MediaUnsupported } from "./media/wildcard";
 import NotebookContext from "../../context";
@@ -63,13 +63,6 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
     context.manager?.toggleCellOutputs([model.id], !model.metadata.collapsed);
   }
 
-  function toggleMarkdownOuput(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    toggleOuput();
-  }
-
   function renderCodeOutput(data: any[]) {
     if (!data) return null;
 
@@ -98,8 +91,7 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
         case CELL_OUTPUT_TYPE.ERROR:
           return (
             <div key={output.output_type} className="output output-error">
-              <KernelOutputError output={output} />
-              {/* <KernelOutputErrors data={output} /> */}
+              <KernelOutputError data={output} />
             </div>
           );
 
@@ -149,26 +141,6 @@ export default React.memo(function CellOuput(props: ICellOutputProps) {
   function renderMarkdown(data: string) {
     if (!data) {
       return;
-    }
-
-    if (model.metadata.collapsed) {
-      return (
-        <div className="output collapsed" onDoubleClick={toggleMarkdownOuput}>
-          <div
-            data-tip="Output collapsed. Double click to expand"
-            data-for={`toolbar-cell-output-${model.id}`}
-          >
-            ...
-          </div>
-          <ReactTooltip
-            id={`toolbar-cell-output-${model.id}`}
-            effect="solid"
-            place="bottom"
-            delayShow={400}
-            multiline={true}
-          />
-        </div>
-      );
     }
 
     return <div className="markdown-body">{<MarkDown source={data} />}</div>;

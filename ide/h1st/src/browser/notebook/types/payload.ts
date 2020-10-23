@@ -19,6 +19,12 @@ export interface IPasteCellPayload {
   };
 }
 
+export interface ISetActiveCellPayload {
+  payload: {
+    cellId: string | null;
+  };
+}
+
 export interface IAddCellsToQueuePayload {
   payload: {
     cellIds: string[];

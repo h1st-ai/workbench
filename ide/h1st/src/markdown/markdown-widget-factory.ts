@@ -9,13 +9,13 @@ import URI from "@theia/core/lib/common/uri";
 import { TextEditorProvider } from "@theia/editor/lib/browser";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 import { injectable, inject } from "inversify";
-import { H1stBackendWithClientService } from "../../common/protocol";
-import { H1stNotebookWidget } from "./h1st-notebook-widget";
+import { H1stBackendWithClientService } from "../common/protocol";
+import { MardownEditorWidget } from "./index";
 
 @injectable()
-export class H1stNotebookWidgetFactory implements WidgetFactory {
-  static ID = "h1st-notebook-opener";
-  readonly id = H1stNotebookWidgetFactory.ID;
+export class MarkdownWidgetFactory implements WidgetFactory {
+  static ID = "h1st-markdown-widget";
+  readonly id = MarkdownWidgetFactory.ID;
 
   @inject(LabelProvider) protected readonly labelProvider: LabelProvider;
   @inject(TextEditorProvider)
@@ -29,14 +29,16 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
   @inject(H1stBackendWithClientService)
   protected readonly h1stBackendWithClientService: H1stBackendWithClientService;
 
-  createWidget(options: NavigatableWidgetOptions): Promise<H1stNotebookWidget> {
+  createWidget(
+    options: NavigatableWidgetOptions
+  ): Promise<MardownEditorWidget> {
     const uri = new URI(options.uri);
     return this.createEditor(uri);
   }
 
-  protected async createEditor(uri: URI): Promise<H1stNotebookWidget> {
+  protected async createEditor(uri: URI): Promise<MardownEditorWidget> {
     // const textEditor = await this.editorProvider(uri);
-    const newNotebook = new H1stNotebookWidget(
+    const newNotebook = new MardownEditorWidget(
       uri,
       this.selectionService,
       this.fileService,
@@ -58,7 +60,7 @@ export class H1stNotebookWidgetFactory implements WidgetFactory {
     return newNotebook;
   }
 
-  private setLabels(widget: H1stNotebookWidget, uri: URI): void {
+  private setLabels(widget: MardownEditorWidget, uri: URI): void {
     widget.title.caption = this.labelProvider.getLongName(uri);
     const icon = this.labelProvider.getIcon(uri);
     widget.title.label = this.labelProvider.getName(uri);

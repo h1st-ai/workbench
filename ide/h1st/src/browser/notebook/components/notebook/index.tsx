@@ -2,18 +2,15 @@ import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 // import NotebookSteps from "./step-panel";
-import Toolbar from "./toolbar";
-import { notebookActions } from "../reducers/notebook";
-import { NotebookCell } from "./cell";
-import { ICellModel, IStore } from "../types";
-import Icon from "./icon";
-import { NotebookFactory } from "../notebook-factory";
-import NotebookContext from "../context";
+import Toolbar from "../toolbar";
+import { notebookActions } from "../../reducers/notebook";
+import { NotebookCell } from "../cell";
+import { ICellModel, IStore } from "../../types";
+import Icon from "../icon";
+import { NotebookFactory } from "../../notebook-factory";
+import NotebookContext from "../../context";
 
 export default function(props: any) {
-  console.log(props.model);
-  // const uri: URI = props.uri;
-  // const content = props.model;
   const context = React.useContext(NotebookContext);
   const { cells, freeze } = useSelector((store: IStore) => store.notebook);
 

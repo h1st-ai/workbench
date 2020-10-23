@@ -31,7 +31,7 @@ import {
   FileNavigatorContribution,
 } from "@theia/navigator/lib/browser/navigator-contribution";
 
-import { WorkspaceInputDialog } from "./components/workspace-input-dialog";
+import { WorkspaceInputDialog } from "@theia/workspace/lib/browser/workspace-input-dialog";
 
 import { inject, injectable } from "inversify";
 import { H1stBackendWithClientService } from "../common/protocol";
@@ -231,16 +231,20 @@ export class H1stCommandContribution implements CommandContribution {
 
               dialog.open().then(async (modelName) => {
                 if (modelName) {
-                  const name = `${modelName}.py`;
+                  let name = modelName;
+                  if (!/.+\.py$/.test(modelName)) {
+                    name = `${modelName}.py`;
+                  }
 
                   const workspaceName = await this.h1stBackEndWithClientService.getWorkspaceName();
                   const fileUri = parentUri.resolve(name);
-                  // const modelName = name.split(".")[0];
+
                   await this.fileService.create(
                     fileUri,
                     getModelFileTemplate(workspaceName, modelName)
                   );
-                  await this.fireCreateNewModel({
+
+                  this.fireCreateNewModel({
                     parent: parentUri,
                     uri: fileUri,
                   });
@@ -259,7 +263,7 @@ export class H1stCommandContribution implements CommandContribution {
   } {
     return {
       fileName: "NewH1stModel",
-      fileExtension: "",
+      fileExtension: ".py",
     };
   }
 
@@ -284,7 +288,7 @@ export class H1stCommandContribution implements CommandContribution {
     }
 
     if (type === "model") {
-      if (!/^[a-zA-Z](\w){2,49}$/.test(name))
+      if (!/^[a-zA-Z](\w){2,49}\.py$/.test(name))
         return "Model name has to start with a letter, contains only letters and numbers and has to be betwen 3 to 50 characters in length";
     } else {
       if (!/^[a-zA-Z].[\w_\\-]+\.ipynb$/.test(name))

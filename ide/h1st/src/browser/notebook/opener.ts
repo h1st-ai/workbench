@@ -5,8 +5,8 @@ import {
   WidgetOpenerOptions,
   NavigatableWidgetOpenHandler,
 } from "@theia/core/lib/browser";
-import { H1stNotebookWidget } from "./h1st-notebook-widget";
-import { H1stNotebookWidgetFactory } from "./h1st-notebook-widget-factory";
+import { H1stNotebookWidget } from "./notebook-widget";
+import { NotebookFactory } from "./notebook-factory";
 // import { TextEditor } from './editor';
 
 export interface NotebookOpenerOptions extends WidgetOpenerOptions {
@@ -14,12 +14,11 @@ export interface NotebookOpenerOptions extends WidgetOpenerOptions {
 }
 
 @injectable()
-export class NotebookManager extends NavigatableWidgetOpenHandler<
+export class NotebookOpener extends NavigatableWidgetOpenHandler<
   H1stNotebookWidget
 > {
-  readonly id = H1stNotebookWidgetFactory.ID;
-
-  readonly label = "H1st Notebook Editor";
+  readonly id = NotebookFactory.ID;
+  readonly label = "Notebook Editor";
 
   protected readonly onActiveEditorChangedEmitter = new Emitter<
     H1stNotebookWidget | undefined
