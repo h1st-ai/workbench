@@ -6,7 +6,7 @@ import {
   open,
   OpenerService,
 } from "@theia/core/lib/browser";
-import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
+import { MonacoEditor } from "@theia/monaco/lib/browser/monaco-editor";
 import { H1stBackendWithClientService } from "../common/protocol";
 import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
 import { WorkspaceService } from "@theia/workspace/lib/browser";
@@ -14,7 +14,6 @@ import { PreviewUri } from "@theia/preview/lib/browser/preview-uri";
 import { TerminalService } from "@theia/terminal/lib/browser/base/terminal-service";
 import URI from "@theia/core/lib/common/uri";
 import { EditorManager, EditorWidget } from "@theia/editor/lib/browser";
-import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
 
 @injectable()
@@ -23,7 +22,7 @@ export class H1stFrontendApplicationContribution
   @inject(H1stBackendWithClientService)
   private h1stBackEndWithClientService: H1stBackendWithClientService;
   @inject(FileNavigatorContribution)
-  protected  fileNavigatorContribution: FileNavigatorContribution;
+  protected fileNavigatorContribution: FileNavigatorContribution;
   @inject(EditorManager) protected editorManager: EditorManager;
   @inject(FrontendApplicationStateService)
   protected frontendApplicationStateService: FrontendApplicationStateService;
@@ -31,7 +30,6 @@ export class H1stFrontendApplicationContribution
   @inject(TerminalService) protected terminalService: TerminalService;
   @inject(FileService) protected fileService: FileService;
   @inject(OpenerService) protected openerService: OpenerService;
-  @inject(H1stHeaderWidget) protected headerWidget: H1stHeaderWidget;
 
   // happen onces, when there is not saved workspace
   async initializeLayout(app: FrontendApplication) {
@@ -105,19 +103,25 @@ export class H1stFrontendApplicationContribution
   }
 
   onStart(app: FrontendApplication): void {
-    app.shell.onDidAddWidget(widget => {
-      console.log("widget", widget)
+    app.shell.onDidAddWidget((widget) => {
       if (widget instanceof EditorWidget) {
         const { editor } = widget;
 
         if (editor instanceof MonacoEditor) {
           const uri = editor.getResourceUri();
-          console.log("widget1", uri && uri.scheme === 'file' && uri.path.ext === '.md')
-          if (uri && uri.scheme === 'file' && uri.path.ext === '.md') {
-            open(this.openerService, PreviewUri.encode(uri), { preview: true, mode: 'reveal', widgetOptions: { mode: 'split-right' } })
-            }
+          console.log(
+            "widget1",
+            uri && uri.scheme === "file" && uri.path.ext === ".md"
+          );
+          if (uri && uri.scheme === "file" && uri.path.ext === ".md") {
+            open(this.openerService, PreviewUri.encode(uri), {
+              preview: true,
+              mode: "reveal",
+              widgetOptions: { mode: "split-right" },
+            });
+          }
         }
       }
     });
-}
+  }
 }

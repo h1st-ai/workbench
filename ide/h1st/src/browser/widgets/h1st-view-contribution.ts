@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { H1stHeaderWidget } from "./h1st-header-widget";
+import { AccountWidget } from "./account";
 import {
   AbstractViewContribution,
   FrontendApplicationContribution,
@@ -15,7 +15,7 @@ export const H1stHeaderCommand: Command = {
 
 @injectable()
 export class H1stHeaderContribution
-  extends AbstractViewContribution<H1stHeaderWidget>
+  extends AbstractViewContribution<AccountWidget>
   implements FrontendApplicationContribution {
   @inject(FrontendApplicationStateService)
   protected readonly stateService: FrontendApplicationStateService;
@@ -29,8 +29,8 @@ export class H1stHeaderContribution
    */
   constructor() {
     super({
-      widgetId: H1stHeaderWidget.ID,
-      widgetName: H1stHeaderWidget.LABEL,
+      widgetId: AccountWidget.ID,
+      widgetName: AccountWidget.LABEL,
       defaultWidgetOptions: { area: "top" },
       toggleCommandId: H1stHeaderCommand.id,
     });
