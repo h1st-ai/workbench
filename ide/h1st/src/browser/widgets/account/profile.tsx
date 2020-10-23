@@ -18,13 +18,13 @@ function renderProfile(profile: KeycloakProfile): React.ReactNode {
   // @ts-ignore
   const { attributes, firstName, lastName } = profile;
 
-  // if (attributes && attributes.picture) {
-  //   return (
-  //     <span>
-  //       <img src={attributes.picture} alt={`${firstName} ${lastName}`} />
-  //     </span>
-  //   );
-  // }
+  if (attributes && attributes.picture) {
+    return (
+      <span>
+        <img src={attributes.picture} alt={`${firstName} ${lastName}`} />
+      </span>
+    );
+  }
 
   if (firstName && lastName) {
     return (
