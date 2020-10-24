@@ -9,6 +9,7 @@
   --color-grey-3: #6b7180;
   --color-grey-4: #8b98a1;
   --color-grey-5: #F0F4F5;
+  --color-green: #64AA73;
   --color-red: #C22F25;
   --color-light-yellow: #FFF8EE;
   --font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
@@ -91,6 +92,7 @@ button:active{
 }
 .text-input::placeholder{
   font-size:1.6rem;
+  opacity:.5;
 }
 .btn {
   height: 48px;

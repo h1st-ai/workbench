@@ -65,6 +65,7 @@
   list-style: none;
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
 }
 
 .card {
@@ -76,10 +77,8 @@
   border-radius: 5px;
   box-sizing: border-box;
   min-height: 150px;
-  height: 15vw;
   display:flex;
   flex-direction: column;
-  max-height: 200px;
   transition: transform 150ms ease-in-out, box-shadow 100ms ease-in-out;
   position: relative;
 }
@@ -256,7 +255,7 @@
   right: 0px;
   display: flex;
   align-items: center;
-  padding: 6px 24px;
+  padding: 6px 20px;
   font-size: 14px;
   justify-content: space-between;
   flex: 0 0 auto;
@@ -267,8 +266,11 @@
 }
 
 .innerContent {
-  padding: 24px;
+  padding: 20px;
   flex: 1 0 auto;
+}
+.innerContent h4 {
+  font-weight: bold;
 }
 .innerContent h4 a:hover {
   color: var(--color-blue-bright);
@@ -283,18 +285,34 @@
   border-radius: 3px;
 }
 .projectMeta {
-  display:flex;
   margin-top: 20px;
   flex-items: flex-end;
+  margin: 10px 0 0 0;
+  padding: 0;
+  list-style: none;
+  
+}
+.projectMeta li {
+  display:flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 10px;
 }
 .projectMetaLabel{
-  flex: 1 0 30%;
-  text-transform: uppercase;
+  flex: 1 0 50%;
+  
   font-size: 13px;
   font-weight: 700;
   opacity: .5;
   padding-top: 3px;
   letter-spacing: 1px;
+  padding-right: 10px;
+}
+.projectMeta .timmeStamp {
+  flex: 1 0 50%;
+  text-align: left;
+  
 }
 .actionsDropdownWrapper {
   position: relative;
@@ -385,4 +403,46 @@
 .renderStatusWrapper {
   display: flex;
   align-items: center;
+}
+.availableResource {
+  background:var(--color-border);
+  height:10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.usagePercentage {
+  background-color: var(--color-blue-bright);
+
+  height: 10px;
+}
+.resourceInfo {
+  margin: 30px 0 0 0;
+  padding: 0;
+  list-style: none;
+  width:100%;
+}
+.resourceInfo li {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+.resourceInfo .projectMetaLabel{
+  flex:1 0 50%;
+}
+.resourceInfo .availableResource{
+  flex:1 0 50%;
+  display: flex;
+}
+/* .resourceInfo li:first-child{
+  padding-right: 10px;
+}
+.resourceInfo li:last-child{
+  padding-left: 10px;
+} */
+.resourceInfo > * {
+  flex: 1 0 50%;
+}
+.resourceInfo .projectMetaLabel {
+  display:block;
+  font-weight: 400;
 }

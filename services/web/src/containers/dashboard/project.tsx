@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IProject, IStore } from 'types/store';
-import { formatDistance } from 'date-fns';
+import { formatDistance, startOfYear } from 'date-fns';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { dashboardActions } from 'reducers/dashboard';
@@ -340,15 +340,32 @@ export function ProjectGridItem({
           {status !== 'running' && name}
         </h4>
 
-        <div className={styles.projectMeta}>
-          <span className={styles.projectMetaLabel}>Created </span>
-          <span className={styles.timmeStamp}>
-            {formatDistance(new Date(updated_at), new Date())} ago
-          </span>
+        <ul className={styles.projectMeta}>
+          <li>
+            <span className={styles.projectMetaLabel}>Created </span>
+            <span className={styles.timmeStamp}>
+              {formatDistance(new Date(updated_at), new Date())} ago
+            </span>
+          </li>
+          
 
           {/* <img src={author.attributes.picture} />{' '} */}
           {/* {`${author.firstName} ${author.lastName}`} */}
-        </div>
+        </ul>
+        <ul className={styles.resourceInfo}>
+          <li>
+            <span className={styles.projectMetaLabel}>RAM usage </span>
+            <div className={styles.availableResource}>
+              <span className={styles.usagePercentage} style={{width: '30%'}}></span>
+            </div>
+          </li>
+          <li>
+            <span className={styles.projectMetaLabel}>CPU usage</span>
+            <div className={styles.availableResource}>
+              <span className={styles.usagePercentage} style={{width: '80%'}}></span>
+            </div>
+          </li>
+        </ul>
       </div>
 
       {renderActions()}
