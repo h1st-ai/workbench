@@ -1,5 +1,5 @@
 import { FrontendApplicationContribution } from "@theia/core/lib/browser";
-import { injectable, inject, postConstruct } from "inversify";
+import { injectable, inject } from "inversify";
 import Analytics, { AnalyticsInstance } from "analytics";
 import googleAnalytics from "@analytics/google-analytics";
 import { H1stBackendWithClientService } from "../common/protocol";
@@ -10,8 +10,9 @@ export class H1stTelemetryService implements FrontendApplicationContribution {
   @inject(H1stBackendWithClientService)
   private readonly h1stBackEndWithClientService: H1stBackendWithClientService;
 
-  @postConstruct()
-  protected async init(): Promise<void> {
+  async initialize(): Promise<void> {
+    console.log("Initializing telemetry service");
+
     const trackingId = await this.h1stBackEndWithClientService.getConfig(
       "GA_ID"
     );
@@ -37,9 +38,9 @@ export class H1stTelemetryService implements FrontendApplicationContribution {
     });
   }
 
-  onStart() {
+  async onStart() {
+    console.log("Tracking initial page");
     // track initial page
-    console.log("Telemetry: tracking intial page");
     this.GA.page();
   }
 }

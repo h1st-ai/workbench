@@ -1,28 +1,25 @@
 import * as React from "react";
-import { injectable, postConstruct, inject } from "inversify";
-import { ReactWidget } from "@theia/core/lib/browser/widgets/react-widget";
-import { MessageService } from "@theia/core";
+import { KeycloakInstance, KeycloakProfile } from "keycloak-js";
+import ProfilePhoto from "./profile";
 
-@injectable()
-export class H1stHeaderWidget extends ReactWidget {
-  static readonly ID = "h1st:header:widget";
-  static readonly LABEL = "H1stHeader Widget";
+interface IAccountProps {
+  keycloak: KeycloakInstance;
+}
 
-  @inject(MessageService)
-  protected readonly messageService!: MessageService;
+export function Account({ keycloak }: IAccountProps) {
+  const [user, setUser] = React.useState<KeycloakProfile>();
 
-  @postConstruct()
-  protected async init(): Promise<void> {
-    this.id = H1stHeaderWidget.ID;
-    this.title.label = H1stHeaderWidget.LABEL;
-    this.title.caption = H1stHeaderWidget.LABEL;
-    this.title.closable = true;
-    this.title.iconClass = "fa fa-window-maximize"; // example widget icon.
-    this.update();
-  }
+  React.useEffect(() => {
+    (async function() {
+      const user = await keycloak.loadUserProfile();
+      console.log("user profile", user);
 
-  protected render(): React.ReactNode {
-    return (
+      setUser(user);
+    })();
+  }, []);
+
+  return (
+    <div className="profile-wrapper">
       <a href="/">
         <svg
           width="14"
@@ -62,14 +59,11 @@ export class H1stHeaderWidget extends ReactWidget {
             strokeLinejoin="round"
           />
         </svg>
-        Back To Dashboard
+        Dashboard
       </a>
-    );
-  }
-
-  protected displayMessage(): void {
-    this.messageService.info(
-      "Congratulations: H1stHeader Widget Successfully Created!"
-    );
-  }
+      <div className="profile-photo-wrapper">
+        {user && <ProfilePhoto user={user} />}
+      </div>
+    </div>
+  );
 }
