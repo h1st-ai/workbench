@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { IProject, IStore } from 'types/store';
-import { formatDistance } from 'date-fns';
+import { formatDistance, startOfYear } from 'date-fns';
 import { useSelector, useDispatch } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faMemory,
+  faMicrochip,
+  faThLarge,
+} from '@fortawesome/free-solid-svg-icons';
+import ReactTooltip from 'react-tooltip';
 
 import { dashboardActions } from 'reducers/dashboard';
 import Icon from 'components/icon';
@@ -32,16 +39,15 @@ export function ProjectListItem({
 }
 
 export function ProjectGridItem({
-  author_username,
   author_name,
   name,
-  workspace,
   status,
-  author_picture,
   updated_at,
-  created_at,
   id,
   index,
+  cpu,
+  ram,
+  gpu,
 }: IProject) {
   const { updateProjectInfo, removeProjectAt } = dashboardActions;
   const dispatch = useDispatch();
@@ -340,18 +346,44 @@ export function ProjectGridItem({
           {status !== 'running' && name}
         </h4>
 
-        <div className={styles.projectMeta}>
-          <span className={styles.projectMetaLabel}>Created </span>
-          <span className={styles.timmeStamp}>
-            {formatDistance(new Date(updated_at), new Date())} ago
-          </span>
+        <ul className={styles.projectMeta}>
+          <li>
+            <span className={styles.projectMetaLabel}>Created </span>
+            <span className={styles.timmeStamp}>
+              {formatDistance(new Date(updated_at), new Date())} ago
+            </span>
+          </li>
 
           {/* <img src={author.attributes.picture} />{' '} */}
           {/* {`${author.firstName} ${author.lastName}`} */}
-        </div>
+        </ul>
+        {(ram || cpu || gpu) && (
+          <ul className={styles.resourceInfo}>
+            <li>
+              <span data-tip={`CPU: ${cpu / 1024}`} data-for={id}>
+                <FontAwesomeIcon icon={faMicrochip} /> {cpu / 1024}
+              </span>
+              <span data-tip={`RAM: ${ram / 1024}G`} data-for={id}>
+                <FontAwesomeIcon icon={faMemory} /> {ram / 1024}G
+              </span>
+              {gpu != undefined && (
+                <span data-tip={`GPU: ${gpu / 1024}G`} data-for={id}>
+                  <FontAwesomeIcon icon={faThLarge} /> {gpu}
+                </span>
+              )}
+            </li>
+            {/* <li>
+            <span className={styles.projectMetaLabel}>CPU usage</span>
+            <div className={styles.availableResource}>
+              <span className={styles.usagePercentage} style={{width: '80%'}}></span>
+            </div>
+          </li> */}
+          </ul>
+        )}
       </div>
 
       {renderActions()}
+      <ReactTooltip id={id} />
     </li>
   );
 }

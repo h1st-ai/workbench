@@ -4,6 +4,9 @@ export class ProjectDto {
   readonly author_name: number;
   readonly author_username?: string;
   readonly workspace: string;
+  readonly cpu: number | null;
+  readonly ram: number | null;
+  readonly gpu: number | null;
   readonly status: string;
   readonly author_picture?: string;
   readonly updated_at?: Date;

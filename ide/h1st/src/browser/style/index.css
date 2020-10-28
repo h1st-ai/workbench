@@ -131,6 +131,7 @@ li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInte
   border-color: var(--theia-editorRuler-foreground);
   border-radius: 4px;
   padding: 0px 8px;
+  color: var(--theia-foreground);
 }
 
 .toolbar .kernel-info-wrapper {
