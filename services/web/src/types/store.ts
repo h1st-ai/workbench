@@ -16,6 +16,9 @@ export interface IProject {
   status: string;
   collaborators?: IProjectCollaborator[];
   author_picture?: string;
+  ram: number;
+  cpu: number;
+  gpu?: number;
   updated_at: Date;
   created_at: Date;
   index: number;

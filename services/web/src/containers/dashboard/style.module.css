@@ -77,7 +77,7 @@
   border-radius: 5px;
   box-sizing: border-box;
   min-height: 150px;
-  display:flex;
+  display: flex;
   flex-direction: column;
   transition: transform 150ms ease-in-out, box-shadow 100ms ease-in-out;
   position: relative;
@@ -150,10 +150,10 @@
   margin: auto;
   color: #fff;
   appearance: none;
-  border-color:transparent;
-  font-size:14px;
+  border-color: transparent;
+  font-size: 14px;
   letter-spacing: 110%;
-  font-weight:600;
+  font-weight: 600;
 }
 
 .emptyState input {
@@ -206,7 +206,7 @@
   right: 70px;
   width: 162px !important;
   height: 34px !important;
-  color:var(--color-opaque-white) !important;
+  color: var(--color-opaque-white) !important;
 }
 
 .author {
@@ -261,12 +261,12 @@
   flex: 0 0 auto;
   self-align: flex-end;
 }
-.actions nav{
-  positon:relative;
+.actions nav {
+  positon: relative;
 }
 
 .innerContent {
-  padding: 20px;
+  padding: 20px 20px 8px;
   flex: 1 0 auto;
 }
 .innerContent h4 {
@@ -290,21 +290,20 @@
   margin: 10px 0 0 0;
   padding: 0;
   list-style: none;
-  
 }
 .projectMeta li {
-  display:flex;
+  display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   width: 100%;
   margin-bottom: 10px;
 }
-.projectMetaLabel{
+.projectMetaLabel {
   flex: 1 0 50%;
-  
+
   font-size: 13px;
   font-weight: 700;
-  opacity: .5;
+  opacity: 0.5;
   padding-top: 3px;
   letter-spacing: 1px;
   padding-right: 10px;
@@ -312,15 +311,13 @@
 .projectMeta .timmeStamp {
   flex: 1 0 50%;
   text-align: left;
-  
 }
 .actionsDropdownWrapper {
   position: relative;
   flex: 0 1 auto;
   margin-left: auto;
-  
 }
-.actionsDropdown{
+.actionsDropdown {
   position: absolute;
   visibility: hidden;
   opacity: 0;
@@ -328,49 +325,49 @@
   margin: 0;
   padding: 0;
   bottom: 0;
-  
-  width:120px;
+
+  width: 120px;
   right: -24px;
-  transform:translateY(30px);
+  transform: translateY(30px);
   transition: opacity 250ms ease-in, transform 250ms ease-in;
-  padding-bottom:36px;
+  padding-bottom: 36px;
 }
 .actionsDropdown li {
-  border-bottom:1px solid var(--color-border);
-  border-left:1px solid var(--color-border);
-  border-right:1px solid var(--color-border);
-  background:#fff;
+  border-bottom: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  background: #fff;
 }
-.actionsDropdown li:first-child{
-  border-top:1px solid var(--color-border);
+.actionsDropdown li:first-child {
+  border-top: 1px solid var(--color-border);
 }
 .actionsDropdown button {
-  padding:10px 5px;
+  padding: 10px 5px;
   appearance: none;
   background-color: transparent;
   border-color: transparent;
   display: flex;
   align-items: center;
-  font-size:1.6rem;
+  font-size: 1.6rem;
   cursor: pointer;
   width: 100%;
   background-color: #fff;
-  text-align:left;
+  text-align: left;
 }
-.actionsDropdown button:hover{
-  background-color:var(--color-light-yellow);
+.actionsDropdown button:hover {
+  background-color: var(--color-light-yellow);
 }
 .actionsDropdown .menuIcon {
-  margin-right:10px;
+  margin-right: 10px;
   width: 20px;
   height: 16px;
-  text-align:center;
+  text-align: center;
   display: flex;
-  align-items: center;;
+  align-items: center;
 }
 .actionsDropdown .menuIcon svg {
-  width:16px;
-  height:16px;
+  width: 16px;
+  height: 16px;
   margin: 0 auto;
 }
 .menuTrigger svg * {
@@ -382,31 +379,30 @@
 .actionsDropdownWrapper:hover .actionsDropdown {
   visibility: visible;
   opacity: 1;
-  transform:translateY(0);
+  transform: translateY(0);
 }
 .menuTrigger {
   background: transparent;
   border-color: transparent;
   padding: 5px 0;
-  margin-left:auto;
-  margin-right:-10px;
+  margin-left: auto;
+  margin-right: -10px;
 }
-.actionDelete .menuIcon{
-  
+.actionDelete .menuIcon {
 }
-.actionDelete button{
+.actionDelete button {
   color: var(--color-red);
 }
-.actionDelete svg, .actionDelete svg * {
-
+.actionDelete svg,
+.actionDelete svg * {
 }
 .renderStatusWrapper {
   display: flex;
   align-items: center;
 }
 .availableResource {
-  background:var(--color-border);
-  height:10px;
+  background: var(--color-border);
+  height: 10px;
   border-radius: 5px;
   overflow: hidden;
 }
@@ -419,18 +415,19 @@
   margin: 30px 0 0 0;
   padding: 0;
   list-style: none;
-  width:100%;
+  width: 100%;
 }
 .resourceInfo li {
   display: flex;
   align-items: center;
   padding: 5px 0;
 }
-.resourceInfo .projectMetaLabel{
-  flex:1 0 50%;
+.resourceInfo span {
+  font-size: 1.2rem;
+  margin-right: 10px;
 }
-.resourceInfo .availableResource{
-  flex:1 0 50%;
+.resourceInfo .availableResource {
+  flex: 1 0 50%;
   display: flex;
 }
 /* .resourceInfo li:first-child{
@@ -443,6 +440,6 @@
   flex: 1 0 50%;
 }
 .resourceInfo .projectMetaLabel {
-  display:block;
+  display: block;
   font-weight: 400;
 }

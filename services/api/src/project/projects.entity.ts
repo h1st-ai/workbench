@@ -23,6 +23,15 @@ export class Project {
   @Column({ length: 120 })
   workspace: string;
 
+  @Column({ nullable: true })
+  cpu: number;
+
+  @Column({ nullable: true })
+  ram: number;
+
+  @Column({ nullable: true })
+  gpu: number;
+
   @Column({ length: 20, default: 'running' })
   status: string;
 

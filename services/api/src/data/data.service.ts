@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import fetch from 'node-fetch';
 import { response } from 'express';
+import { ICreateProjectPayload } from '../types';
 
 @Injectable()
 export class DataService {
@@ -72,17 +73,29 @@ export class DataService {
     return await response.json();
   }
 
-  async createProject(username: string, workbenchName: string) {
-    console.log('creating project');
+  async createProject(payload: ICreateProjectPayload) {
+    const {
+      username,
+      workbench_name,
+      cpu: requested_cpu,
+      ram: requested_memory,
+      gpu: requested_gpu,
+    } = payload;
+
     const response = await this.request(
       this.makeUrl(`workbenches?user_id=${encodeURIComponent(username)}`),
-      { method: 'POST', body: { workbench_name: workbenchName } },
+      {
+        method: 'POST',
+        body: {
+          workbench_name,
+          requested_cpu,
+          requested_memory,
+          requested_gpu,
+        },
+      },
     );
 
-    console.log('result from remote data ', response);
-    const res = await response.json();
-    console.log('project created ', res);
-    return res;
+    return await response.json();
   }
 
   async deleteProject(id: string, username: string) {

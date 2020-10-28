@@ -37,25 +37,18 @@ export class ProjectController {
     {
       "sub": "86512224-dffa-490f-bc6f-ae56cda70845",
       "email_verified": false,
-      "name": "Khoa Ma",
-      "preferred_username": "khoama@gmail.com",
-      "given_name": "Khoa",
-      "family_name": "Ma",
-      "picture": "https://lh3.googleusercontent.com/a-/AOh14GjouHQcSq2gPdOmRJWautCUsp7hk2L9TjW-noI16PQ",
-      "email": "khoama@gmail.com"
+      "name": "Foo Bar",
+      "preferred_username": "user@gmail.com",
+      "given_name": "Foo",
+      "family_name": "Bar",
+      "picture": "https://lh3.googleusercontent.com/a-/AOh14GjouHQcSq2gPdOmRJW",
+      "email": "user@gmail.com"
     } 
     */
     const { preferred_username, name, picture } = req.user;
-    const project_name = metaData.project_name;
+    const { project_name, cpu, ram, gpu } = metaData;
 
-    // generate valid file name from project_name
-    // const workbench_name = `${project_name
-    //   .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-    //     return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    //   })
-    //   .replace(/\s+/g, '')}`;
-
-    const workbench_name = project_name
+    const workbench_name = project_name;
 
     this.projectService
       .createNewProject({
@@ -64,9 +57,12 @@ export class ProjectController {
         picture,
         project_name,
         workbench_name,
+        cpu,
+        ram,
+        gpu,
       })
-      .catch((ex) => res.status(400).send({ status: 'error', msg: ex }))
-      .then((data) => res.status(HttpStatus.OK).send(data));
+      .catch(ex => res.status(400).send({ status: 'error', msg: ex }))
+      .then(data => res.status(HttpStatus.OK).send(data));
   }
 
   @Get('project/:id')
