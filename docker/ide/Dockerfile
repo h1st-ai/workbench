@@ -1,15 +1,15 @@
 
 FROM theiaide/theia-python
 
-COPY ./docker/ide/components/requirements.txt /tmp
-RUN pip3 install --no-cache -r /tmp/requirements.txt
-RUN pip3 install git+https://github.com/h1st-ai/h1st@master
-
 # switch to py3 as default
 RUN PYTHON_PATH=`which python` && \
   rm -f $PYTHON_PATH && ln -s `which python3` $PYTHON_PATH && \
   PIP_PATH=`which pip` && \
   rm -f $PIP_PATH && ln -s `which pip3` $PIP_PATH
+
+COPY ./docker/ide/components/requirements.txt /tmp
+RUN pip3 install --no-cache -r /tmp/requirements.txt
+RUN pip3 install git+https://github.com/h1st-ai/h1st@tune_integration#v=1
 
 # ENV THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/browser-app/plugins
 
