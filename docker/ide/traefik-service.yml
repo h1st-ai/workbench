@@ -2,7 +2,7 @@ http:
     routers: 
         api:
             rule: PathPrefix(`/api`)
-            service: jupyter
+            service: api
         jupyter: 
             rule: PathPrefix(`/jupyter`)
             service: jupyter
