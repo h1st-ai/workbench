@@ -47,6 +47,7 @@
     "target": "browser",
     "frontend": {
       "config": {
+        "editor.autoSave": "on",
         "defaultTheme": "brackets-light-pro",
         "applicationName": "H1st Workbench",
         "preferences": {

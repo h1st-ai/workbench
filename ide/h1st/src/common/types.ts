@@ -26,3 +26,9 @@ export interface ICellCodeInfo {
   code: string;
   type: string;
 }
+
+export interface ICellCompletionResponse {
+  cursor_start: number;
+  cursor_end: number;
+  matches: string[];
+}

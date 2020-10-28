@@ -12,7 +12,7 @@ import {
 import { ISpecModels } from "@jupyterlab/services/lib/kernelspec/restapi";
 import { MessageService } from "@theia/core";
 import { H1stBackendWithClientService } from "../../common/protocol";
-import { NotebookModel } from "./notebook-model";
+import { NotebookModel } from "./model";
 import { notebookActions } from "./reducers/notebook";
 import { kernelActions } from "./reducers/kernel";
 import URI from "@theia/core/lib/common/uri";
@@ -24,8 +24,8 @@ import {
   KERNEL_CONNECTION_STATUS,
   KERNEL_STATUS,
 } from "./types";
-import { H1stNotebookWidget } from "./h1st-notebook-widget";
-import { ICellCodeInfo } from "../../common/types";
+import { H1stNotebookWidget } from "./notebook-widget";
+import { ICellCodeInfo, ICellCompletionResponse } from "../../common/types";
 import { NotebookFactory } from "./notebook-factory";
 import { ConfirmDialog } from "@theia/core/lib/browser";
 
@@ -362,25 +362,25 @@ export class NotebookManager {
     return this.getAppState().notebook.activeCell;
   };
 
-  moveSelectedCellUp = () => {
-    const cellId = this.getSelectedCell();
+  moveSelectedCellsUp = () => {
+    const cellIds = this.getSelectedCells();
 
-    if (cellId) {
-      const { moveCellUp } = notebookActions;
-      this.store.dispatch(moveCellUp({ cellId }));
+    if (cellIds.length > 0) {
+      const { moveCellsUp } = notebookActions;
+      this.store.dispatch(moveCellsUp({ cellIds }));
       this.setDirty(true);
-      this.scrollTo(NotebookManager.getDomCellId(cellId));
+      this.scrollTo(NotebookManager.getDomCellId(cellIds[0]));
     }
   };
 
-  moveSelectedCellDown = () => {
-    const cellId = this.getSelectedCell();
+  moveSelectedCellsDown = () => {
+    const cellIds = this.getSelectedCells();
 
-    if (cellId) {
-      const { moveCellDown } = notebookActions;
-      this.store.dispatch(moveCellDown({ cellId }));
+    if (cellIds.length > 0) {
+      const { moveCellsDown } = notebookActions;
+      this.store.dispatch(moveCellsDown({ cellIds }));
       this.setDirty(true);
-      this.scrollTo(NotebookManager.getDomCellId(cellId));
+      this.scrollTo(NotebookManager.getDomCellId(cellIds[cellIds.length - 1]));
     }
   };
 
@@ -649,9 +649,22 @@ export class NotebookManager {
   changeCellType(type: string, cellIds: string[]) {
     const { setCellsType } = notebookActions;
 
-    if (type === CELL_TYPE.MD) {
-      this.store.dispatch(setCellsType({ type: CELL_TYPE.MD, cellIds }));
-    }
+    // @ts-ignore
+    this.store.dispatch(setCellsType({ type, cellIds }));
+  }
+
+  changeSelectedCellType(type: string) {
+    const state = this.getAppState();
+    const cellIds = state.notebook.selectedCells;
+
+    console.log("changing selected cell type", type, cellIds);
+
+    this.changeCellType(type, cellIds);
+  }
+
+  unFocusCell() {
+    const { setActiveCell } = notebookActions;
+    this.store.dispatch(setActiveCell({ cellId: null }));
   }
 
   private checkIfKernelIsConnected() {
@@ -784,10 +797,14 @@ export class NotebookManager {
 
   async getAutoCompleteItems(
     code: string | undefined,
-    cursor_pos: number
-  ): Promise<string[]> {
-    if (!code) {
-      return [];
+    cursor_pos: number | undefined
+  ): Promise<ICellCompletionResponse> {
+    if (!code || !cursor_pos) {
+      return {
+        cursor_end: 0,
+        cursor_start: 0,
+        matches: [],
+      };
     }
 
     console.log("request complete items");
@@ -798,10 +815,18 @@ export class NotebookManager {
     const inspectReply = await this._session.kernel?.requestComplete(request);
 
     if (inspectReply?.content.status === "ok") {
-      return inspectReply?.content.matches;
+      return {
+        cursor_end: inspectReply?.content.cursor_end,
+        cursor_start: inspectReply?.content.cursor_start,
+        matches: inspectReply?.content.matches,
+      };
     }
 
-    return [];
+    return {
+      cursor_end: 0,
+      cursor_start: 0,
+      matches: [],
+    };
   }
 
   async init() {

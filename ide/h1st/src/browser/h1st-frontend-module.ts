@@ -27,36 +27,43 @@ import { H1stFrontendApplicationContribution } from "./h1st-frontend-contributio
 import { H1stWorkspaceService } from "./h1st-workspace-contribution";
 import { H1stAboutDialog } from "./style/about-dialog";
 import { H1stHeaderContribution } from "./widgets/h1st-view-contribution";
-import { H1stHeaderWidget } from "./widgets/h1st-header-widget";
+import { AccountWidget } from "./widgets/account";
 import { H1stTelemetryService } from "./h1st-telemetry-service";
+import { H1stAuthService } from "./auth-service";
 
-import { H1stNotebookWidgetFactory } from "./notebook/h1st-notebook-widget-factory";
-import { NotebookManager } from "./notebook/h1st-notebook-manager";
+import { NotebookFactory } from "./notebook/notebook-factory";
+import { NotebookOpener } from "./notebook/opener";
 
 export default new ContainerModule((bind, unbind) => {
-  bind(NotebookManager).toSelf();
-  bind(OpenHandler).toService(NotebookManager);
+  bind(NotebookOpener).toSelf();
+  bind(OpenHandler).toService(NotebookOpener);
 
-  bind(H1stNotebookWidgetFactory)
+  bind(NotebookFactory)
     .toSelf()
     .inSingletonScope();
-  bind(WidgetFactory).toService(H1stNotebookWidgetFactory);
+  bind(WidgetFactory).toService(NotebookFactory);
 
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
+
+  bind(FrontendApplicationContribution).toService(H1stAuthService);
+  bind(H1stAuthService)
+    .toSelf()
+    .inSingletonScope();
+
   bind(FrontendApplicationContribution).toService(H1stTelemetryService);
   bind(H1stTelemetryService)
     .toSelf()
     .inSingletonScope();
 
-  bind(H1stHeaderWidget)
+  bind(AccountWidget)
     .toSelf()
     .inSingletonScope();
 
   bind(WidgetFactory)
     .toDynamicValue((ctx) => ({
-      id: H1stHeaderWidget.ID,
-      createWidget: () => ctx.container.get<H1stHeaderWidget>(H1stHeaderWidget),
+      id: AccountWidget.ID,
+      createWidget: () => ctx.container.get<AccountWidget>(AccountWidget),
     }))
     .inSingletonScope();
 

@@ -16,6 +16,10 @@ if [ ! -d "$WORKSPACE_PATH/$WORKBENCH_NAME" ]; then
     )
 fi
 
+if [ -d "/local/ws-${WORKBENCH_ID}/python" ]; then
+    export PATH=/local/ws-${WORKBENCH_ID}/python/bin:$PATH
+fi
+
 # run these in background
 (
     node /home/theia/browser-app/src-gen/backend/main.js "$WORKSPACE_PATH/$WORKBENCH_NAME" --hostname=0.0.0.0 --port 3001 &

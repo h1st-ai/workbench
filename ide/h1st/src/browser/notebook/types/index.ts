@@ -1,5 +1,5 @@
 import { ThemeType } from "@theia/core/lib/browser/theming";
-import { NotebookManager } from "../notebook-manager";
+import { NotebookManager } from "../manager";
 
 export interface ICell {}
 
@@ -33,7 +33,7 @@ export interface INotebook {
     context: "copy" | "cut" | null;
     cells: ICellModel[];
   };
-  pivotCell: ICellModel | null; // the cell to pivot selection to select multiple cell
+  pivotCell: string | null; // the cell to pivot selection to select multiple cell
   options: INotebookOptions;
   freeze: boolean;
 }
@@ -77,11 +77,14 @@ export interface ICellOutputError {
 }
 
 export type ICellType = "markdown" | "code" | "raw";
+export type ICellMetaData = {
+  collapsed?: boolean;
+};
 
 export interface ICellModel {
   source: string[];
   cell_type: ICellType;
-  metadata: any;
+  metadata: ICellMetaData;
   id: string;
   outputs: any[];
   execution_count?: number;
@@ -98,8 +101,34 @@ export enum CELL_TYPE {
 }
 
 export interface INotebookContext {
-  saveNotebook: Function;
   manager: NotebookManager | null;
   width: number;
   height: number;
+}
+
+export interface INotebookContent {
+  cells: ICellModel[];
+  metadata: {
+    session_id?: string;
+    kernelspec: {
+      display_name: string;
+      language: string;
+      name: string;
+    };
+    orig_nbformat: number;
+    language_info: {
+      codemirror_mode: {
+        name: string;
+        version: number;
+      };
+      file_extension: string;
+      mimetype: string;
+      name: string;
+      nbconvert_exporter: string;
+      pygments_lexer: string;
+      version: string;
+    };
+  };
+  nbformat: number;
+  nbformat_minor: number;
 }

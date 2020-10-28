@@ -26,12 +26,12 @@ import Notebook from "./components/notebook";
 // import Icon from "./components/icon";
 import reducer from "./reducers";
 import { notebookActions } from "./reducers/notebook";
-import { INotebookContext } from "./types";
+import { INotebookContent, INotebookContext } from "./types";
 import { ThemeService } from "@theia/core/lib/browser/theming";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import NotebookContext from "./context";
-import { NotebookModel } from "./notebook-model";
-import { NotebookManager } from "./notebook-manager";
+import { NotebookModel } from "./model";
+import { NotebookManager } from "./manager";
 
 const equal = require("fast-deep-equal");
 
@@ -181,7 +181,13 @@ export class H1stNotebookWidget extends ReactWidget
     this._model.save();
   }
 
-  private saveNotebook = async (content: string) => {
+  createSnapshot(): INotebookContent {
+    return this._model.value;
+  }
+
+  applySnapshot?(snapshot: object): void;
+
+  private = async (content: string) => {
     console.log("saving content");
 
     // await this.fileService.write(this.uri, content);
@@ -213,22 +219,6 @@ export class H1stNotebookWidget extends ReactWidget
       })
     );
   }
-
-  // get onDispose(): Event<void> {
-  //   return this.toDispose.onDispose;
-  // }
-
-  // get saveable(): Saveable {
-  //   return this.editor.document;
-  // }
-
-  // storeState(): object {
-  //   return {};
-  // }
-
-  // restoreState(oldState: object): void {
-  //   console.log("restoring state", oldState);
-  // }
 
   getResourceUri(): URI | undefined {
     return this.uri;
@@ -340,6 +330,20 @@ export class H1stNotebookWidget extends ReactWidget
           return false;
         },
       },
+
+      // /**
+      //  * Listen to the ESC keypress to unfocus any active cell
+      //  */
+      // {
+      //   key: Key.ESCAPE,
+      //   handler: (ev: KeyboardEvent) => {
+      //     if (this.isAnyCellFocused()) return false;
+      //     this.notebookManager.copyCells();
+
+      //     // return false if you want the event to propagate
+      //     return false;
+      //   },
+      // },
 
       /**
        * Listen to the B keypress to insert cell after the selected cell
@@ -488,6 +492,15 @@ export class H1stNotebookWidget extends ReactWidget
     events.forEach((event) => {
       this.addKeyListener(this.node, event.key, event.handler);
     });
+
+    // disable text select on Shift key pressed
+    ["keyup", "keydown"].forEach((event) => {
+      window.addEventListener(event, (e: KeyboardEvent) => {
+        document.onselectstart = function() {
+          return !(e.key === "Shift" && e.shiftKey);
+        };
+      });
+    });
   }
 
   protected isAnyCellFocused(): boolean {
@@ -542,7 +555,6 @@ export class H1stNotebookWidget extends ReactWidget
 
   protected render(): React.ReactNode {
     const contextValue: INotebookContext = {
-      saveNotebook: this.saveNotebook,
       manager: this.notebookManager,
       width: this._width,
       height: this._height,

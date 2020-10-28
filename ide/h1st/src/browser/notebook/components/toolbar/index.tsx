@@ -19,11 +19,49 @@ import {
 import ReactTooltip from "react-tooltip";
 import Icon from "../icon";
 import { useSelector, useDispatch } from "react-redux";
-import { IStore } from "../../types";
+import { CELL_TYPE, ICellModel, ICellType, IStore } from "../../types";
 import NotebookContext from "../../context";
 import { notebookActions } from "../../reducers/notebook";
 import { NotebookFactory } from "../../notebook-factory";
 import { ApplicationLabels } from "../../labels";
+
+function TypeDropdown() {
+  const context = React.useContext(NotebookContext);
+
+  const { selectedCell: selectedCellId, cells } = useSelector(
+    (store: IStore) => store.notebook
+  );
+
+  const [value, setValue] = React.useState<ICellType | undefined>(undefined);
+
+  React.useEffect(() => {
+    const selectedCell: ICellModel = cells.filter(
+      (cell: ICellModel) => selectedCellId === cell.id
+    )[0];
+
+    if (selectedCell) {
+      setValue(selectedCell.cell_type);
+    }
+  }, [selectedCellId]);
+
+  function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    console.log("data changed", event.currentTarget.value);
+    // @ts-ignore
+    setValue(event.currentTarget.value);
+    context.manager?.changeSelectedCellType(event.currentTarget.value);
+  }
+
+  return (
+    <select value={value} onChange={handleChange}>
+      <option selected={value === CELL_TYPE.CODE} value={CELL_TYPE.CODE}>
+        Code
+      </option>
+      <option selected={value === CELL_TYPE.MD} value={CELL_TYPE.MD}>
+        Markdown
+      </option>
+    </select>
+  );
+}
 
 function KernelStatus() {
   const { status } = useSelector((store: IStore) => store.kernel);
@@ -133,11 +171,11 @@ export default function Toolbar() {
   };
 
   const moveUp = () => {
-    context.manager?.moveSelectedCellUp();
+    context.manager?.moveSelectedCellsUp();
   };
 
   const moveDown = () => {
-    context.manager?.moveSelectedCellDown();
+    context.manager?.moveSelectedCellsDown();
   };
 
   const cutCells = () => {
@@ -294,6 +332,10 @@ export default function Toolbar() {
           >
             <Icon width={24} height={24} icon="cell-clear" />
           </button>
+        </li>
+
+        <li>
+          <TypeDropdown />
         </li>
       </ul>
 

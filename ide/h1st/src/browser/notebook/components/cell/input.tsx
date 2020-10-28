@@ -6,14 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { CELL_TYPE, IStore } from "../../types";
 import { notebookActions } from "../../reducers/notebook";
 import NotebookContext from "../../context";
-import { NotebookManager } from "../../notebook-manager";
+import { NotebookManager } from "../../manager";
 // import { editor } from "monaco-editor";
 // import { editor } from "monaco-editor";
 
-const fuzzysearch = require("fuzzysearch");
+// const fuzzysearch = require("fuzzysearch");
 
-// const throttle = require("lodash.throttle");
-const debounce = require("lodash.debounce");
+const throttle = require("lodash.throttle");
+// const debounce = require("lodash.debounce");
 const LINE_HEIGHT = 18;
 
 export default function CellInput({ model }: any) {
@@ -87,7 +87,9 @@ export default function CellInput({ model }: any) {
 
   function initMarkdownEditor() {
     if (wrapperRef.current) {
-      // monaco.editor.onDidCreateEditor(handleEditorDidMount);
+      if (editorRef.current) {
+        editorRef.current.dispose();
+      }
 
       const editorModel = monaco.editor.createModel(
         model.source.join(""),
@@ -102,6 +104,9 @@ export default function CellInput({ model }: any) {
         model: editorModel,
         language: "markdown",
         lineNumbers: editorOptions.showLineNumber ? "on" : "off",
+        lineDecorationsWidth: editorOptions.showLineNumber ? 16 : 0,
+        highlightActiveIndentGuide: false,
+        renderIndentGuides: false,
       });
 
       initEditorEventHandler(editorRef.current);
@@ -115,7 +120,7 @@ export default function CellInput({ model }: any) {
   }
 
   function initCodeCellEditor() {
-    const createDependencyProposals = debounce(async function(range: any) {
+    const createDependencyProposals = throttle(async function(range: any) {
       // returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
       // here you could do a server side lookup
       const editor = editorRef.current;
@@ -133,23 +138,38 @@ export default function CellInput({ model }: any) {
             const suggestions = await context.manager?.getAutoCompleteItems(
               // editorRef.current?.getValue(),
               // offset
-              wordUntilPosition.word,
-              wordUntilPosition.word.length - 1
+              // wordUntilPosition.word,
+              editor.getValue(),
+              editor.getModel()?.getOffsetAt(cursorPos)
+              // wordUntilPosition.word.length - 1
             );
 
             console.log("suggestions", suggestions);
 
-            if (suggestions) {
-              return suggestions
-                .filter((match) => fuzzysearch(wordUntilPosition.word, match))
-                .map((match) => ({
-                  label: match,
-                  kind: monaco.languages.CompletionItemKind.Variable,
-                  documentation: "",
-                  insertText: match,
-                  range: range,
-                }));
-            } // endif
+            if (suggestions?.matches.length) {
+              const startPosition = editor
+                .getModel()
+                ?.getPositionAt(suggestions.cursor_start);
+              const endPosition = editor
+                .getModel()
+                ?.getPositionAt(suggestions.cursor_start);
+
+              const suggestionRange = new monaco.Range(
+                // @ts-ignore
+                startPosition?.lineNumber,
+                startPosition?.column,
+                endPosition?.lineNumber,
+                endPosition?.column
+              );
+
+              return suggestions?.matches.map((match: string) => ({
+                label: match,
+                kind: monaco.languages.CompletionItemKind.Variable,
+                documentation: "",
+                insertText: match,
+                range: suggestionRange,
+              }));
+            }
           } // end word at position
         }
       }
@@ -173,6 +193,7 @@ export default function CellInput({ model }: any) {
           };
 
           return {
+            incomplete: true,
             suggestions: await createDependencyProposals(range),
           };
         }
@@ -181,7 +202,6 @@ export default function CellInput({ model }: any) {
 
     if (wrapperRef.current) {
       editorRef.current?.dispose();
-      // monaco.editor.onDidCreateEditor(handleEditorDidMount);
 
       const editorModel = monaco.editor.createModel(
         model.source.join(""),
@@ -196,6 +216,7 @@ export default function CellInput({ model }: any) {
         model: editorModel,
         language: "python",
         lineNumbers: editorOptions.showLineNumber ? "on" : "off",
+        lineDecorationsWidth: editorOptions.showLineNumber ? 16 : 0,
       });
 
       initEditorEventHandler(editorRef.current);
@@ -247,6 +268,18 @@ export default function CellInput({ model }: any) {
 
     editor.onKeyDown((e) => {
       const caretPosition = editor.getPosition();
+
+      if (e.keyCode === monaco.KeyCode.Escape) {
+        context.manager?.unFocusCell();
+
+        // unfocus the editor
+        if (
+          editor.hasTextFocus() &&
+          document.activeElement instanceof HTMLElement
+        ) {
+          document.activeElement.blur();
+        }
+      }
 
       if (e.keyCode === monaco.KeyCode.UpArrow) {
         if (
@@ -484,15 +517,15 @@ const EDITOR_OPTIONS: Partial<monaco.editor.IStandaloneEditorConstructionOptions
     alwaysConsumeMouseWheel: false,
   },
   renderLineHighlight: "none",
-  highlightActiveIndentGuide: false,
-  renderIndentGuides: false,
+  highlightActiveIndentGuide: true,
+  renderIndentGuides: true,
   overviewRulerBorder: false,
   overviewRulerLanes: 0,
   hideCursorInOverviewRuler: true,
   folding: false,
-  occurrencesHighlight: false,
-  selectionHighlight: false,
-  lineDecorationsWidth: 8,
+  occurrencesHighlight: true,
+  selectionHighlight: true,
+  lineDecorationsWidth: 16,
   contextmenu: false,
   matchBrackets: "always",
 };
