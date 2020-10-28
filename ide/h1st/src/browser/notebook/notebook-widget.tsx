@@ -364,6 +364,7 @@ export class H1stNotebookWidget extends ReactWidget
           }
 
           // on the second key stroke, we're gonna delete the cell
+          console.log("deleting cell");
           this.notebookManager.deleteSelectedCell();
           // this.notebookManager.setDirty(true);
 
@@ -517,7 +518,6 @@ export class H1stNotebookWidget extends ReactWidget
   }
 
   protected async init() {
-    console.log("inittialize widget ", this.uri.toString());
     await this.initContentFromNotebook();
     const { setCells } = notebookActions;
     this.store.dispatch(setCells({ cells: this._model.value.cells }));

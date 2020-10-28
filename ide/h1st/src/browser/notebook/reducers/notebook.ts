@@ -49,9 +49,9 @@ export const selectCellAndNeighbors = (state: any, cellId: string) => {
   for (let i = 0; i < state.cells.length; i++) {
     if (cellId === state.cells[i].id) {
       return {
-        prev: state.cells[i - 1],
+        prev: { cell: state.cells[i - 1], index: i - 1 },
         cell: state.cells[i],
-        next: state.cells[i + 1],
+        next: { cell: state.cells[i + 1], index: i + 1 },
       };
     }
   }
@@ -197,8 +197,9 @@ export const reducers = {
   focusOnCell: (state: INotebook, { payload }: any): void => {
     const { cellId } = payload;
     state.focusedCell = cellId;
-    state.selectedCell = cellId;
-    state.selectedCells = [cellId];
+    // state.activeCell = cellId;
+    // state.selectedCell = cellId;
+    // state.selectedCells = [cellId];
   },
   setCells: (state: INotebook, { payload }: any): void => {
     state.cells = payload.cells;
@@ -230,16 +231,16 @@ export const reducers = {
     const cellInfo = selectCellAndNeighbors(state, payload.cellId);
 
     if (cellInfo && cellInfo.next) {
-      state.selectedCell = cellInfo.next.id;
-      state.selectedCells = [cellInfo.next.id];
+      state.selectedCell = cellInfo.next.cell.id;
+      state.selectedCells = [cellInfo.next.cell.id];
     }
   },
   selectPrevCellOf: (state: INotebook, { payload }: any): void => {
     const cellInfo = selectCellAndNeighbors(state, payload.cellId);
 
     if (cellInfo && cellInfo.prev) {
-      state.selectedCell = cellInfo.prev.id;
-      state.selectedCells = [cellInfo.prev.id];
+      state.selectedCell = cellInfo.prev.cell.id;
+      state.selectedCells = [cellInfo.prev.cell.id];
     }
   },
   focusNextCellOf: (state: INotebook, { payload }: any): void => {
@@ -247,7 +248,7 @@ export const reducers = {
 
     console.log("focusNextCellOf", cellInfo);
     if (cellInfo && cellInfo.next) {
-      const nextCellId = cellInfo.next.id;
+      const nextCellId = cellInfo.next.cell.id;
       // state.selectedCell = nextCellId;
       // state.activeCell = nextCellId;
       state.focusedCell = nextCellId;
@@ -257,7 +258,7 @@ export const reducers = {
     const cellInfo = selectCellAndNeighbors(state, payload.cellId);
 
     if (cellInfo && cellInfo.prev) {
-      const prevCellId = cellInfo.prev.id;
+      const prevCellId = cellInfo.prev.cell.id;
 
       if (cellInfo && cellInfo.next) {
         // state.selectedCell = nextCellId;
@@ -415,10 +416,10 @@ export const reducers = {
 
       // set the active cell to one of its neigbors
       if (neighbors) {
-        if (neighbors.next.cell) {
+        if (neighbors.next?.cell) {
           state.selectedCells = [neighbors.next.cell.id];
           state.selectedCell = neighbors.next.cell.id;
-        } else if (neighbors.prev) {
+        } else if (neighbors.prev?.cell) {
           // setSelectedCells(state, neighbors.prev);
           state.selectedCells = [neighbors.prev.cell.id];
           state.selectedCell = neighbors.prev.cell.id;
