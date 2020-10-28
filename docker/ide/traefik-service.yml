@@ -1,5 +1,8 @@
 http: 
     routers: 
+        api:
+            rule: PathPrefix(`/api`)
+            service: jupyter
         jupyter: 
             rule: PathPrefix(`/jupyter`)
             service: jupyter
@@ -11,6 +14,10 @@ http:
             loadBalancer: 
                 servers: 
                   - url: "http://127.0.0.1:8888"
+        api: 
+            loadBalancer: 
+                servers: 
+                  - url: "http://127.0.0.1:3002"
         workbench: 
             loadBalancer: 
                 servers: 
