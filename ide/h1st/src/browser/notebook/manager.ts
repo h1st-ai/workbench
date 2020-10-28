@@ -872,4 +872,8 @@ export class NotebookManager {
       //
     }
   }
+
+  focusNode() {
+    this.widget.node.focus();
+  }
 }

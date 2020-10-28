@@ -279,6 +279,8 @@ export default function CellInput({ model }: any) {
         ) {
           document.activeElement.blur();
         }
+
+        setTimeout(() => context.manager?.focusNode(), 100);
       }
 
       if (e.keyCode === monaco.KeyCode.UpArrow) {
