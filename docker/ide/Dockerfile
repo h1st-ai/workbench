@@ -9,7 +9,7 @@ RUN PYTHON_PATH=`which python` && \
 
 COPY ./docker/ide/components/requirements.txt /tmp
 RUN pip3 install --no-cache -r /tmp/requirements.txt
-RUN pip3 install git+https://github.com/h1st-ai/h1st@tune_integration#v=1
+RUN pip3 install git+https://github.com/h1st-ai/h1st@tune_integration#v=2
 
 # ENV THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/browser-app/plugins
 
