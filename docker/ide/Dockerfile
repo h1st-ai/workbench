@@ -1,5 +1,5 @@
 
-FROM theiaide/theia-python
+FROM theiaide/theia-python:1.5.0
 
 # switch to py3 as default
 RUN PYTHON_PATH=`which python` && \
