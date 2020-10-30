@@ -50,7 +50,7 @@ COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html
 
 # this is also updated more often
-RUN pip3 install --no-cache git+https://github.com/h1st-ai/h1st@8880fc1ebe9d11ce9bad044397bcd5ae3b7c8fc9#v=2
+RUN pip3 install --no-cache git+https://github.com/h1st-ai/h1st@tune_integration
 
 EXPOSE 3000
 COPY ./docker/ide/entrypoint.sh ./docker/ide/app.sh /
