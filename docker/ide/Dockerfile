@@ -9,7 +9,6 @@ RUN PYTHON_PATH=`which python` && \
 
 COPY ./docker/ide/components/requirements.txt /tmp
 RUN pip3 install --no-cache -r /tmp/requirements.txt
-RUN pip3 install git+https://github.com/h1st-ai/h1st@tune_integration#v=2
 
 # ENV THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/browser-app/plugins
 
@@ -49,6 +48,9 @@ COPY ./docker/ide/jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_con
 
 COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html
+
+# this is also updated more often
+RUN pip3 install --no-cache git+https://github.com/h1st-ai/h1st@tune_integration#v=2
 
 EXPOSE 3000
 COPY ./docker/ide/entrypoint.sh ./docker/ide/app.sh /
