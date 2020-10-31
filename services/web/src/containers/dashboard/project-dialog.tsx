@@ -58,8 +58,8 @@ export default function CreateProjectDialog() {
   let pollInterVal = 1000;
 
   async function poll(pId: string) {
-    // get the new token everytime this function is invoked
-    const { token } = useSelector((store: IStore) => store.auth);
+    // // get the new token everytime this function is invoked
+    // const { token } = useSelector((store: IStore) => store.auth);
 
     const res = await axios.request(
       makeApiParams({
