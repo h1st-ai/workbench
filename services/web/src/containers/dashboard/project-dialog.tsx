@@ -51,13 +51,16 @@ export default function CreateProjectDialog() {
   const dispatch = useDispatch();
 
   const { token } = useSelector((store: IStore) => store.auth);
-  const { currentProjectStatus, showCreateProjectDialog } = useSelector(
+  const { showCreateProjectDialog } = useSelector(
     (store: IStore) => store.dashboard,
   );
 
   let pollInterVal = 1000;
 
   async function poll(pId: string) {
+    // get the new token everytime this function is invoked
+    const { token } = useSelector((store: IStore) => store.auth);
+
     const res = await axios.request(
       makeApiParams({
         url: `project/${pId}`,
@@ -72,19 +75,7 @@ export default function CreateProjectDialog() {
       console.log('additonal ping');
 
       try {
-        const statusCheck = await axios.get(`/project/${pId}/#/home/project`);
-
-        // console.log()
-        // if (statusCheck.status === 404) {
-        //
-        //   window.ga(
-        //     'send',
-        //     'event',
-        //     'Errors',
-        //     '404',
-        //     `/project/${pId}/#/home/project`,
-        //   );
-        // }
+        await axios.get(`/project/${pId}/#/home/project`);
       } catch (error) {
         console.log('error', error.response.status);
         // @ts-ignore
