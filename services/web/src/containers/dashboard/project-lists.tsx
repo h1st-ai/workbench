@@ -32,7 +32,6 @@ function ProjectLists(): any {
         makeApiParams({
           url: 'projects',
           method: 'GET',
-          token,
         }),
       )
       .then((res) => {
@@ -61,7 +60,8 @@ function ProjectLists(): any {
     return (
       <div className={styles.emptyState}>
         <CreateProjectDialog />
-        <button className="btn primary empty"
+        <button
+          className="btn primary empty"
           onClick={() => dispatch(toggleCreateProjectDialog({ value: true }))}
         >
           Create your first project
