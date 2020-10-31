@@ -11,8 +11,7 @@ export const AuthSlice = createSlice({
   initialState,
   reducers: {
     setToken: (state, { payload }): void => {
-      const { token } = payload;
-      state = { ...state, token };
+      state.token = payload.token;
     },
   },
 });

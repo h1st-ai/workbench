@@ -50,7 +50,6 @@ export default function CreateProjectDialog() {
   const [size, setSize] = useState('small');
   const dispatch = useDispatch();
 
-  const { token } = useSelector((store: IStore) => store.auth);
   const { showCreateProjectDialog } = useSelector(
     (store: IStore) => store.dashboard,
   );
@@ -58,14 +57,10 @@ export default function CreateProjectDialog() {
   let pollInterVal = 1000;
 
   async function poll(pId: string) {
-    // // get the new token everytime this function is invoked
-    // const { token } = useSelector((store: IStore) => store.auth);
-
     const res = await axios.request(
       makeApiParams({
         url: `project/${pId}`,
         method: 'GET',
-        token,
       }),
     );
 
@@ -105,7 +100,7 @@ export default function CreateProjectDialog() {
   }
 
   const createProject = async () => {
-    if (value == null || value == '') {
+    if (value === null || value === '') {
       setError('Please enter a project name.');
       return;
     } else if (!value.match(/^[a-zA-Z]/)) {
@@ -134,7 +129,6 @@ export default function CreateProjectDialog() {
           cpu: INSTANCE_CONFIG[size].cpu,
           gpu: INSTANCE_CONFIG[size].gpu,
         },
-        token,
       }),
     );
 
@@ -143,6 +137,11 @@ export default function CreateProjectDialog() {
       const { id } = res.data.item;
       setProjectId(id);
       setTimeout(() => poll(id), 1000);
+    } else {
+      // {
+      //   error: "Error creating project"
+      //   status: "error"
+      // }
     }
   };
 
