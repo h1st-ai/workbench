@@ -27,8 +27,8 @@ const INSTANCE_CONFIG: IInstances = {
     ram: 1024 * 2,
   },
   medium: {
-    cpu: 1024 * 4,
-    ram: 1024 * 8,
+    cpu: 1024 * 8,
+    ram: 1024 * 32,
   },
   large: {
     cpu: 1024 * 16,
