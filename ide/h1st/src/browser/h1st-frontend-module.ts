@@ -7,6 +7,7 @@ import {
   OpenHandler,
 } from "@theia/core/lib/browser";
 import { ContainerModule, injectable } from "inversify";
+import { TabBarToolbarContribution } from "@theia/core/lib/browser/shell/tab-bar-toolbar";
 import {
   BackendClient,
   H1stBackendWithClientService,
@@ -34,6 +35,10 @@ import { H1stAuthService } from "./auth-service";
 import { NotebookFactory } from "./notebook/notebook-factory";
 import { NotebookOpener } from "./notebook/opener";
 
+// tuning
+import { TuningContribution } from "./tune/contribution";
+import { ExperimentWidget } from "./tune";
+
 export default new ContainerModule((bind, unbind) => {
   bind(NotebookOpener).toSelf();
   bind(OpenHandler).toService(NotebookOpener);
@@ -43,8 +48,17 @@ export default new ContainerModule((bind, unbind) => {
     .inSingletonScope();
   bind(WidgetFactory).toService(NotebookFactory);
 
+  bind(ExperimentWidget).toSelf();
+  bind<WidgetFactory>(WidgetFactory).toDynamicValue((ctx) => ({
+    id: ExperimentWidget.ID,
+    createWidget: () => ctx.container.get(ExperimentWidget),
+  }));
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
+
+  bindViewContribution(bind, TuningContribution);
+  bind(FrontendApplicationContribution).toService(TuningContribution);
+  bind(TabBarToolbarContribution).toService(TuningContribution);
 
   bind(FrontendApplicationContribution).toService(H1stAuthService);
   bind(H1stAuthService)
