@@ -1,16 +1,20 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+// import * as ReactDOM from "react-dom";
 import { injectable, postConstruct } from "inversify";
 // import { BaseWidget, StatefulWidget } from "@theia/core/lib/browser";
 // import { ReactWidget } from "@theia/core/lib/browser/widgets/react-widget";
-import { BaseWidget, Message } from "@theia/core/lib/browser";
+import { Message, ReactWidget } from "@theia/core/lib/browser";
+import { Emitter, Event } from "@theia/core";
 // import { Disposable } from "@theia/core";
 
 @injectable()
-export class ExperimentWidget extends BaseWidget {
+export class ExperimentWidget extends ReactWidget {
   static readonly ID = "h1st:tune:sidebar:widget";
   static readonly LABEL = "Hyper Parameter Tuning";
   protected contentNode: HTMLElement;
+
+  protected readonly onDidUpdateEmitter = new Emitter<void>();
+  readonly onDidUpdate: Event<void> = this.onDidUpdateEmitter.event;
 
   constructor() {
     super();
@@ -29,38 +33,28 @@ export class ExperimentWidget extends BaseWidget {
     this.update();
   }
 
-  // @postConstruct()
-  // protected init(): void {
-  //   alert("init");
-  //   this.id = ExperimentWidget.ID;
-  //   this.title.label = ExperimentWidget.LABEL;
-  //   this.title.caption = ExperimentWidget.LABEL;
-  //   this.title.iconClass = "search-in-workspace-tab-icon";
-  //   this.title.closable = true;
-  //   this.contentNode = document.createElement("div");
-  //   this.contentNode.classList.add("t-siw-search-container");
-  //   // this.searchFormContainer = document.createElement('div');
-  //   // this.searchFormContainer.classList.add('searchHeader');
-  //   // this.contentNode.appendChild(this.searchFormContainer);
-  //   // this.node.appendChild(this.contentNode);
-  // }
+  protected onUpdateRequest(msg: Message): void {
+    super.onUpdateRequest(msg);
+    this.onDidUpdateEmitter.fire(undefined);
+  }
 
-  // protected render(): React.ReactNode {
-  //   return <p>Tuning</p>;
-  // }
+  protected render(): React.ReactNode {
+    return <p>Tuning</p>;
+  }
 
   protected onAfterAttach(msg: Message): void {
     super.onAfterAttach(msg);
-    ReactDOM.render(
-      <React.Fragment>{this.renderList()}</React.Fragment>,
-      this.contentNode
-    );
+    // ReactDOM.render(
+    //   <React.Fragment>{this.renderList()}</React.Fragment>,
+    //   this.contentNode
+    // );
     // Widget.attach(this.resultTreeWidget, this.contentNode);
     // this.toDisposeOnDetach.push(
     //   Disposable.create(() => {
     //     Widget.detach(this.resultTreeWidget);
     //   })
     // );
+    this.update();
   }
 
   protected renderList(): React.ReactNode {

@@ -4,6 +4,7 @@ import {
   AbstractViewContribution,
   FrontendApplicationContribution,
   FrontendApplication,
+  Widget,
 } from "@theia/core/lib/browser";
 import { Command, CommandRegistry } from "@theia/core/lib/common/command";
 import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
@@ -14,9 +15,13 @@ import {
 import { MAIN_MENU_BAR, MenuModelRegistry } from "@theia/core";
 
 namespace TunningCommands {
+  const TUNE_CATEGORY = "Hyper Parameter Tuning";
+
   export const REFRESH: Command = {
     id: "h1st:tuning:experiment:refresh",
     label: "Refresh",
+    category: TUNE_CATEGORY,
+    iconClass: "refresh",
   };
 
   export const TUNING_EXPERIMENT_COMMAND: Command = {
@@ -60,24 +65,27 @@ export class TuningContribution
   }
 
   async onStart(app: FrontendApplication): Promise<void> {
-    alert("on start");
+    // alert("on start");
   }
 
   registerCommands(commands: CommandRegistry): void {
     super.registerCommands(commands);
     commands.registerCommand(TunningCommands.REFRESH, {
-      // isEnabled: (widget) => this.withWidget(widget, () => true),
-      // isVisible: (widget) => this.withWidget(widget, () => true),
+      isEnabled: (widget) => this.withWidget(widget, () => true),
+      isVisible: (widget) => this.withWidget(widget, () => true),
       execute: () => alert("test"),
     });
   }
 
-  registerToolbarItems(toolbar: TabBarToolbarRegistry): void {
+  async registerToolbarItems(toolbar: TabBarToolbarRegistry): Promise<void> {
+    const widget = await this.widget;
+    const onDidChange = widget.onDidUpdate;
     toolbar.registerItem({
-      id: "teststestet",
+      id: TunningCommands.REFRESH.id,
       command: TunningCommands.REFRESH.id,
-      tooltip: "Collapse All",
-      priority: 0,
+      tooltip: TunningCommands.REFRESH.label,
+      priority: 1,
+      onDidChange,
     });
   }
 
@@ -101,6 +109,19 @@ export class TuningContribution
 
   async initializeLayout(): Promise<void> {
     await this.openView();
+  }
+
+  protected withWidget<T>(
+    widget: Widget | undefined = this.tryGetWidget(),
+    fn: (widget: ExperimentWidget) => T
+  ): T | false {
+    if (
+      widget instanceof ExperimentWidget &&
+      widget.id === ExperimentWidget.ID
+    ) {
+      return fn(widget);
+    }
+    return false;
   }
 
   /**
