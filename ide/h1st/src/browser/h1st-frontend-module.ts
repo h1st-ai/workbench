@@ -36,8 +36,9 @@ import { NotebookFactory } from "./notebook/notebook-factory";
 import { NotebookOpener } from "./notebook/opener";
 
 // tuning
+import { ExperimentWidgetFactory } from "./tune/experiment-widget-factory";
 import { TuningContribution } from "./tune/contribution";
-import { ExperimentWidget } from "./tune";
+import { ExperimentListWidget } from "./tune";
 
 export default new ContainerModule((bind, unbind) => {
   bind(NotebookOpener).toSelf();
@@ -48,10 +49,15 @@ export default new ContainerModule((bind, unbind) => {
     .inSingletonScope();
   bind(WidgetFactory).toService(NotebookFactory);
 
-  bind(ExperimentWidget).toSelf();
+  bind(ExperimentWidgetFactory)
+    .toSelf()
+    .inSingletonScope();
+  bind(WidgetFactory).toService(ExperimentWidgetFactory);
+
+  bind(ExperimentListWidget).toSelf();
   bind<WidgetFactory>(WidgetFactory).toDynamicValue((ctx) => ({
-    id: ExperimentWidget.ID,
-    createWidget: () => ctx.container.get(ExperimentWidget),
+    id: ExperimentListWidget.ID,
+    createWidget: () => ctx.container.get(ExperimentListWidget),
   }));
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);

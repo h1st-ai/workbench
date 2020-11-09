@@ -5,30 +5,40 @@ import { injectable, postConstruct } from "inversify";
 // import { ReactWidget } from "@theia/core/lib/browser/widgets/react-widget";
 import { Message, ReactWidget } from "@theia/core/lib/browser";
 import { Emitter, Event } from "@theia/core";
-// import { Disposable } from "@theia/core";
+import TuningContext from "./context";
+import { ITuningContext } from "./types";
+import { TuningManager } from "./tuning-manager";
+import { configureStore, EnhancedStore } from "@reduxjs/toolkit";
+import reducer from "./reducers";
+import { Provider } from "react-redux";
 
 @injectable()
-export class ExperimentWidget extends ReactWidget {
+export class ExperimentListWidget extends ReactWidget {
   static readonly ID = "h1st:tune:sidebar:widget";
   static readonly LABEL = "Hyper Parameter Tuning";
-  protected contentNode: HTMLElement;
 
   protected readonly onDidUpdateEmitter = new Emitter<void>();
   readonly onDidUpdate: Event<void> = this.onDidUpdateEmitter.event;
+  protected tuningManager: TuningManager;
+  protected store: EnhancedStore;
 
   constructor() {
     super();
+    this.store = configureStore({ reducer, devTools: true });
+    this.tuningManager = new TuningManager({ store: this.store });
+  }
+
+  get manager(): TuningManager {
+    return this.tuningManager;
   }
 
   @postConstruct()
   protected async init(): Promise<void> {
-    this.id = ExperimentWidget.ID;
-    this.title.label = ExperimentWidget.LABEL;
-    this.title.caption = ExperimentWidget.LABEL;
+    this.id = ExperimentListWidget.ID;
+    this.title.label = ExperimentListWidget.LABEL;
+    this.title.caption = ExperimentListWidget.LABEL;
     this.title.closable = true;
     this.title.iconClass = "sidebar-tuning-icon";
-
-    this.contentNode = document.createElement("div");
 
     this.update();
   }
@@ -57,7 +67,22 @@ export class ExperimentWidget extends ReactWidget {
     this.update();
   }
 
+  protected onActivateRequest(msg: Message): void {
+    super.onActivateRequest(msg);
+    this.node.focus();
+  }
+
   protected renderList(): React.ReactNode {
-    return <div>ExperimentList</div>;
+    const contextValue: ITuningContext = {
+      manager: this.tuningManager,
+    };
+
+    return (
+      <TuningContext.Provider value={contextValue}>
+        <Provider store={this.store}>
+          <div>ExperimentList</div>
+        </Provider>
+      </TuningContext.Provider>
+    );
   }
 }

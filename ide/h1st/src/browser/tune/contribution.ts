@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { ExperimentWidget } from "./index";
+import { ExperimentListWidget } from "./index";
 import {
   AbstractViewContribution,
   FrontendApplicationContribution,
@@ -50,7 +50,7 @@ export namespace TuningMenu {
 
 @injectable()
 export class TuningContribution
-  extends AbstractViewContribution<ExperimentWidget>
+  extends AbstractViewContribution<ExperimentListWidget>
   implements FrontendApplicationContribution, TabBarToolbarContribution {
   @inject(FrontendApplicationStateService)
   protected readonly stateService: FrontendApplicationStateService;
@@ -64,8 +64,8 @@ export class TuningContribution
    */
   constructor() {
     super({
-      widgetId: ExperimentWidget.ID,
-      widgetName: ExperimentWidget.LABEL,
+      widgetId: ExperimentListWidget.ID,
+      widgetName: ExperimentListWidget.LABEL,
       defaultWidgetOptions: { area: "left", rank: 200 },
       toggleCommandId: TunningCommands.TUNING_EXPERIMENT_COMMAND.id,
     });
@@ -134,11 +134,11 @@ export class TuningContribution
 
   protected withWidget<T>(
     widget: Widget | undefined = this.tryGetWidget(),
-    fn: (widget: ExperimentWidget) => T
+    fn: (widget: ExperimentListWidget) => T
   ): T | false {
     if (
-      widget instanceof ExperimentWidget &&
-      widget.id === ExperimentWidget.ID
+      widget instanceof ExperimentListWidget &&
+      widget.id === ExperimentListWidget.ID
     ) {
       return fn(widget);
     }
