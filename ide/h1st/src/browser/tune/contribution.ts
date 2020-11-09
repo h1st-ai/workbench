@@ -24,6 +24,13 @@ namespace TunningCommands {
     iconClass: "refresh",
   };
 
+  export const NEW_EXPERIMENT: Command = {
+    id: "h1st:tuning:experiment:new_experiment",
+    label: "New Experiment",
+    category: TUNE_CATEGORY,
+    iconClass: "add",
+  };
+
   export const TUNING_EXPERIMENT_COMMAND: Command = {
     id: "h1st:tuning:widget:experiment",
     label: "Open Experiment",
@@ -75,6 +82,12 @@ export class TuningContribution
       isVisible: (widget) => this.withWidget(widget, () => true),
       execute: () => alert("test"),
     });
+
+    commands.registerCommand(TunningCommands.NEW_EXPERIMENT, {
+      isEnabled: (widget) => this.withWidget(widget, () => true),
+      isVisible: (widget) => this.withWidget(widget, () => true),
+      execute: () => alert("new experiment"),
+    });
   }
 
   async registerToolbarItems(toolbar: TabBarToolbarRegistry): Promise<void> {
@@ -84,6 +97,14 @@ export class TuningContribution
       id: TunningCommands.REFRESH.id,
       command: TunningCommands.REFRESH.id,
       tooltip: TunningCommands.REFRESH.label,
+      priority: 2,
+      onDidChange,
+    });
+
+    toolbar.registerItem({
+      id: TunningCommands.NEW_EXPERIMENT.id,
+      command: TunningCommands.NEW_EXPERIMENT.id,
+      tooltip: TunningCommands.NEW_EXPERIMENT.label,
       priority: 1,
       onDidChange,
     });
