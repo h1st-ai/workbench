@@ -68,8 +68,8 @@ export class ExperimentWidgetFactory implements WidgetFactory {
   }
 
   private setLabels(widget: ExperimentWidget): void {
-    widget.title.caption = 'test'; // widget.name || widget.id;
+    widget.title.caption = widget.name || widget.id;
     widget.title.label = widget.name;
-    widget.title.iconClass = 'tuning-experiment';
+    widget.title.iconClass = 'fa fa-cogs tuning-experiment';
   }
 }

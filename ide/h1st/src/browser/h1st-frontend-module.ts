@@ -5,6 +5,7 @@ import {
   bindViewContribution,
   WidgetFactory,
   OpenHandler,
+  LabelProviderContribution,
 } from '@theia/core/lib/browser';
 import { ContainerModule, injectable } from 'inversify';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
@@ -40,6 +41,7 @@ import { ExperimentWidgetFactory } from './tune/experiment-widget-factory';
 import { TuningContribution } from './tune/contribution';
 import { ExperimentListWidget } from './tune';
 import { TuningOpener } from './tune/opener';
+import { TuningUriLabelProviderContribution } from './tune/experiment-uris';
 
 export default new ContainerModule((bind, unbind) => {
   bind(NotebookOpener).toSelf();
@@ -56,6 +58,9 @@ export default new ContainerModule((bind, unbind) => {
     .toSelf()
     .inSingletonScope();
   bind(WidgetFactory).toService(ExperimentWidgetFactory);
+  bind(LabelProviderContribution)
+    .to(TuningUriLabelProviderContribution)
+    .inSingletonScope();
 
   bind(ExperimentListWidget).toSelf();
   // .inSingletonScope();
