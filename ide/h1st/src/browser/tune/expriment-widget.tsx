@@ -7,15 +7,20 @@ import {
 } from '@theia/core/lib/browser';
 import { injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
+import { TuningUris } from './experiment-uris';
 
 @injectable()
 export class ExperimentWidget extends ReactWidget
   implements NavigatableWidget, StatefulWidget {
   private _name: string;
+  private _id: string;
+  private _uri: URI;
 
-  constructor({ name }: any) {
+  constructor({ name, id, uri }: any) {
     super();
     this._name = name;
+    this._id = id;
+    this._uri = uri;
   }
 
   get name(): string {
@@ -35,17 +40,16 @@ export class ExperimentWidget extends ReactWidget
   }
 
   getResourceUri(): URI {
-    return new URI();
+    return this._uri;
   }
 
   createMoveToUri(): URI {
-    return new URI();
+    return TuningUris.encode(this._id, this._name);
   }
 
   onActivateRequest(msg: Message) {
     super.onActivateRequest(msg);
-    this.node.focus();
-    this.update();
+    // this.update();
   }
 
   render(): React.ReactNode {

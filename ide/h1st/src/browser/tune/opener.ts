@@ -5,37 +5,38 @@ import {
   WidgetOpenerOptions,
   NavigatableWidgetOpenHandler,
 } from '@theia/core/lib/browser';
-import { H1stNotebookWidget } from './notebook-widget';
-import { NotebookFactory } from './notebook-factory';
+import { ExperimentWidget } from './expriment-widget';
+import { ExperimentWidgetFactory } from './experiment-widget-factory';
+import { TuningUris } from './experiment-uris';
 // import { TextEditor } from './editor';
 
-export interface NotebookOpenerOptions extends WidgetOpenerOptions {
+export interface TuningOpenerOptions extends WidgetOpenerOptions {
   run?: boolean;
 }
 
 @injectable()
-export class NotebookOpener extends NavigatableWidgetOpenHandler<
-  H1stNotebookWidget
+export class TuningOpener extends NavigatableWidgetOpenHandler<
+  ExperimentWidget
 > {
-  readonly id = NotebookFactory.ID;
-  readonly label = 'Notebook Editor';
+  readonly id = ExperimentWidgetFactory.ID;
+  readonly label = 'Tuning Editor';
 
   protected readonly onActiveEditorChangedEmitter = new Emitter<
-    H1stNotebookWidget | undefined
+    ExperimentWidget | undefined
   >();
   /**
    * Emit when the active editor is changed.
    */
-  readonly onActiveEditorChanged: Event<H1stNotebookWidget | undefined> = this
+  readonly onActiveEditorChanged: Event<ExperimentWidget | undefined> = this
     .onActiveEditorChangedEmitter.event;
 
   protected readonly onCurrentEditorChangedEmitter = new Emitter<
-    H1stNotebookWidget | undefined
+    ExperimentWidget | undefined
   >();
   /**
    * Emit when the current editor is changed.
    */
-  readonly onCurrentEditorChanged: Event<H1stNotebookWidget | undefined> = this
+  readonly onCurrentEditorChanged: Event<ExperimentWidget | undefined> = this
     .onCurrentEditorChangedEmitter.event;
 
   @postConstruct()
@@ -66,30 +67,30 @@ export class NotebookOpener extends NavigatableWidgetOpenHandler<
   }
 
   protected readonly recentlyVisibleIds: string[] = [];
-  protected get recentlyVisible(): H1stNotebookWidget | undefined {
+  protected get recentlyVisible(): ExperimentWidget | undefined {
     const id = this.recentlyVisibleIds[0];
     return (id && this.all.find(w => w.id === id)) || undefined;
   }
-  protected addRecentlyVisible(widget: H1stNotebookWidget): void {
+  protected addRecentlyVisible(widget: ExperimentWidget): void {
     this.removeRecentlyVisible(widget);
     this.recentlyVisibleIds.unshift(widget.id);
   }
-  protected removeRecentlyVisible(widget: H1stNotebookWidget): void {
+  protected removeRecentlyVisible(widget: ExperimentWidget): void {
     const index = this.recentlyVisibleIds.indexOf(widget.id);
     if (index !== -1) {
       this.recentlyVisibleIds.splice(index, 1);
     }
   }
 
-  protected _activeEditor: H1stNotebookWidget | undefined;
+  protected _activeEditor: ExperimentWidget | undefined;
   /**
    * The active editor.
    * If there is an active editor (one that has focus), active and current are the same.
    */
-  get activeEditor(): H1stNotebookWidget | undefined {
+  get activeEditor(): ExperimentWidget | undefined {
     return this._activeEditor;
   }
-  protected setActiveEditor(active: H1stNotebookWidget | undefined): void {
+  protected setActiveEditor(active: ExperimentWidget | undefined): void {
     if (this._activeEditor !== active) {
       this._activeEditor = active;
       this.onActiveEditorChangedEmitter.fire(this._activeEditor);
@@ -98,19 +99,19 @@ export class NotebookOpener extends NavigatableWidgetOpenHandler<
   protected updateActiveEditor(): void {
     const widget = this.shell.activeWidget;
     this.setActiveEditor(
-      widget instanceof H1stNotebookWidget ? widget : undefined,
+      widget instanceof ExperimentWidget ? widget : undefined,
     );
   }
 
-  protected _currentEditor: H1stNotebookWidget | undefined;
+  protected _currentEditor: ExperimentWidget | undefined;
   /**
    * The most recently activated editor (which might not have the focus anymore, hence it is not active).
    * If no editor has focus, e.g. when a context menu is shown, the active editor is `undefined`, but current might be the editor that was active before the menu popped up.
    */
-  get currentEditor(): H1stNotebookWidget | undefined {
+  get currentEditor(): ExperimentWidget | undefined {
     return this._currentEditor;
   }
-  protected setCurrentEditor(current: H1stNotebookWidget | undefined): void {
+  protected setCurrentEditor(current: ExperimentWidget | undefined): void {
     if (this._currentEditor !== current) {
       this._currentEditor = current;
       this.onCurrentEditorChangedEmitter.fire(this._currentEditor);
@@ -118,7 +119,7 @@ export class NotebookOpener extends NavigatableWidgetOpenHandler<
   }
   protected updateCurrentEditor(): void {
     const widget = this.shell.currentWidget;
-    if (widget instanceof H1stNotebookWidget) {
+    if (widget instanceof ExperimentWidget) {
       this.setCurrentEditor(widget);
     } else if (!this._currentEditor || !this._currentEditor.isVisible) {
       this.setCurrentEditor(this.recentlyVisible);
@@ -126,7 +127,7 @@ export class NotebookOpener extends NavigatableWidgetOpenHandler<
   }
 
   canHandle(uri: URI, options?: WidgetOpenerOptions): number {
-    if (uri.path.ext.toLowerCase() === '.ipynb') {
+    if (uri.scheme.toLowerCase() === TuningUris.TUNING_SCHEME) {
       return 10000;
     }
 
@@ -135,8 +136,9 @@ export class NotebookOpener extends NavigatableWidgetOpenHandler<
 
   async open(
     uri: URI,
-    options?: NotebookOpenerOptions,
-  ): Promise<H1stNotebookWidget> {
+    options?: TuningOpenerOptions,
+  ): Promise<ExperimentWidget> {
+    console.log('opening tuning uri', uri, options);
     const editor = await super.open(uri, options);
     return editor;
   }

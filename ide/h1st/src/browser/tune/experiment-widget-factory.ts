@@ -5,16 +5,17 @@ import {
   WidgetOpenerOptions,
 } from '@theia/core/lib/browser';
 import { ThemeService } from '@theia/core/lib/browser/theming';
+import URI from '@theia/core/lib/common/uri';
 import { TextEditorProvider } from '@theia/editor/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { injectable, inject } from 'inversify';
 import { H1stBackendWithClientService } from '../../common/protocol';
+import { TuningUris } from './experiment-uris';
 import { ExperimentWidget } from './expriment-widget';
 
 export interface TuningExperimentWidgetOpenerOptions
   extends WidgetOpenerOptions {
-  name: string;
-  id: string;
+  uri: string;
 }
 
 @injectable()
@@ -37,15 +38,15 @@ export class ExperimentWidgetFactory implements WidgetFactory {
   createWidget(
     options: TuningExperimentWidgetOpenerOptions,
   ): Promise<ExperimentWidget> {
-    return this.createEditor(options.name, options.id);
+    return this.createEditor(new URI(options.uri));
   }
 
-  protected async createEditor(
-    name: string,
-    id: string,
-  ): Promise<ExperimentWidget> {
+  protected async createEditor(uri: URI): Promise<ExperimentWidget> {
+    const data = TuningUris.decode(uri);
+
+    const { name, id } = data;
     // const textEditor = await this.editorProvider(uri);
-    const newExperiment = new ExperimentWidget(name);
+    const newExperiment = new ExperimentWidget({ name, id, uri });
 
     // this.setLabels(newExperiment, uri);
     const labelListener = this.labelProvider.onDidChange(event => {

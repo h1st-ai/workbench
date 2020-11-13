@@ -4,6 +4,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import {
   FrontendApplication,
   Message,
+  OpenerService,
   ReactWidget,
 } from '@theia/core/lib/browser';
 import { Emitter, Event } from '@theia/core';
@@ -38,6 +39,7 @@ export class ExperimentListWidget extends ReactWidget {
     protected app: FrontendApplication,
     @inject(WidgetManager)
     protected widgetManager: WidgetManager,
+    @inject(OpenerService) protected openerService: OpenerService,
   ) {
     super();
     this.store = store;
@@ -46,6 +48,7 @@ export class ExperimentListWidget extends ReactWidget {
       store,
       app,
       widgetManager,
+      openerService,
     });
 
     // this.tuningManager = new TuningManager({

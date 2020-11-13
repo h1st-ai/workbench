@@ -1,8 +1,10 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { expActions } from './reducers/experiment';
 import { IExperiment } from './types';
-import { ExperimentWidgetFactory } from './experiment-widget-factory';
+// import { ExperimentWidgetFactory } from './experiment-widget-factory';
 import { FrontendApplication, WidgetManager } from '@theia/core/lib/browser';
+import { OpenerService, open } from '@theia/core/lib/browser/opener-service';
+import { TuningUris } from './experiment-uris';
 
 // import { ExperimentWidget } from './expriment-widget';
 // import { WidgetManager } from '@theia/core/lib/browser';
@@ -13,20 +15,30 @@ interface ITuningManagerOptions {
   store: EnhancedStore;
   app: FrontendApplication;
   widgetManager: WidgetManager;
+  openerService: OpenerService;
 }
 
 export class TuningManager {
   private store: EnhancedStore;
   private readonly app: FrontendApplication;
   private readonly widgetManager: WidgetManager;
+  private readonly openerService: OpenerService;
 
   // @inject(ExperimentWidgetFactory)
   // private expWidgetFactory: ExperimentWidgetFactory;
 
-  constructor({ store, app, widgetManager }: ITuningManagerOptions) {
+  constructor({
+    store,
+    app,
+    widgetManager,
+    openerService,
+  }: ITuningManagerOptions) {
     this.store = store;
     this.app = app;
     this.widgetManager = widgetManager;
+    this.openerService = openerService;
+
+    console.log(this.app, this.widgetManager, this.openerService);
   }
 
   async createNewExperiment() {
@@ -43,17 +55,23 @@ export class TuningManager {
 
     this.store.dispatch(addExperiments({ data: [exp] }));
 
+    open(this.openerService, TuningUris.encode(id, name), {
+      mode: 'activate',
+      name,
+      id,
+    });
+
     // const widget = this.expWidgetFactory.createWidget({ name, id });
     // console.log('widget', widget);
 
-    const widget = await this.widgetManager.getOrCreateWidget(
-      ExperimentWidgetFactory.ID,
-      { name, id },
-    );
+    // const widget = await this.widgetManager.getOrCreateWidget(
+    //   ExperimentWidgetFactory.ID,
+    //   { name, id },
+    // );
 
-    await this.app.shell.addWidget(widget, { area: 'main', rank: 1000 });
-    // this.
-    widget.show();
+    // await this.app.shell.addWidget(widget, { area: 'main', rank: 1000 });
+    // // this.
+    // widget.show();
     // this.widgetOpenHandler.open(new URI(`tune://widget${id}`), {
     //   mode: 'activate',
     // });
