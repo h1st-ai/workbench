@@ -1,9 +1,9 @@
-import * as React from "react";
+import * as React from 'react';
 
 export function EmptyComponent() {
   return (
     <div className="experiment-empty">
-      <p>It's empty herer</p>
+      <p>No experiments found</p>
       <button>New Experiment</button>
     </div>
   );

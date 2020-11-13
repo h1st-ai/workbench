@@ -1,47 +1,47 @@
-import { injectable, inject } from "inversify";
-import { ExperimentListWidget } from "./index";
+import { injectable, inject } from 'inversify';
+import { ExperimentListWidget } from './index';
 import {
   AbstractViewContribution,
   FrontendApplicationContribution,
   FrontendApplication,
   Widget,
-} from "@theia/core/lib/browser";
-import { Command, CommandRegistry } from "@theia/core/lib/common/command";
-import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
+} from '@theia/core/lib/browser';
+import { Command, CommandRegistry } from '@theia/core/lib/common/command';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
   TabBarToolbarContribution,
   TabBarToolbarRegistry,
-} from "@theia/core/lib/browser/shell/tab-bar-toolbar";
-import { MAIN_MENU_BAR, MenuModelRegistry } from "@theia/core";
+} from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { MAIN_MENU_BAR, MenuModelRegistry } from '@theia/core';
 
 namespace TunningCommands {
-  const TUNE_CATEGORY = "Hyper Parameter Tuning";
+  const TUNE_CATEGORY = 'Hyper Parameter Tuning';
 
   export const REFRESH: Command = {
-    id: "h1st:tuning:experiment:refresh",
-    label: "Refresh",
+    id: 'h1st:tuning:experiment:refresh',
+    label: 'Refresh',
     category: TUNE_CATEGORY,
-    iconClass: "refresh",
+    iconClass: 'refresh',
   };
 
   export const NEW_EXPERIMENT: Command = {
-    id: "h1st:tuning:experiment:new_experiment",
-    label: "New Experiment",
+    id: 'h1st:tuning:experiment:new_experiment',
+    label: 'New Experiment',
     category: TUNE_CATEGORY,
-    iconClass: "add",
+    iconClass: 'add',
   };
 
   export const TUNING_EXPERIMENT_COMMAND: Command = {
-    id: "h1st:tuning:widget:experiment",
-    label: "Open Experiment",
+    id: 'h1st:tuning:widget:experiment',
+    label: 'Open Experiment',
   };
 }
 
-export const TOOL_MENU = [...MAIN_MENU_BAR, "5_tools"];
+export const TOOL_MENU = [...MAIN_MENU_BAR, '5_tools'];
 
 export namespace TuningMenu {
-  export const TUNING = [...TOOL_MENU, "1_turning_submenu"];
-  export const TUNING_EXP_LIST = [...TUNING, "1_turning_submenu_explist"];
+  export const TUNING = [...TOOL_MENU, '1_turning_submenu'];
+  export const TUNING_EXP_LIST = [...TUNING, '1_turning_submenu_explist'];
   // export const FILE_SETTINGS_SUBMENU_OPEN = [
   //   ...NOTEBOOK_KERNEL_SUBMENU,
   //   "1_notebook_submenu_kernel",
@@ -66,7 +66,7 @@ export class TuningContribution
     super({
       widgetId: ExperimentListWidget.ID,
       widgetName: ExperimentListWidget.LABEL,
-      defaultWidgetOptions: { area: "left", rank: 200 },
+      defaultWidgetOptions: { area: 'left', rank: 200 },
       toggleCommandId: TunningCommands.TUNING_EXPERIMENT_COMMAND.id,
     });
   }
@@ -78,15 +78,19 @@ export class TuningContribution
   registerCommands(commands: CommandRegistry): void {
     super.registerCommands(commands);
     commands.registerCommand(TunningCommands.REFRESH, {
-      isEnabled: (widget) => this.withWidget(widget, () => true),
-      isVisible: (widget) => this.withWidget(widget, () => true),
-      execute: () => alert("test"),
+      isEnabled: widget => this.withWidget(widget, () => true),
+      isVisible: widget => this.withWidget(widget, () => true),
+      execute: () => alert('test'),
     });
 
     commands.registerCommand(TunningCommands.NEW_EXPERIMENT, {
-      isEnabled: (widget) => this.withWidget(widget, () => true),
-      isVisible: (widget) => this.withWidget(widget, () => true),
-      execute: () => alert("new experiment"),
+      isEnabled: widget => this.withWidget(widget, () => true),
+      isVisible: widget => this.withWidget(widget, () => true),
+      execute: widget =>
+        this.withWidget(widget, () => {
+          console.log('hgaha', widget);
+          (widget as ExperimentListWidget).manager.createNewExperiment();
+        }),
     });
   }
 
@@ -111,8 +115,8 @@ export class TuningContribution
   }
 
   registerMenus(menus: MenuModelRegistry): void {
-    menus.registerSubmenu(TOOL_MENU, "Tools");
-    menus.registerSubmenu(TuningMenu.TUNING, "Hyper Params Tuning");
+    menus.registerSubmenu(TOOL_MENU, 'Tools');
+    menus.registerSubmenu(TuningMenu.TUNING, 'Hyper Params Tuning');
     // menus.registerSubmenu(TuningMenu.TUNING_EXP_LIST, "View Experiments");
 
     // menus.registerMenuAction(TuningMenu.TUNING, {
@@ -124,7 +128,7 @@ export class TuningContribution
     menus.registerMenuAction(TuningMenu.TUNING_EXP_LIST, {
       commandId: TunningCommands.TUNING_EXPERIMENT_COMMAND.id,
       label: TunningCommands.TUNING_EXPERIMENT_COMMAND.label,
-      order: "111",
+      order: '111',
     });
   }
 
@@ -134,7 +138,7 @@ export class TuningContribution
 
   protected withWidget<T>(
     widget: Widget | undefined = this.tryGetWidget(),
-    fn: (widget: ExperimentListWidget) => T
+    fn: (widget: ExperimentListWidget) => T,
   ): T | false {
     if (
       widget instanceof ExperimentListWidget &&

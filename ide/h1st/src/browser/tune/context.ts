@@ -1,9 +1,10 @@
-import * as React from "react";
-import { TuningManager } from "./tuning-manager";
-import { ITuningContext } from "./types";
+import * as React from 'react';
+// import { TuningManager } from './tuning-manager';
+import { ITuningContext } from './types';
+// import store from './stores';
 
 const defaultValue: ITuningContext = {
-  manager: new TuningManager({ store: null }),
+  manager: undefined,
 };
 
 const TuningContext = React.createContext(defaultValue);

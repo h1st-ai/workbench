@@ -1,7 +1,7 @@
-import { TuningManager } from "./tuning-manager";
+import { TuningManager } from './tuning-manager';
 
 export interface ITuningContext {
-  manager: TuningManager;
+  manager: TuningManager | undefined;
 }
 
 export interface IStore {
@@ -22,11 +22,12 @@ export interface IExperimentSlice {
 
 export interface IExperiment {
   id: string;
-  model_class: string;
-  config: any;
-  status: string;
-  error: string | null;
-  traceback: string;
-  created_at: string;
-  finished_at: string | null;
+  name: string;
+  model_class?: string;
+  config?: any;
+  status?: string;
+  error?: string | null;
+  traceback?: string;
+  created_at?: string;
+  finished_at?: string | null;
 }

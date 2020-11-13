@@ -1,31 +1,61 @@
-import * as React from "react";
+import * as React from 'react';
 // import * as ReactDOM from "react-dom";
-import { injectable, postConstruct } from "inversify";
-// import { BaseWidget, StatefulWidget } from "@theia/core/lib/browser";
-// import { ReactWidget } from "@theia/core/lib/browser/widgets/react-widget";
-import { Message, ReactWidget } from "@theia/core/lib/browser";
-import { Emitter, Event } from "@theia/core";
-import TuningContext from "./context";
-import { ITuningContext } from "./types";
-import { TuningManager } from "./tuning-manager";
-import { configureStore, EnhancedStore } from "@reduxjs/toolkit";
-import reducer from "./reducers";
-import { Provider } from "react-redux";
+import { inject, injectable, postConstruct } from 'inversify';
+import {
+  FrontendApplication,
+  Message,
+  ReactWidget,
+} from '@theia/core/lib/browser';
+import { Emitter, Event } from '@theia/core';
+import { EnhancedStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import { WidgetManager } from '@theia/core/lib/browser';
+
+import store from './stores';
+import TuningContext from './context';
+import { ITuningContext } from './types';
+import { TuningManager } from './tuning-manager';
+import { ExperimentList } from './components/experiment-list';
 
 @injectable()
 export class ExperimentListWidget extends ReactWidget {
-  static readonly ID = "h1st:tune:sidebar:widget";
-  static readonly LABEL = "Hyper Parameter Tuning";
+  static readonly ID = 'h1st:tune:sidebar:widget';
+  static readonly LABEL = 'Hyper Parameter Tuning';
 
   protected readonly onDidUpdateEmitter = new Emitter<void>();
   readonly onDidUpdate: Event<void> = this.onDidUpdateEmitter.event;
   protected tuningManager: TuningManager;
   protected store: EnhancedStore;
 
-  constructor() {
+  // @inject(ApplicationShell)
+  // protected readonly shell: ApplicationShell;
+
+  // @inject(WidgetManager)
+  // protected readonly widgetManager: WidgetManager;
+
+  constructor(
+    @inject(FrontendApplication)
+    protected app: FrontendApplication,
+    @inject(WidgetManager)
+    protected widgetManager: WidgetManager,
+  ) {
     super();
-    this.store = configureStore({ reducer, devTools: true });
-    this.tuningManager = new TuningManager({ store: this.store });
+    this.store = store;
+    console.log('experiment list', widgetManager, app);
+    this.tuningManager = new TuningManager({
+      store,
+      app,
+      widgetManager,
+    });
+
+    // this.tuningManager = new TuningManager({
+    //   store,
+    //   shell: shell,
+    //   widgetManager: widgetManager,
+    // });
+
+    this.addClass('h1st-tuning');
+    this.addClass('h1st-tuning-main-container');
   }
 
   get manager(): TuningManager {
@@ -38,7 +68,7 @@ export class ExperimentListWidget extends ReactWidget {
     this.title.label = ExperimentListWidget.LABEL;
     this.title.caption = ExperimentListWidget.LABEL;
     this.title.closable = true;
-    this.title.iconClass = "sidebar-tuning-icon";
+    this.title.iconClass = 'sidebar-tuning-icon';
 
     this.update();
   }
@@ -49,7 +79,17 @@ export class ExperimentListWidget extends ReactWidget {
   }
 
   protected render(): React.ReactNode {
-    return <p>Tuning</p>;
+    const contextValue: ITuningContext = {
+      manager: this.tuningManager,
+    };
+
+    return (
+      <TuningContext.Provider value={contextValue}>
+        <Provider store={this.store}>
+          <ExperimentList />
+        </Provider>
+      </TuningContext.Provider>
+    );
   }
 
   protected onAfterAttach(msg: Message): void {
@@ -70,19 +110,5 @@ export class ExperimentListWidget extends ReactWidget {
   protected onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.node.focus();
-  }
-
-  protected renderList(): React.ReactNode {
-    const contextValue: ITuningContext = {
-      manager: this.tuningManager,
-    };
-
-    return (
-      <TuningContext.Provider value={contextValue}>
-        <Provider store={this.store}>
-          <div>ExperimentList</div>
-        </Provider>
-      </TuningContext.Provider>
-    );
   }
 }

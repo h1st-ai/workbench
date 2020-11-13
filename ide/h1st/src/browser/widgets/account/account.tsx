@@ -1,6 +1,6 @@
-import * as React from "react";
-import { KeycloakInstance, KeycloakProfile } from "keycloak-js";
-import ProfilePhoto from "./profile";
+import * as React from 'react';
+import { KeycloakInstance, KeycloakProfile } from 'keycloak-js';
+import ProfilePhoto from './profile';
 
 interface IAccountProps {
   keycloak: KeycloakInstance;
@@ -12,8 +12,6 @@ export function Account({ keycloak }: IAccountProps) {
   React.useEffect(() => {
     (async function() {
       const user = await keycloak.loadUserProfile();
-      console.log("user profile", user);
-
       setUser(user);
     })();
   }, []);
