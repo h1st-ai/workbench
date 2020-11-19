@@ -36,7 +36,7 @@ start-jupyter() {
 start-api() {
     DIR_NAME=`python -c "import h1st.cli.project as prj; print(prj._clean_name('$WORKBENCH_NAME')[0])"`
     cd $WORKSPACE_PATH/$DIR_NAME
-    uvicorn --port 3002 h1st.contrib.tune_server.server:app
+    # uvicorn --port 3002 h1st.contrib.tune_server.server:app
 }
 
 start-jupyter &
