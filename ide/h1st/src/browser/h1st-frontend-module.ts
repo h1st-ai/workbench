@@ -1,4 +1,8 @@
-import { CommandContribution, MenuContribution } from "@theia/core/lib/common";
+import {
+  CommandContribution,
+  CommandService,
+  MenuContribution,
+} from "@theia/core/lib/common";
 import {
   WebSocketConnectionProvider,
   FrontendApplicationContribution,
@@ -33,6 +37,7 @@ import { H1stAuthService } from "./auth-service";
 
 import { NotebookFactory } from "./notebook/notebook-factory";
 import { NotebookOpener } from "./notebook/opener";
+import { ShareDialog } from "./widgets/share-dialog";
 
 export default new ContainerModule((bind, unbind) => {
   bind(NotebookOpener).toSelf();
@@ -70,6 +75,11 @@ export default new ContainerModule((bind, unbind) => {
   bind(H1stAboutDialog)
     .toSelf()
     .inSingletonScope();
+
+  bind(ShareDialog)
+    .toSelf()
+    .inSingletonScope();
+
   bind(FrontendApplicationContribution).to(H1stFrontendApplicationContribution);
   bind(FrontendApplicationContribution).to(H1stWorkspaceService);
 

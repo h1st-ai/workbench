@@ -1,0 +1,26 @@
+.h1st-share-modal.dialogOverlay .dialogBlock {
+  border-radius: 10px;
+  background-color: white;
+  font-family: var(--theia-ui-font-family);
+}
+
+.h1st-share-modal .dialogBlock .dialogTitle {
+  border-radius: 10px 10px 0px 0px;
+  background-color: var(--color-grey-5);
+  color: var(--color-dblue);
+  font-weight: 600;
+  padding: 12px;
+}
+
+.h1st-share-modal .dialogBlock .share-dialog-content {
+  padding: 12px;
+}
+
+.h1st-share-modal .dialogBlock .share-dialog-content input {
+  border-style: none;
+  margin: 12px 0px;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #dde5e7;
+  height: 28px;
+}

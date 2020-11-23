@@ -15,3 +15,8 @@ export const H1stOpenWorkspace: Command = {
   id: WorkspaceCommands.OPEN_WORKSPACE.id,
   label: WorkspaceCommands.OPEN_WORKSPACE.label,
 };
+
+export const H1stOpenShareCommand: Command = {
+  id: "h1st.share.open",
+  label: "Share",
+};

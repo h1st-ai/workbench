@@ -2,9 +2,13 @@
   --theia-ui-font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
   --theia-private-menubar-height: 45px;
   --code-font-family: Menlo, Monaco, "Courier New", monospace;
+
+  --color-dblue: #2c3d69;
+  --color-grey-5: #f0f4f5;
 }
 
 @import "header.css";
+@import "share-diaglog.css";
 
 button {
   cursor: pointer;
