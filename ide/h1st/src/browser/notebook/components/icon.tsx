@@ -281,6 +281,23 @@ function Icon({ icon, width = 16, height = 16, fill = "none" }: IIconPropsp) {
           />
         </svg>
       );
+    case "trash-bin":
+      return (
+        <svg
+          width={width.toString()}
+          height={height.toString()}
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M16 3H12V0H4V3H0V5H1V16H15V5H16V3ZM6 2H10V3H6V2ZM13 14H3V5H13V14Z"
+            fill="#B0B6C1"
+          />
+          <path d="M7 7H5V12H7V7Z" fill="#B0B6C1" />
+          <path d="M11 7H9V12H11V7Z" fill="#B0B6C1" />
+        </svg>
+      );
 
     default:
       return <span>Icon not found</span>;

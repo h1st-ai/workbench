@@ -1,8 +1,4 @@
-import {
-  CommandContribution,
-  CommandService,
-  MenuContribution,
-} from "@theia/core/lib/common";
+import { CommandContribution, MenuContribution } from "@theia/core/lib/common";
 import {
   WebSocketConnectionProvider,
   FrontendApplicationContribution,

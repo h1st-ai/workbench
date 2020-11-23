@@ -4,10 +4,15 @@
   font-family: var(--theia-ui-font-family);
 }
 
+.h1st-share-modal .dialogControl {
+  display: none;
+}
+
 .h1st-share-modal .dialogBlock .dialogTitle {
   border-radius: 10px 10px 0px 0px;
   background-color: var(--color-grey-5);
   color: var(--color-dblue);
+  font-size: 16px;
   font-weight: 600;
   padding: 12px;
 }
@@ -23,4 +28,56 @@
   border-radius: 5px;
   border: 1px solid #dde5e7;
   height: 28px;
+}
+
+.collaborator-item {
+  margin-top: 12px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collaborator-item .collaborator-info {
+  display: flex;
+  align-items: center;
+}
+
+.collaborator-item .collaborator-info .avatar img {
+  border-radius: 50px;
+  width: 32px;
+  height: 32px;
+  margin-right: 16px;
+}
+
+.collaborator-item .collaborator-info .info .name {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.collaborator-item .collaborator-info .info .email {
+  color: var(--color-grey-3);
+  font-size: 14px;
+}
+
+.collaborator-item .collaborator-info .info .owner {
+  margin-left: 12px;
+  background-color: var(--color-subtle-blue);
+  border: 1px solid var(--color-stroke-blue);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.collaborator-item .delete-button {
+  display: none;
+}
+
+.collaborator-item:hover .delete-button {
+  cursor: pointer;
+  display: inline;
 }

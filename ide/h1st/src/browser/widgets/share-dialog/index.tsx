@@ -8,8 +8,37 @@ import {
   ExtensionInfo,
 } from "@theia/core/lib/common/application-protocol";
 import { Message } from "@theia/core/lib/browser/widgets";
+import { Collaborator } from "./shareDialog";
+import Icon from "../../notebook/components/icon";
 
 export const ABOUT_CONTENT_CLASS = "theia-aboutDialog";
+
+const CollaboratorItem = ({
+  avatar,
+  name,
+  email,
+  isOwner = false,
+}: Collaborator) => {
+  return (
+    <div className="collaborator-item">
+      <div className="collaborator-info">
+        <div className="avatar">
+          <img src={avatar} />
+        </div>
+        <div className="info">
+          <div className="name">
+            <span>{name}</span>
+            {isOwner && <span className="owner">OWNER</span>}
+          </div>
+          <div className="email">{email}</div>
+        </div>
+      </div>
+      <div className="delete-button">
+        <Icon icon="trash-bin" />
+      </div>
+    </div>
+  );
+};
 
 @injectable()
 export class ShareDialog extends ReactDialog<void> {
@@ -49,13 +78,29 @@ export class ShareDialog extends ReactDialog<void> {
   protected renderCollaboratorList(): React.ReactNode {
     return (
       <>
-        <div>Collaborator list</div>
+        <CollaboratorItem
+          avatar="https://merics.org/sites/default/files/styles/ct_team_member_default/public/2020-04/avatar-placeholder.png?itok=Vhm0RCa3"
+          name="John Smith"
+          email="john@ma.il"
+          isOwner={true}
+        />
+        <CollaboratorItem
+          avatar="https://merics.org/sites/default/files/styles/ct_team_member_default/public/2020-04/avatar-placeholder.png?itok=Vhm0RCa3"
+          name="Adam Levine"
+          email="adam@ma.il"
+          isOwner={false}
+        />
+        <CollaboratorItem
+          avatar="https://merics.org/sites/default/files/styles/ct_team_member_default/public/2020-04/avatar-placeholder.png?itok=Vhm0RCa3"
+          name="David Jackson"
+          email="david@ma.il"
+          isOwner={false}
+        />
       </>
     );
   }
 
   protected render(): React.ReactNode {
-    console.log("Call render");
     return (
       <div className={"share-dialog-content"}>
         {this.renderCollaboratorInput()}
