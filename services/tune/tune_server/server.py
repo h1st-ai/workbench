@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseSettings
 from h1st.model_repository.explorer import ModelExplorer
 
-from .runner import TuneConfig, TuneRunner
+from tune_server.runner import TuneConfig, TuneRunner
 
 class Settings(BaseSettings):
     project_root: str = os.getcwd()
