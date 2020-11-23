@@ -100,11 +100,26 @@ export class ShareDialog extends ReactDialog<void> {
     );
   }
 
+  private renderActionButton = (): React.ReactNode => {
+    return (
+      <div className="acction-button-section">
+        <button className="action-button primary">Share</button>
+        <button
+          className="action-button secondary"
+          onClick={() => this.close()}
+        >
+          Cancel
+        </button>
+      </div>
+    );
+  };
+
   protected render(): React.ReactNode {
     return (
       <div className={"share-dialog-content"}>
         {this.renderCollaboratorInput()}
         {this.renderCollaboratorList()}
+        {this.renderActionButton()}
       </div>
     );
   }

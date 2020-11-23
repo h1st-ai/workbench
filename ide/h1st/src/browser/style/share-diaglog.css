@@ -5,7 +5,7 @@
 }
 
 .h1st-share-modal .dialogControl {
-  display: none;
+  display: none !important;
 }
 
 .h1st-share-modal .dialogBlock .dialogTitle {
@@ -19,6 +19,34 @@
 
 .h1st-share-modal .dialogBlock .share-dialog-content {
   padding: 12px;
+}
+
+.h1st-share-modal .acction-button-section {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.h1st-share-modal .action-button {
+  border-style: none;
+  text-align: center;
+  padding: 0px 10px;
+  height: 40px;
+  min-width: 100px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.h1st-share-modal .action-button.primary {
+  background-color: #2241b0;
+  color: #dce4ff;
+}
+
+.h1st-share-modal .action-button.secondary {
+  background-color: #e5e9f1;
+  color: #2241b0;
 }
 
 .h1st-share-modal .dialogBlock .share-dialog-content input {
