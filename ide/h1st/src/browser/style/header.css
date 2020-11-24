@@ -33,6 +33,24 @@
   align-items: center;
 }
 
+.profile-wrapper .share-button {
+  background-color: #e4eaff;
+  color: #30479b;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin: 0px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: row;
+}
+
+.profile-wrapper .share-button .text {
+  margin-left: 6px;
+}
+
 .profile-photo-wrapper {
   padding-right: 16px;
 }
