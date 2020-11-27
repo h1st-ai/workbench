@@ -8,6 +8,7 @@ from pydantic import BaseSettings
 from h1st.model_repository.explorer import ModelExplorer
 
 from tune_server.runner import TuneConfig, TuneRunner
+from .graph_utils import find_graphs_in_package, get_graph_topology
 
 class Settings(BaseSettings):
     project_root: str = os.getcwd()
@@ -79,3 +80,36 @@ def start_tune(config: TuneConfig) -> dict:
             "model_class": config.model_class,
         }
     }
+
+@app.get("/api/graphs")
+def get_graphs() -> dict:
+    '''
+    @return:
+        {
+            [module_name]: list of graph classes
+        }
+    '''
+
+    graphs_dict = find_graphs_in_package()
+
+    for k, v in graphs_dict.items():
+        graphs_dict[k] = [i.__name__ for i in v]
+
+    return graphs_dict
+
+@app.get("/api/graphs/{graph_class_name}/topology")
+def get_topology(graph_class_name: str) -> dict:
+    '''
+    @return:
+        {
+            [node_id]: {
+                node_name: string(node_id),
+                node_type: 'condition' | 'action' | None,
+                edges: [{
+                    next_node_id: string,
+                    edge_label: str
+                }]
+            }
+        }
+    '''
+    return get_graph_topology(graph_class_name)
