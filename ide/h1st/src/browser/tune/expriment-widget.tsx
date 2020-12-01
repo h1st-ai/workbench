@@ -47,9 +47,17 @@ export class ExperimentWidget extends ReactWidget
     return TuningUris.encode(this._id, this._name);
   }
 
+  onAfterAttach(msg: Message) {
+    super.onAfterAttach(msg);
+
+    if (this.isVisible) {
+      this.update();
+    }
+  }
+
   onActivateRequest(msg: Message) {
     super.onActivateRequest(msg);
-    // this.update();
+    this.update();
   }
 
   render(): React.ReactNode {

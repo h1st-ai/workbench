@@ -97,13 +97,13 @@ export class TuningContribution
   async registerToolbarItems(toolbar: TabBarToolbarRegistry): Promise<void> {
     const widget = await this.widget;
     const onDidChange = widget.onDidUpdate;
-    toolbar.registerItem({
-      id: TunningCommands.REFRESH.id,
-      command: TunningCommands.REFRESH.id,
-      tooltip: TunningCommands.REFRESH.label,
-      priority: 2,
-      onDidChange,
-    });
+    // toolbar.registerItem({
+    //   id: TunningCommands.REFRESH.id,
+    //   command: TunningCommands.REFRESH.id,
+    //   tooltip: TunningCommands.REFRESH.label,
+    //   priority: 2,
+    //   onDidChange,
+    // });
 
     toolbar.registerItem({
       id: TunningCommands.NEW_EXPERIMENT.id,
