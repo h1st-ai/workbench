@@ -6,6 +6,7 @@ import {
 } from "@theia/core/lib/browser";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
+// import { GraphContainer } from "./components/graph";
 
 @injectable()
 export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
@@ -36,6 +37,11 @@ export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
   }
 
   protected render(): React.ReactNode {
-    return <p>Graph goes here</p>;
+    return (
+      <div>
+        <div>This is a graph</div>
+        <div className="myGraph">{/* <GraphContainer /> */}</div>
+      </div>
+    );
   }
 }

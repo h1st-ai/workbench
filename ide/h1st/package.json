@@ -36,6 +36,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "plotly.js-dist": "1.55.2",
+    "react-digraph": "^7.0.0-alpha.5",
     "react-markdown": "^4.3.1",
     "react-redux": "7.2.1",
     "react-tooltip": "^4.2.10",
