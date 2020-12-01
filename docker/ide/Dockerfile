@@ -1,5 +1,5 @@
 
-FROM theiaide/theia-python
+FROM theiaide/theia-python:1.5.0
 
 # switch to py3 as default
 RUN PYTHON_PATH=`which python` && \
@@ -9,7 +9,6 @@ RUN PYTHON_PATH=`which python` && \
 
 COPY ./docker/ide/components/requirements.txt /tmp
 RUN pip3 install --no-cache -r /tmp/requirements.txt
-RUN pip3 install git+https://github.com/h1st-ai/h1st@tune_integration#v=2
 
 # ENV THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/browser-app/plugins
 
@@ -47,8 +46,15 @@ COPY ./docker/ide/traefik.yml /opt
 COPY ./docker/ide/traefik-service.yml /opt/traefik
 COPY ./docker/ide/jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
+RUN mkdir /opt/tune
+COPY ./services/tune /opt/tune/
+RUN pip3 install --no-cache -r /opt/tune/requirements.txt
+
 COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html
+
+# this is also updated more often
+RUN pip3 install --no-cache git+https://github.com/h1st-ai/h1st@tune_integration#v4
 
 EXPOSE 3000
 COPY ./docker/ide/entrypoint.sh ./docker/ide/app.sh /

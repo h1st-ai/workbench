@@ -27,8 +27,8 @@ const INSTANCE_CONFIG: IInstances = {
     ram: 1024 * 2,
   },
   medium: {
-    cpu: 1024 * 4,
-    ram: 1024 * 8,
+    cpu: 1024 * 8,
+    ram: 1024 * 32,
   },
   large: {
     cpu: 1024 * 16,
@@ -50,8 +50,7 @@ export default function CreateProjectDialog() {
   const [size, setSize] = useState('small');
   const dispatch = useDispatch();
 
-  const { token } = useSelector((store: IStore) => store.auth);
-  const { currentProjectStatus, showCreateProjectDialog } = useSelector(
+  const { showCreateProjectDialog } = useSelector(
     (store: IStore) => store.dashboard,
   );
 
@@ -62,7 +61,6 @@ export default function CreateProjectDialog() {
       makeApiParams({
         url: `project/${pId}`,
         method: 'GET',
-        token,
       }),
     );
 
@@ -72,19 +70,7 @@ export default function CreateProjectDialog() {
       console.log('additonal ping');
 
       try {
-        const statusCheck = await axios.get(`/project/${pId}/#/home/project`);
-
-        // console.log()
-        // if (statusCheck.status === 404) {
-        //
-        //   window.ga(
-        //     'send',
-        //     'event',
-        //     'Errors',
-        //     '404',
-        //     `/project/${pId}/#/home/project`,
-        //   );
-        // }
+        await axios.get(`/project/${pId}/#/home/project`);
       } catch (error) {
         console.log('error', error.response.status);
         // @ts-ignore
@@ -114,7 +100,7 @@ export default function CreateProjectDialog() {
   }
 
   const createProject = async () => {
-    if (value == null || value == '') {
+    if (value === null || value === '') {
       setError('Please enter a project name.');
       return;
     } else if (!value.match(/^[a-zA-Z]/)) {
@@ -143,7 +129,6 @@ export default function CreateProjectDialog() {
           cpu: INSTANCE_CONFIG[size].cpu,
           gpu: INSTANCE_CONFIG[size].gpu,
         },
-        token,
       }),
     );
 
@@ -152,6 +137,11 @@ export default function CreateProjectDialog() {
       const { id } = res.data.item;
       setProjectId(id);
       setTimeout(() => poll(id), 1000);
+    } else {
+      // {
+      //   error: "Error creating project"
+      //   status: "error"
+      // }
     }
   };
 

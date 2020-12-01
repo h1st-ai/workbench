@@ -142,6 +142,7 @@ export class ProjectService {
         };
       }
     } else {
+      console.log('remoteData', remoteData);
       return {
         status: 'error',
         error: 'Error creating project',

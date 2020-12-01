@@ -96,7 +96,6 @@ export function ProjectGridItem({
         makeApiParams({
           url,
           method: options.method,
-          token,
         }),
       );
 
@@ -120,7 +119,6 @@ export function ProjectGridItem({
         makeApiParams({
           url: `project/${id}/start`,
           method: 'POST',
-          token,
         }),
       );
 
@@ -154,7 +152,6 @@ export function ProjectGridItem({
         makeApiParams({
           url: `project/${id}/stop`,
           method: 'POST',
-          token,
         }),
       );
 
@@ -208,7 +205,6 @@ export function ProjectGridItem({
         makeApiParams({
           url: `project/${id}`,
           method: 'DELETE',
-          token,
         }),
       );
 

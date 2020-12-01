@@ -23,10 +23,11 @@ There are some required environment variables:
 
 ### Saas services
 
-1. Starting docker: `cd ./docker && docker-compose -f dev.yml up`
-2. Starting api: `cd ./services/api && yarn start`
-3. Starting web ui: `cd ./services/web && yarn start`. Select yes when prompted
-4. Start nginx
+1. Start VPN
+2. Starting docker: `cd ./docker && docker-compose -f dev.yml up`
+3. Starting api: `cd ./services/api && yarn start`
+4. Starting web ui: `cd ./services/web && yarn start`. Select yes when prompted
+5. Start nginx
 
 ### First time setup
 
