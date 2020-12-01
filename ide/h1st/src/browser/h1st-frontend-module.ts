@@ -34,6 +34,9 @@ import { H1stAuthService } from "./auth-service";
 import { NotebookFactory } from "./notebook/notebook-factory";
 import { NotebookOpener } from "./notebook/opener";
 
+import { GraphFactory } from "./visualization/graph-factory";
+import { GraphOpener } from "./visualization/opener";
+
 export default new ContainerModule((bind, unbind) => {
   bind(NotebookOpener).toSelf();
   bind(OpenHandler).toService(NotebookOpener);
@@ -42,6 +45,14 @@ export default new ContainerModule((bind, unbind) => {
     .toSelf()
     .inSingletonScope();
   bind(WidgetFactory).toService(NotebookFactory);
+
+  bind(GraphOpener).toSelf();
+  bind(OpenHandler).toService(GraphOpener);
+
+  bind(GraphFactory)
+    .toSelf()
+    .inSingletonScope();
+  bind(WidgetFactory).toService(GraphFactory);
 
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
