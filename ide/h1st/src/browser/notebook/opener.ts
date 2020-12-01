@@ -41,8 +41,8 @@ export class NotebookOpener extends NavigatableWidgetOpenHandler<
   @postConstruct()
   protected init(): void {
     super.init();
-    this.shell.activeChanged.connect(() => this.updateActiveEditor());
-    this.shell.currentChanged.connect(() => this.updateCurrentEditor());
+    this.shell.onDidChangeActiveWidget(() => this.updateActiveEditor());
+    this.shell.onDidChangeCurrentWidget(() => this.updateCurrentEditor());
     this.onCreated((widget) => {
       widget.onDidChangeVisibility(() => {
         if (widget.isVisible) {
