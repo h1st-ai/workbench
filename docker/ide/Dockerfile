@@ -46,6 +46,10 @@ COPY ./docker/ide/traefik.yml /opt
 COPY ./docker/ide/traefik-service.yml /opt/traefik
 COPY ./docker/ide/jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
+RUN mkdir /opt/tune
+COPY ./services/tune /opt/tune/
+RUN pip3 install --no-cache -r /opt/tune/requirements.txt
+
 COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html
 
