@@ -5,7 +5,7 @@ import {
 } from "react-digraph";
 // import Modal from "./Modal";
 import {
-  default as nodeConfig,
+  default as graphConfig,
   EMPTY_EDGE_TYPE,
   CUSTOM_EMPTY_TYPE,
   NODE_KEY,
@@ -17,7 +17,7 @@ import {
 } from "./elements";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGraph, graphActions } from "../../reducers/graph";
-import { IGraph } from "../../types";
+import { IEdge, IGraph } from "../../types";
 
 const sampleGraph: IGraph = {
   edges: [
@@ -139,12 +139,6 @@ const sampleGraph: IGraph = {
 
 const Graph = () => {
   const graph = useSelector(selectGraph);
-  const [selected, setSelected] = React.useState();
-  // const [graph, updateGraph] = React.useState({
-  //   nodes: [],
-  //   edges: [],
-  // } as IGraph);
-  console.log("selectedGraph", graph);
 
   const dispatch = useDispatch();
   const updateGraph = (graph: IGraph) => dispatch(graphActions.setGraph(graph));
@@ -155,21 +149,6 @@ const Graph = () => {
 
   const graphView = React.useRef();
 
-  const getNodeIndex = (searchNode: any) => {
-    return graph.nodes.findIndex((node) => {
-      return node[NODE_KEY] === searchNode[NODE_KEY];
-    });
-  };
-
-  // Helper to find the index of a given edge
-  const getEdgeIndex = (searchEdge: any) => {
-    return graph.edges.findIndex((edge) => {
-      return (
-        edge.source === searchEdge.source && edge.target === searchEdge.target
-      );
-    });
-  };
-
   /*
    * Handlers/Interaction
    */
@@ -177,9 +156,7 @@ const Graph = () => {
   // Called by 'drag' handler, etc..
   // to sync updates from D3 with the graph
   const onUpdateNode = (viewNode: any) => {
-    const i = getNodeIndex(viewNode);
-
-    graph.nodes[i] = viewNode;
+    dispatch(graphActions.updateNode({ node: viewNode }));
     updateGraph(cloneDeep(graph));
   };
 
@@ -191,16 +168,16 @@ const Graph = () => {
     }
 
     // Deselect events will send Null viewNode
-    setSelected(viewNode);
+    dispatch(graphActions.setSelected({ selected: viewNode }));
   };
 
   // Edge 'mouseUp' handler
-  const onSelectEdge = (viewEdge: any) => {
-    setSelected(viewEdge);
+  const onSelectEdge = (viewEdge: IEdge) => {
+    dispatch(graphActions.setSelected({ selected: viewEdge }));
   };
 
   // Updates the graph with a new node
-  const onCreateNode = (x: any, y: any) => {
+  const onCreateNode = (x: number, y: number) => {
     const type = Math.random() < 0.25 ? SPECIAL_TYPE : CUSTOM_EMPTY_TYPE;
 
     const viewNode = {
@@ -210,25 +187,18 @@ const Graph = () => {
       x,
       y,
     };
-
-    graph.nodes = [...graph.nodes, viewNode];
-    updateGraph(cloneDeep(graph));
+    dispatch(graphActions.createNode({ node: viewNode }));
   };
 
   // Deletes a node from the graph
   const onDeleteNode = (viewNode: any, nodeId: any, nodeArr: any[]) => {
-    // Delete any connected edges
-    const newEdges = graph.edges.filter((edge, i) => {
-      return (
-        edge.source !== viewNode[NODE_KEY] && edge.target !== viewNode[NODE_KEY]
-      );
-    });
-
-    graph.nodes = nodeArr;
-    graph.edges = newEdges;
-
-    updateGraph(cloneDeep(graph));
-    setSelected(undefined);
+    dispatch(
+      graphActions.deleteNode({
+        node: viewNode,
+        nodeArr,
+      })
+    );
+    dispatch(graphActions.setSelected({ selected: undefined }));
   };
 
   // Creates a new node between two edges
@@ -248,9 +218,11 @@ const Graph = () => {
 
     // Only add the edge when the source node is not the same as the target
     if (viewEdge.source !== viewEdge.target) {
-      graph.edges = [...graph.edges, viewEdge] as any;
-      updateGraph(graph);
-      setSelected(viewEdge as any);
+      dispatch(
+        graphActions.addEdge({
+          edge: viewEdge,
+        })
+      );
     }
   };
 
@@ -260,61 +232,22 @@ const Graph = () => {
     targetViewNode: any,
     viewEdge: any
   ) => {
-    const i = getEdgeIndex(viewEdge);
-    const edge = JSON.parse(JSON.stringify(graph.edges[i]));
+    dispatch(
+      graphActions.swapEdge({
+        sourceViewNode,
+        targetViewNode,
+        viewEdge,
+      })
+    );
 
-    edge.source = sourceViewNode[NODE_KEY];
-    edge.target = targetViewNode[NODE_KEY];
-    graph.edges[i] = edge;
-    // reassign the array reference if you want the graph to re-render a swapped edge
-    graph.edges = [...graph.edges];
-
-    updateGraph(graph);
-    setSelected(edge);
+    dispatch(graphActions.setSelected({ selected: viewEdge }));
   };
 
   // Called when an edge is deleted
   const onDeleteEdge = (viewEdge: any, edges: any) => {
-    graph.edges = edges;
-    updateGraph({ ...graph });
-    setSelected(undefined);
+    dispatch(graphActions.deleteEdge({ edges }));
+    dispatch(graphActions.setSelected({ selected: undefined }));
   };
-
-  // onCopySelected = () => {
-  //   if (this.state.selected.source) {
-  //     console.warn("Cannot copy selected edges, try selecting a node instead.");
-
-  //     return;
-  //   }
-
-  //   const x = this.state.selected.x + 10;
-  //   const y = this.state.selected.y + 10;
-
-  //   this.setState({
-  //     copiedNode: { ...this.state.selected, x, y },
-  //   });
-  // };
-
-  // onPasteSelected = () => {
-  //   if (!this.state.copiedNode) {
-  //     console.warn(
-  //       "No node is currently in the copy queue. Try selecting a node and copying it with Ctrl/Command-C"
-  //     );
-  //   }
-
-  //   const graph = this.state.graph;
-  //   const newNode = { ...this.state.copiedNode, id: Date.now() };
-
-  //   graph.nodes = [...graph.nodes, newNode];
-  //   this.forceUpdate();
-  // };
-
-  // const onSelectPanNode = (event: any) => {
-  //   if (graphView && graphView.current) {
-  //     // TO-DO: Set type
-  //     // graphView?.current?.panToNode(event.target.value, true);
-  //   }
-  // };
 
   return (
     <div id="graph" style={{ height: "100%" }}>
@@ -328,10 +261,10 @@ const Graph = () => {
         nodeKey={NODE_KEY}
         nodes={cloneDeep(graph.nodes)}
         edges={cloneDeep(graph.edges)}
-        selected={selected}
-        nodeTypes={nodeConfig.NodeTypes}
-        nodeSubtypes={nodeConfig.NodeSubtypes}
-        edgeTypes={nodeConfig.NodeTypes}
+        selected={graph.selected}
+        nodeTypes={graphConfig.NodeTypes}
+        nodeSubtypes={graphConfig.NodeSubtypes}
+        edgeTypes={graphConfig.NodeTypes}
         onSelectNode={onSelectNode}
         onCreateNode={onCreateNode}
         onUpdateNode={onUpdateNode}

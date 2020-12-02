@@ -20,4 +20,5 @@ export interface IEdge {
 export interface IGraph {
   nodes: INode[];
   edges: IEdge[];
+  selected?: INode | IEdge | undefined;
 }
