@@ -6,7 +6,7 @@ import {
 } from "@theia/core/lib/browser";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
-// import { GraphContainer } from "./components/graph";
+import { GraphContainer } from "./components/graph";
 
 @injectable()
 export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
@@ -27,9 +27,8 @@ export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
   protected async onAfterAttach(msg: Message): Promise<void> {
     super.onAfterAttach(msg);
 
-    if (this.isVisible) {
-      this.update();
-    }
+    console.log("On after attach", msg, this.isVisible);
+    this.update();
   }
 
   protected async onActivateRequest(msg: Message) {
@@ -38,9 +37,8 @@ export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
 
   protected render(): React.ReactNode {
     return (
-      <div>
-        <div>This is a graph</div>
-        <div className="myGraph">{/* <GraphContainer /> */}</div>
+      <div className="h1st-graph">
+        <GraphContainer />
       </div>
     );
   }

@@ -1,11 +1,10 @@
 import * as React from "react";
+import Graph from "./graph";
 
 export const GraphContainer = (props: any) => {
-  const [a] = React.useState(3213);
   return (
     <div>
-      {/* <Graph /> */}
-      {a}
+      <Graph />
     </div>
   );
 };
