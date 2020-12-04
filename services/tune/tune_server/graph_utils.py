@@ -90,15 +90,15 @@ def get_graph_topology(graph_name):
         g = graph_classes[0]()
 
     def dfs_visit(node):
-        id = node.id
+        id = node.id        
         topo[id] = {
             'node_name': id,
             'node_type': 
                 'condition'
-                    if node is Decision
-                    else 'action'
+                    if isinstance(node, Decision)
+                    else ('action'
                         if id not in ['start', 'end']
-                        else None,
+                        else None),
             'edges': [{
                 'next_node_id': edge[0].id,
                 'edge_label': edge[1]
