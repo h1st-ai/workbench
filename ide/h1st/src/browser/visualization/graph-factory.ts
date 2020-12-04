@@ -12,8 +12,6 @@ import { injectable, inject } from "inversify";
 import { H1stBackendWithClientService } from "../../common/protocol";
 import { H1stGraphWidget } from "./graph-widget";
 
-const uniqid = require("uniqid");
-
 @injectable()
 export class GraphFactory implements WidgetFactory {
   static ID = "h1st-graph-opener";
