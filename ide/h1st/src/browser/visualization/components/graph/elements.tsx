@@ -3,9 +3,11 @@ import * as React from "react";
 export const NODE_KEY = "id";
 export const EMPTY_TYPE = "empty";
 export const CUSTOM_EMPTY_TYPE = "customEmpty"; // Empty node type
+export const START_TYPE = "start";
+export const END_TYPE = "end";
 export const POLY_TYPE = "poly";
 export const SPECIAL_TYPE = "special";
-export const SKINNY_TYPE = "skinny";
+export const ACTION_TYPE = "action";
 export const SPECIAL_CHILD_SUBTYPE = "specialChild";
 export const EMPTY_EDGE_TYPE = "emptyEdge";
 export const SPECIAL_EDGE_TYPE = "specialEdge";
@@ -15,7 +17,9 @@ export const nodeTypes = [
   CUSTOM_EMPTY_TYPE,
   POLY_TYPE,
   SPECIAL_TYPE,
-  SKINNY_TYPE,
+  ACTION_TYPE,
+  START_TYPE,
+  END_TYPE,
 ];
 export const edgeTypes = [EMPTY_EDGE_TYPE, SPECIAL_EDGE_TYPE];
 
@@ -24,6 +28,28 @@ export const nodeSubTypes = [SPECIAL_CHILD_SUBTYPE];
 const EmptyNodeShape = (
   <symbol viewBox="0 0 154 154" width="154" height="154" id="emptyNode">
     <circle cx="77" cy="77" r="76" />
+  </symbol>
+);
+
+const StartNodeShape = (
+  <symbol viewBox="0 0 200 200" id="start">
+    <circle cx="100" cy="100" r="50" />
+    <g>
+      <foreignObject width="100%" height="100%">
+        <div>test</div>
+      </foreignObject>
+    </g>
+  </symbol>
+);
+
+const EndNodeShape = (
+  <symbol viewBox="0 0 200 200" id="end">
+    <circle cx="100" cy="100" r="50" />
+    <g>
+      <foreignObject width="100%" height="100%">
+        <div>test</div>
+      </foreignObject>
+    </g>
   </symbol>
 );
 
@@ -50,12 +76,12 @@ const PolyShape = (
   </symbol>
 );
 
-const SkinnyShape = (
+const ActionShape = (
   <symbol
     viewBox="0 0 154 54"
     width="154"
     height="54"
-    id="skinny"
+    id="action"
     onClick={() => console.log("tim")}
   >
     <rect x="0" y="0" rx="2" ry="2" width="154" height="54" />
@@ -122,15 +148,27 @@ export default {
       shapeId: "#customEmpty",
       typeText: "None",
     },
+
+    start: {
+      shape: StartNodeShape,
+      shapeId: "#start",
+      typeText: "Start",
+    },
+
+    end: {
+      shape: EndNodeShape,
+      shapeId: "#end",
+      typeText: "End",
+    },
     special: {
       shape: SpecialShape,
       shapeId: "#special",
       typeText: "Special",
     },
-    skinny: {
-      shape: SkinnyShape,
-      shapeId: "#skinny",
-      typeText: "Skinny",
+    action: {
+      shape: ActionShape,
+      shapeId: "#action",
+      typeText: "Action",
     },
     poly: {
       shape: PolyShape,
