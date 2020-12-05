@@ -12,7 +12,7 @@ from .graph_utils import find_graphs_in_package, get_graph_topology
 
 class Settings(BaseSettings):
     project_root: str = os.getcwd()
-    allowed_cors_origins: str = "localhost:3001"
+    allowed_cors_origins: str = "localhost:3000"
 
 
 settings = Settings()
