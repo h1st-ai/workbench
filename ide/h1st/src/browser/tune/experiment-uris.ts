@@ -51,7 +51,6 @@ export class TuningUriLabelProviderContribution
   constructor(@inject(LabelProvider) protected labelProvider: LabelProvider) {}
 
   canHandle(element: object): number {
-    console.log('tuning label handler', element);
     if (element instanceof URI && TuningUris.isTuningUri(element)) {
       return 100;
     }

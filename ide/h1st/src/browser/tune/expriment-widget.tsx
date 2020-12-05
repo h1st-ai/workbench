@@ -7,7 +7,12 @@ import {
 } from '@theia/core/lib/browser';
 import { injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
+import { configureStore, EnhancedStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+
 import { TuningUris } from './experiment-uris';
+import reducer from './reducers/widget';
+import ExperimentContent from './components/widget';
 
 @injectable()
 export class ExperimentWidget extends ReactWidget
@@ -15,12 +20,14 @@ export class ExperimentWidget extends ReactWidget
   private _name: string;
   private _id: string;
   private _uri: URI;
+  private _store: EnhancedStore;
 
   constructor({ name, id, uri }: any) {
     super();
     this._name = name;
     this._id = id;
     this._uri = uri;
+    this._store = configureStore({ reducer, devTools: true });
   }
 
   get name(): string {
@@ -61,6 +68,10 @@ export class ExperimentWidget extends ReactWidget
   }
 
   render(): React.ReactNode {
-    return <p>Widget</p>;
+    return (
+      <Provider store={this._store}>
+        <ExperimentContent />
+      </Provider>
+    );
   }
 }

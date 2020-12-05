@@ -1,7 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { IStore } from "../types";
+import { createSlice } from '@reduxjs/toolkit';
+import { IStore } from '../types';
 
-import { IAddExperimentPayload, IExperimentSlice } from "../types";
+import { IAddExperimentPayload, IExperimentSlice } from '../types';
 
 const initialState: IExperimentSlice = {
   data: [],
@@ -10,7 +10,7 @@ const initialState: IExperimentSlice = {
 };
 
 export const ExperimentSlice = createSlice({
-  name: "tunes",
+  name: 'tunes',
   initialState,
   reducers: {
     addExperiments: (state, { payload }: IAddExperimentPayload): void => {

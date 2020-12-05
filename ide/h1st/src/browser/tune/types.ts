@@ -31,3 +31,21 @@ export interface IExperiment {
   created_at?: string;
   finished_at?: string | null;
 }
+
+// widget level
+
+export interface IWidgetStore {
+  widget: IWidgetExperimentSlice;
+}
+
+export interface ISetWidgetLoadingPayload {
+  payload: {
+    loading: boolean;
+  };
+}
+
+export interface IWidgetExperimentSlice {
+  data: any;
+  loading: boolean;
+  loaded: boolean;
+}

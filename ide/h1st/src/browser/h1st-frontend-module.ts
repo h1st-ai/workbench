@@ -15,6 +15,7 @@ import {
   H1stBackendService,
   H1ST_BACKEND_PATH,
   H1ST_BACKEND_WITH_CLIENT_PATH,
+  IBackendClient,
 } from '../common/protocol';
 
 import {
@@ -121,7 +122,7 @@ export default new ContainerModule((bind, unbind) => {
   bind(H1stBackendWithClientService)
     .toDynamicValue(ctx => {
       const connection = ctx.container.get(WebSocketConnectionProvider);
-      const backendClient: BackendClient = ctx.container.get(BackendClient);
+      const backendClient: IBackendClient = ctx.container.get(BackendClient);
       return connection.createProxy<H1stBackendWithClientService>(
         H1ST_BACKEND_WITH_CLIENT_PATH,
         backendClient,
@@ -131,7 +132,7 @@ export default new ContainerModule((bind, unbind) => {
 });
 
 @injectable()
-class BackendClientImpl implements BackendClient {
+class BackendClientImpl implements IBackendClient {
   getName(): Promise<string> {
     return new Promise(resolve => resolve('H1stClient'));
   }
