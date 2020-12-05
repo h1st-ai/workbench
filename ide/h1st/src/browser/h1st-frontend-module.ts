@@ -44,6 +44,9 @@ import { ExperimentListWidget } from './tune';
 import { TuningOpener } from './tune/opener';
 import { TuningUriLabelProviderContribution } from './tune/experiment-uris';
 
+import { GraphFactory } from './visualization/graph-factory';
+import { GraphOpener } from './visualization/opener';
+
 export default new ContainerModule((bind, unbind) => {
   bind(NotebookOpener).toSelf();
   bind(OpenHandler).toService(NotebookOpener);
@@ -69,6 +72,15 @@ export default new ContainerModule((bind, unbind) => {
     id: ExperimentListWidget.ID,
     createWidget: () => ctx.container.get(ExperimentListWidget),
   }));
+
+  bind(GraphOpener).toSelf();
+  bind(OpenHandler).toService(GraphOpener);
+
+  bind(GraphFactory)
+    .toSelf()
+    .inSingletonScope();
+  bind(WidgetFactory).toService(GraphFactory);
+
   bindViewContribution(bind, H1stHeaderContribution);
   bind(FrontendApplicationContribution).toService(H1stHeaderContribution);
 
