@@ -31,7 +31,7 @@ const isEdgeExist = (edges: IEdge[], edge: IEdge): boolean =>
 const nameToTypeMapping: { [key: string]: string } = {
   start: START_TYPE,
   end: END_TYPE,
-  dicision: SPECIAL_TYPE,
+  condition: SPECIAL_TYPE,
 };
 
 const convertNameToType = (name: string): string => nameToTypeMapping[name];
@@ -54,7 +54,10 @@ const fetchModuleGraphs = async (graphs: string[]) => {
           id: name,
           name: graphDetail[name].node_name,
           title: graphDetail[name].node_name,
-          type: convertNameToType(graphDetail[name].node_name) ?? ACTION_TYPE,
+          type:
+            convertNameToType(graphDetail[name].node_name) ?? // to handle start, end
+            convertNameToType(graphDetail[name].node_type) ?? // to handle decisions
+            ACTION_TYPE,
           // x: Math.random() * 1000,
           // y: Math.random() * 1000,
         };
