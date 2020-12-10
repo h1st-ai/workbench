@@ -10,6 +10,8 @@ const ConditionNodeWidget = (props: any) => {
         dangerouslySetInnerHTML={{
           __html: `<g>
           <path d="M 1 60 L 100 0 L 200 60 L 100 120 Z" fill="#ffffff" stroke="#2241B0" stroke-width="2" stroke-miterlimit="10" pointer-events="all"></path>
+          <text x="50%" y="50%" fill="#2241B0" style="font: 14px sans-serif; white-space: pre-line;
+          text-anchor: middle;">${props.node?.options?.name ?? ""}</text>
           </g>`,
         }}
       ></svg>

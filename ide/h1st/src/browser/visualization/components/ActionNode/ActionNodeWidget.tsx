@@ -26,8 +26,8 @@ const ActionNodeWidget = (props: any) => {
         <div
           className="circle-port"
           style={{
-            width: 10,
-            height: 10,
+            width: 0,
+            height: 0,
             // marginLeft: "-50%",
           }}
         />

@@ -30,6 +30,11 @@ export default () => {
   engine.getLinkFactories().registerFactory(new PathFindingLinkFactory());
 
   engine.getLabelFactories().registerFactory(new CustomLabelFactory());
+
+  const pathfinding = engine
+    .getLinkFactories()
+    .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME);
+
   var model = new DiagramModel();
   /*
     Set up darge engine to distribute
@@ -37,7 +42,8 @@ export default () => {
   const dargeEngine = new DagreEngine({
     graph: {
       rankdir: "TB",
-      ranker: "network-simplex",
+      // align: "UD",
+      ranker: "longest-path",
       marginx: 25,
       marginy: 25,
     },
@@ -58,113 +64,78 @@ export default () => {
       redistribute();
     }, 1000);
   }, []);
-  //2) setup the diagram model
-
-  const yesActionNode = new ActionNodeModel({
-    name: "MyModel1",
-    color: "rgb(0,192,255)",
-  });
-
-  yesActionNode.setPosition(100, 200);
-
-  const noActionNode = new ActionNodeModel({
-    name: "MyModel1 No",
-    color: "rgb(0,192,255)",
-  });
-
-  yesActionNode.setPosition(100, 200);
-
-  const actionNodeIn = yesActionNode.getPort("in");
-  const yesActionNodeOut = yesActionNode.getPort("out") as DefaultPortModel;
-  const noActionNodeIn = noActionNode.getPort("in");
-  const noActionNodeOut = noActionNode.getPort("out") as DefaultPortModel;
-  // node1.setPosition(100, 100);
-  // let port1 = node1.addOutPort("");
-
-  const pathfinding = engine
-    .getLinkFactories()
-    .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME);
-
-  const startNode = new StartNodeModel({ name: "Start" });
-
-  startNode.setPosition(500, 200);
-
-  const startOutPort = startNode.getPort("out") as DefaultPortModel;
-
-  const conditionNode = new ConditionNodeModel({ name: "condition node" });
-
-  conditionNode.setPosition(500, 500);
-
-  const conditionInPort = conditionNode.getPort("in");
-  const conditionOutYes = conditionNode.getPort("outYes") as DefaultPortModel;
-  const conditionOutNo = conditionNode.getPort("outNo") as DefaultPortModel;
-
-  const linkStart = startOutPort?.link(
-    conditionInPort as PortModel<PortModelGenerics>,
-    pathfinding
-  );
-
-  linkStart.addLabel("start");
-
-  const linkYes = conditionOutYes?.link(
-    actionNodeIn as PortModel<PortModelGenerics>,
-    pathfinding
-  );
-
-  // (linkYes as DefaultLinkModel).addLabel("yes");
-
-  const linkNo = conditionOutNo?.link(
-    noActionNodeIn as PortModel<PortModelGenerics>,
-    pathfinding
-  );
-
-  const endNode = new EndNodeModel({ name: "end" });
-  const endInPort = endNode.getPort("in");
-
-  const linkYesToEnd = yesActionNodeOut.link(
-    endInPort as PortModel<PortModelGenerics>,
-    pathfinding
-  );
-
-  linkYesToEnd.addLabel(
-    new CustomtLabelModel({
-      label: "Yes",
-      offsetY: 5,
-    })
-  );
-
-  const linkBoToEnd = noActionNodeOut.link(
-    endInPort as PortModel<PortModelGenerics>,
-    pathfinding
-  );
-
-  linkBoToEnd.addLabel(
-    new CustomtLabelModel({
-      label: "No",
-      offsetY: 5,
-    })
-  );
-
-  model.addAll(
-    // Node
-    startNode,
-    conditionNode,
-    yesActionNode,
-    noActionNode,
-    endNode,
-    // Link
-    linkStart,
-    linkYes,
-    linkNo,
-    linkYesToEnd,
-    linkBoToEnd
-    // link1
-  );
 
   const initGraph = async () => {
     const { nodes = [], edges = [] } = await fetchGraph();
 
-    log("init graph", nodes, edges);
+    const nodeObj: { [key: string]: any } = {};
+
+    nodes.forEach((node, idx) => {
+      const { name, type } = node;
+
+      switch (type) {
+        case "start":
+          const startNode = new StartNodeModel();
+          nodeObj[name ?? `start-${idx}`] = startNode;
+          model.addNode(startNode);
+          break;
+        case "action":
+          const actionNode = new ActionNodeModel({
+            name,
+          });
+          nodeObj[name ?? `action-${idx}`] = actionNode;
+          model.addNode(actionNode);
+          break;
+        case "condition":
+          const conditionNode = new ConditionNodeModel({
+            name,
+          });
+          nodeObj[name ?? `condition-${idx}`] = conditionNode;
+          model.addNode(conditionNode);
+          break;
+        case "end":
+          const endNode = new EndNodeModel({
+            name,
+          });
+          nodeObj[name ?? `end-${idx}`] = endNode;
+          model.addNode(endNode);
+          break;
+      }
+    });
+
+    edges.forEach((edge) => {
+      const { source, target, handleText } = edge;
+
+      log("init graph", nodes, edges);
+
+      if (nodeObj[source]) {
+        let outPort, inPort;
+        if (nodeObj[source] instanceof ConditionNodeModel) {
+          if (handleText === "yes") {
+            outPort = nodeObj[source].getPort("outYes");
+          } else {
+            outPort = nodeObj[source].getPort("outNo");
+          }
+        } else {
+          outPort = nodeObj[source].getPort("out") as DefaultPortModel;
+        }
+
+        inPort = nodeObj[target].getPort("in");
+        const link = outPort?.link(
+          inPort as PortModel<PortModelGenerics>,
+          pathfinding
+        );
+        link.addLabel(
+          new CustomtLabelModel({
+            label: handleText ?? "",
+            offsetY: 5,
+          })
+        );
+        model.addLink(link);
+      }
+    });
+
+    redistribute();
 
     // updateGraph({ nodes, edges });
   };

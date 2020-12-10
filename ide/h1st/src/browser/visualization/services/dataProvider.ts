@@ -1,6 +1,5 @@
 import {
   ACTION_TYPE,
-  SPECIAL_TYPE,
   START_TYPE,
   END_TYPE,
   SPECIAL_EDGE_TYPE,
@@ -31,7 +30,7 @@ const isEdgeExist = (edges: IEdge[], edge: IEdge): boolean =>
 const nameToTypeMapping: { [key: string]: string } = {
   start: START_TYPE,
   end: END_TYPE,
-  condition: SPECIAL_TYPE,
+  condition: "condition",
 };
 
 const convertNameToType = (name: string): string => nameToTypeMapping[name];
