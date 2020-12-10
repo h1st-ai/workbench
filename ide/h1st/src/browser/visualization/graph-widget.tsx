@@ -6,19 +6,20 @@ import {
 } from "@theia/core/lib/browser";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
-import { GraphContainer } from "./containers/GrapphContainer";
-import { configureStore } from "@reduxjs/toolkit";
-import reducer from "./reducers";
+// import { GraphContainer } from "./containers/GrapphContainer";
+// import { configureStore } from "@reduxjs/toolkit";
+// import reducer from "./reducers";
+import DiagramGraph from "./components/graph/DiagramGraph";
 
 @injectable()
 export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
   static readonly ID = "h1st:graph:widget";
-  private readonly store: any;
+  // private readonly store: any;
 
   constructor(readonly uri: URI) {
     super();
     // Init store from Widget
-    this.store = configureStore({ reducer, devTools: true });
+    // this.store = configureStore({ reducer, devTools: true });
   }
 
   getResourceUri(): URI {
@@ -43,7 +44,9 @@ export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
   protected render(): React.ReactNode {
     return (
       <div className="h1st-graph" style={{ height: "100%" }}>
-        <GraphContainer store={this.store} />
+        <DiagramGraph
+        //  store={this.store}
+        />
       </div>
     );
   }

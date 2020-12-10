@@ -20,7 +20,8 @@ import { fetchGraph } from "../../services/dataProvider";
 const Graph = () => {
   const graph = useSelector(selectGraph);
   const graphView = React.useRef();
-  const [layoutEngine] = React.useState("VerticalTree");
+  // const [layoutEngine] = React.useState("VerticalTree");
+  const [layoutEngine] = React.useState("HorizontalTree" as LayoutEngineType);
 
   const dispatch = useDispatch();
   const updateGraph = (graph: IGraph) => dispatch(graphActions.setGraph(graph));

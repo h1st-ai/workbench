@@ -163,7 +163,7 @@ export default {
     special: {
       shape: SpecialShape,
       shapeId: "#special",
-      typeText: "Special",
+      typeText: "Decision",
     },
     action: {
       shape: ActionShape,
