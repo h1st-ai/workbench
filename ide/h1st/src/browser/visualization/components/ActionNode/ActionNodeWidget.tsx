@@ -16,8 +16,6 @@ const ActionNodeWidget = (props: any) => {
         engine={props.engine}
         port={props.node.getPort("in")}
         style={{
-          // left: props.size - 8,
-          // top: -10,
           top: -5,
           left: "50%",
           position: "absolute",
@@ -28,7 +26,6 @@ const ActionNodeWidget = (props: any) => {
           style={{
             width: 0,
             height: 0,
-            // marginLeft: "-50%",
           }}
         />
       </PortWidget>
@@ -36,8 +33,6 @@ const ActionNodeWidget = (props: any) => {
         engine={props.engine}
         port={props.node.getPort("out")}
         style={{
-          // left: props.size - 8,
-          // top: -10,
           bottom: 0,
           left: "50%",
           position: "absolute",
@@ -46,8 +41,6 @@ const ActionNodeWidget = (props: any) => {
         <div
           className="circle-port"
           style={{
-            left: props.size / 2 - 8,
-            top: props.size - 8,
             position: "absolute",
             width: 10,
             height: 10,
