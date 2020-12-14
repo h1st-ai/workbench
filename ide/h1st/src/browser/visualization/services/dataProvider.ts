@@ -3,7 +3,7 @@ import {
   START_TYPE,
   END_TYPE,
   SPECIAL_EDGE_TYPE,
-} from "../components/graph/elements";
+} from "../components/graph/consts";
 import { IEdge, INode } from "../types";
 import { log } from "./logging";
 // import { log } from "./logging";
@@ -37,9 +37,9 @@ const fetchGraphDetail = async (graphName: string) => {
 
   const nodeNames = Object.keys(graphDetail);
 
-  // Init node if not exist
   nodeNames.forEach((name: string) => {
     if (!graphNode[name]) {
+      // Init node if not exist
       graphNode[name] = {
         id: name,
         name: graphDetail[name].node_name,
