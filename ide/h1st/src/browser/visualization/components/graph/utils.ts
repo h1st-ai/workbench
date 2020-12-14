@@ -1,4 +1,5 @@
 import createEngine, {
+  DagreEngine,
   DefaultPortModel,
   DiagramEngine,
   DiagramModel,
@@ -107,4 +108,34 @@ const initGraphEngine = (): DiagramEngine => {
   return engine;
 };
 
-export { initGraph, initGraphEngine };
+/*
+    Set up darge engine to distribute
+  */
+const dargeEngine = new DagreEngine({
+  graph: {
+    rankdir: "TB",
+    // align: "UD",
+    ranker: "longest-path",
+    marginx: 25,
+    marginy: 25,
+  },
+  includeLinks: true,
+});
+
+const redistribute = ({
+  model,
+  engine,
+}: {
+  model: DiagramModel;
+  engine: DiagramEngine;
+}) => {
+  dargeEngine.redistribute(model);
+
+  engine
+    .getLinkFactories()
+    .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME)
+    .calculateRoutingMatrix();
+  engine.repaintCanvas();
+};
+
+export { initGraph, initGraphEngine, redistribute };

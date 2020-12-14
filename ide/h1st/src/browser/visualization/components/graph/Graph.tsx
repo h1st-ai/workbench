@@ -1,5 +1,4 @@
 import {
-  DagreEngine,
   DiagramEngine,
   DiagramModel,
   PathFindingLinkFactory,
@@ -10,7 +9,7 @@ import { GraphCanvasWidget } from "./GraphCanvasWidget";
 import { fetchGraphDetail, fetchModules } from "../../services/dataProvider";
 import { ChooseGraphModal } from "../ChooseGraphDialog";
 import { log } from "../../services/logging";
-import { initGraph, initGraphEngine } from "./utils";
+import { initGraph, initGraphEngine, redistribute } from "./utils";
 
 const GraphContainer = ({
   engine,
@@ -26,30 +25,6 @@ const GraphContainer = ({
     .getLinkFactories()
     .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME);
 
-  /*
-    Set up darge engine to distribute
-  */
-  const dargeEngine = new DagreEngine({
-    graph: {
-      rankdir: "TB",
-      // align: "UD",
-      ranker: "longest-path",
-      marginx: 25,
-      marginy: 25,
-    },
-    includeLinks: true,
-  });
-
-  const redistribute = () => {
-    dargeEngine.redistribute(model);
-
-    engine
-      .getLinkFactories()
-      .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME)
-      .calculateRoutingMatrix();
-    engine.repaintCanvas();
-  };
-
   const populateGraph = async (graph: string) => {
     const { nodes = [], edges = [] } = await fetchGraphDetail(graph);
 
@@ -61,9 +36,6 @@ const GraphContainer = ({
     });
 
     await engine.repaintCanvas(true);
-    setTimeout(() => {
-      redistribute();
-    }, 20);
   };
 
   const fetchData = async () => {
@@ -109,6 +81,18 @@ const Wrapper = () => {
 
   // Load model into engine
   engine.setModel(model);
+
+  model.registerListener({
+    eventDidFire: (event: any) => {
+      const { isCreated } = event;
+
+      if (isCreated) {
+        setImmediate(() => {
+          redistribute({ model, engine });
+        });
+      }
+    },
+  });
 
   return <GraphContainer engine={engine} model={model} />;
 };
