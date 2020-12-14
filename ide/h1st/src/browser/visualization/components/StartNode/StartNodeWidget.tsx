@@ -9,32 +9,20 @@ const StartNodeWidget = (props: any) => {
         height={"100%"}
         dangerouslySetInnerHTML={{
           __html: `<circle cx="50" cy="50" r="45" stroke="#2241B0" stroke-width="2" fill="white" />
-          <text x="32" y="57" fill="#2241B0">Start</text>`,
+          <text x="50%" y="55%" fill="#2241B0" style="font: 14px sans-serif; white-space: pre-line;
+          text-anchor: middle;">Start</text>`,
         }}
       ></svg>
       <PortWidget
         engine={props.engine}
         port={props.node.getPort("out")}
         style={{
-          // left: props.size - 8,
-          // top: -10,
           bottom: 0,
           left: "50%",
           position: "absolute",
         }}
       >
-        <div
-          className="circle-port"
-          style={
-            {
-              // width: 10,
-              // height: 10,
-              // borderRadius: 10,
-              // border: "1px solid blue",
-              // marginLeft: "-50%",
-            }
-          }
-        />
+        <div className="circle-port" />
       </PortWidget>
     </div>
   );
