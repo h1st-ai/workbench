@@ -34,9 +34,6 @@ import { AccountWidget } from './widgets/account';
 import { H1stTelemetryService } from './h1st-telemetry-service';
 import { H1stAuthService } from './auth-service';
 
-import { NotebookFactory } from './notebook/notebook-factory';
-import { NotebookOpener } from './notebook/opener';
-
 // tuning
 import { ExperimentWidgetFactory } from './tune/experiment-widget-factory';
 import { TuningContribution } from './tune/contribution';
@@ -46,6 +43,9 @@ import { TuningUriLabelProviderContribution } from './tune/experiment-uris';
 
 import { GraphFactory } from './visualization/graph-factory';
 import { GraphOpener } from './visualization/opener';
+import { NotebookFactory } from './notebook/notebook-factory';
+import { NotebookOpener } from './notebook/opener';
+import { ShareDialog } from './widgets/share-dialog';
 
 export default new ContainerModule((bind, unbind) => {
   bind(NotebookOpener).toSelf();
@@ -112,6 +112,11 @@ export default new ContainerModule((bind, unbind) => {
   bind(H1stAboutDialog)
     .toSelf()
     .inSingletonScope();
+
+  bind(ShareDialog)
+    .toSelf()
+    .inSingletonScope();
+
   bind(FrontendApplicationContribution).to(H1stFrontendApplicationContribution);
   bind(FrontendApplicationContribution).to(H1stWorkspaceService);
 

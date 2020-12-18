@@ -1,11 +1,20 @@
 :root {
-  --theia-ui-font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
+  --theia-ui-font-family: AvertaPE-Regular, 'Helvetica Neue', sans-serif;
   --theia-private-menubar-height: 45px;
-  --code-font-family: Menlo, Monaco, "Courier New", monospace;
+  --code-font-family: Menlo, Monaco, 'Courier New', monospace;
+
+  --color-primary: #30479b;
+  --color-dblue: #2c3d69;
+  --color-subtle-blue: #c7d0f2;
+  --color-stroke-blue: #8396d7;
+
+  --color-grey-3: #6b7180;
+  --color-grey-5: #f0f4f5;
 }
 
-@import "header.css";
-@import "tune.css";
+@import 'header.css';
+@import 'tune.css';
+@import 'share-diaglog.css';
 
 button {
   cursor: pointer;
@@ -62,9 +71,9 @@ button.theia-button {
   display: none;
 }
 
-li.p-Menu-item[data-command="__plugin.menu.action.python.debugtests"],
-li.p-Menu-item[data-command="__plugin.menu.action.python.runtests"],
-li.p-Menu-item[data-command="__plugin.menu.action.python.datascience.runFileInteractive:0"] {
+li.p-Menu-item[data-command='__plugin.menu.action.python.debugtests'],
+li.p-Menu-item[data-command='__plugin.menu.action.python.runtests'],
+li.p-Menu-item[data-command='__plugin.menu.action.python.datascience.runFileInteractive:0'] {
   display: none;
 }
 

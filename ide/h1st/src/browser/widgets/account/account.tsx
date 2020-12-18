@@ -1,15 +1,33 @@
 import * as React from 'react';
 import { KeycloakInstance, KeycloakProfile } from 'keycloak-js';
 import ProfilePhoto from './profile';
+import { CommandService } from '@theia/core';
+import { H1stOpenShareCommand } from '../../commands';
+import Icon from '../../notebook/components/icon';
+
+const ShareButton = ({ commands }: { commands: CommandService }) => {
+  const handleClickShare = () => {
+    // theia
+    commands.executeCommand(H1stOpenShareCommand.id);
+  };
+  return (
+    <div className="share-button" onClick={handleClickShare}>
+      <Icon icon="user-group" />
+      <span className="text">Share</span>
+    </div>
+  );
+};
 
 interface IAccountProps {
   keycloak: KeycloakInstance;
+  commands: CommandService;
 }
 
-export function Account({ keycloak }: IAccountProps) {
+export function Account({ keycloak, commands }: IAccountProps) {
   const [user, setUser] = React.useState<KeycloakProfile>();
 
   React.useEffect(() => {
+    console.log('inject commans', commands);
     (async function() {
       const user = await keycloak.loadUserProfile();
       setUser(user);
@@ -59,6 +77,7 @@ export function Account({ keycloak }: IAccountProps) {
         </svg>
         Dashboard
       </a>
+      <ShareButton commands={commands} />
       <div className="profile-photo-wrapper">
         {user && <ProfilePhoto user={user} />}
       </div>
