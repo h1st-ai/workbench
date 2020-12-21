@@ -5,6 +5,7 @@ import {
   IBackendClient,
   H1stBackendWithClientService,
 } from '../common/protocol';
+import Settings from './config';
 
 const { readdirSync, statSync, readFileSync } = require('fs');
 const { join } = require('path');
@@ -198,6 +199,29 @@ export class H1stBackendWithClientServiceImpl
             } else {
               resolve(WORKBENCH_NAME);
             }
+          })
+        : reject('No Client'),
+    );
+  }
+
+  getCollaborators(needle: string, token: string): Promise<any> {
+    return new Promise<any>((resolve, reject) =>
+      this.client
+        ? this.client.getName().then(async () => {
+            console.log(
+              `collaborator requested ${Settings.AUTH_HOST}/admin/realms/h1st/users?search=${needle}`,
+            );
+
+            const res = await fetch(
+              `${Settings.AUTH_HOST}/admin/realms/h1st/users?search=${needle}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            );
+
+            resolve(await res.json());
           })
         : reject('No Client'),
     );

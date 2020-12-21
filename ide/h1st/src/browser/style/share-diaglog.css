@@ -1,6 +1,7 @@
 .h1st-share-modal.dialogOverlay .dialogBlock {
-  border-radius: 10px;
-  background-color: white;
+  border-radius: 4px;
+  background-color: var(--theia-activityBar-background);
+  color: var(--theia-foreground);
   font-family: var(--theia-ui-font-family);
 }
 
@@ -9,16 +10,47 @@
 }
 
 .h1st-share-modal .dialogBlock .dialogTitle {
-  border-radius: 10px 10px 0px 0px;
-  background-color: var(--color-grey-5);
-  color: var(--color-dblue);
+  border-radius: 4px 4px 0px 0px;
+  background-color: var(--theia-editorWidget-background);
+  color: var(--theia-foreground);
   font-size: 16px;
   font-weight: 600;
-  padding: 12px;
+  padding: 16px 22px;
 }
 
 .h1st-share-modal .dialogBlock .share-dialog-content {
   padding: 12px;
+  position: relative;
+}
+
+.h1st-share-modal .dialogBlock .share-dialog-content ul {
+  position: absolute;
+  background: var(--theia-dropdown-background);
+  margin: 0px;
+  padding: 0px;
+  left: 12px;
+  right: 12px;
+  top: 76px;
+  list-style: none;
+  border-left: 1px solid var(--theia-activityBar-background);
+  border-right: 1px solid var(--theia-activityBar-background);
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.h1st-share-modal .dialogBlock .share-dialog-content ul li {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--theia-activityBar-background);
+  cursor: pointer;
+}
+
+.h1st-share-modal .dialogBlock .share-dialog-content ul li:hover,
+.h1st-share-modal .dialogBlock .share-dialog-content ul li.active {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.h1st-share-modal .dialogBlock .share-dialog-content ul li strong {
+  display: block;
+  margin-bottom: 5px;
 }
 
 .h1st-share-modal .acction-button-section {
@@ -40,22 +72,25 @@
 }
 
 .h1st-share-modal .action-button.primary {
-  background-color: #2241b0;
+  background-color: var(--theia-activityBarBadge-background);
   color: #dce4ff;
 }
 
 .h1st-share-modal .action-button.secondary {
   background-color: #e5e9f1;
-  color: #2241b0;
+  color: var(--theia-foreground);
 }
 
 .h1st-share-modal .dialogBlock .share-dialog-content input {
   border-style: none;
   margin: 12px 0px;
   width: 100%;
-  border-radius: 5px;
-  border: 1px solid #dde5e7;
+  border-radius: 4px;
   height: 28px;
+  padding: 20px 16px;
+  box-sizing: border-box;
+  background: var(--theia-editorWidget-background);
+  color: var(--theia-foreground);
 }
 
 .collaborator-item {
@@ -80,13 +115,13 @@
 }
 
 .collaborator-item .collaborator-info .info .name {
-  color: var(--color-primary);
+  /* color: var(--color-primary); */
   font-size: 14px;
   font-weight: bold;
 }
 
 .collaborator-item .collaborator-info .info .email {
-  color: var(--color-grey-3);
+  /* color: var(--color-grey-3); */
   font-size: 14px;
 }
 

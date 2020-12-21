@@ -27,4 +27,5 @@ export interface H1stBackendWithClientService
   getModelList(): Promise<any>;
   getTuneList(): Promise<any>;
   getEnv(): Promise<string>;
+  getCollaborators(needle: string, token: string): Promise<any[]>;
 }

@@ -1,62 +1,50 @@
-import * as React from "react";
-import { inject, injectable, postConstruct } from "inversify";
-import { AboutDialogProps } from "@theia/core/lib/browser/about-dialog";
-import { ReactDialog } from "@theia/core/lib/browser/dialogs/react-dialog";
+import * as React from 'react';
+
+import { inject, injectable, postConstruct } from 'inversify';
+import { AboutDialogProps } from '@theia/core/lib/browser/about-dialog';
+import { ReactDialog } from '@theia/core/lib/browser/dialogs/react-dialog';
+import { KeycloakInstance } from 'keycloak-js';
 import {
   ApplicationInfo,
   ApplicationServer,
   ExtensionInfo,
-} from "@theia/core/lib/common/application-protocol";
-import { Message } from "@theia/core/lib/browser/widgets";
-import { Collaborator } from "./shareDialog";
-import Icon from "../../notebook/components/icon";
+} from '@theia/core/lib/common/application-protocol';
+import { Message } from '@theia/core/lib/browser/widgets';
 
-export const ABOUT_CONTENT_CLASS = "theia-aboutDialog";
+import ShareDialogComponent from './dialog';
 
-const CollaboratorItem = ({
-  avatar,
-  name,
-  email,
-  isOwner = false,
-}: Collaborator) => {
-  return (
-    <div className="collaborator-item">
-      <div className="collaborator-info">
-        <div className="avatar">
-          <img src={avatar} />
-        </div>
-        <div className="info">
-          <div className="name">
-            <span>{name}</span>
-            {isOwner && <span className="owner">OWNER</span>}
-          </div>
-          <div className="email">{email}</div>
-        </div>
-      </div>
-      <div className="delete-button">
-        <Icon icon="trash-bin" />
-      </div>
-    </div>
-  );
-};
+import { H1stAuthService } from '../../auth-service';
+import { H1stBackendWithClientService } from '../../../common/protocol';
+
+export const ABOUT_CONTENT_CLASS = 'theia-aboutDialog';
 
 @injectable()
 export class ShareDialog extends ReactDialog<void> {
   protected applicationInfo: ApplicationInfo | undefined;
   protected extensionsInfos: ExtensionInfo[] = [];
   protected readonly okButton: HTMLButtonElement;
-
-  @inject(ApplicationServer)
-  protected readonly appServer: ApplicationServer;
+  protected keycloak: KeycloakInstance;
+  protected workspaceId: string;
 
   constructor(
-    @inject(AboutDialogProps) protected readonly props: AboutDialogProps
+    @inject(AboutDialogProps) readonly props: AboutDialogProps,
+    @inject(H1stBackendWithClientService)
+    readonly h1stBackendWithClientService: H1stBackendWithClientService,
+    @inject(H1stAuthService) readonly h1stAuthService: H1stAuthService,
+    @inject(ApplicationServer) readonly appServer: ApplicationServer,
   ) {
     super({
-      title: "Share this project",
+      title: 'Share this project',
     });
 
-    this.addClass("h1st-share-modal");
+    this.addClass('h1st-share-modal');
+    this.keycloak = this.h1stAuthService.authenticator;
+
+    const matches = window.location.pathname.match(/\/project\/([a-z0-9]+)/);
+
+    if (matches) {
+      this.workspaceId = matches[1];
+    }
   }
 
   @postConstruct()
@@ -66,61 +54,13 @@ export class ShareDialog extends ReactDialog<void> {
     this.update();
   }
 
-  protected renderCollaboratorInput(): React.ReactNode {
-    return (
-      <>
-        <div>Collaborator</div>
-        <input />
-      </>
-    );
-  }
-
-  protected renderCollaboratorList(): React.ReactNode {
-    return (
-      <>
-        <CollaboratorItem
-          avatar="https://merics.org/sites/default/files/styles/ct_team_member_default/public/2020-04/avatar-placeholder.png?itok=Vhm0RCa3"
-          name="John Smith"
-          email="john@ma.il"
-          isOwner={true}
-        />
-        <CollaboratorItem
-          avatar="https://merics.org/sites/default/files/styles/ct_team_member_default/public/2020-04/avatar-placeholder.png?itok=Vhm0RCa3"
-          name="Adam Levine"
-          email="adam@ma.il"
-          isOwner={false}
-        />
-        <CollaboratorItem
-          avatar="https://merics.org/sites/default/files/styles/ct_team_member_default/public/2020-04/avatar-placeholder.png?itok=Vhm0RCa3"
-          name="David Jackson"
-          email="david@ma.il"
-          isOwner={false}
-        />
-      </>
-    );
-  }
-
-  private renderActionButton = (): React.ReactNode => {
-    return (
-      <div className="acction-button-section">
-        <button className="action-button primary">Share</button>
-        <button
-          className="action-button secondary"
-          onClick={() => this.close()}
-        >
-          Cancel
-        </button>
-      </div>
-    );
-  };
-
   protected render(): React.ReactNode {
     return (
-      <div className={"share-dialog-content"}>
-        {this.renderCollaboratorInput()}
-        {this.renderCollaboratorList()}
-        {this.renderActionButton()}
-      </div>
+      <ShareDialogComponent
+        keycloak={this.keycloak}
+        workspaceId={this.workspaceId}
+        service={this.h1stBackendWithClientService}
+      />
     );
   }
 

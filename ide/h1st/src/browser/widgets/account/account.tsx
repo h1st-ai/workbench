@@ -27,7 +27,6 @@ export function Account({ keycloak, commands }: IAccountProps) {
   const [user, setUser] = React.useState<KeycloakProfile>();
 
   React.useEffect(() => {
-    console.log('inject commans', commands);
     (async function() {
       const user = await keycloak.loadUserProfile();
       setUser(user);
