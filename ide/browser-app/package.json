@@ -39,7 +39,7 @@
     "clean": "theia clean",
     "build": "theia build --mode development && yarn copy:asset",
     "build:pro": "theia build",
-    "start": "yarn copy:asset && theia start --plugins=local-dir:plugins ",
+    "start": "yarn copy:asset && theia start --port 3002 --plugins=local-dir:plugins ",
     "watch": "yarn copy:asset && theia build --watch --mode development ",
     "download:plugins": "theia download:plugins",
     "copy:asset": "cp ../../docker/ide/components/index.html ./lib/index.html"

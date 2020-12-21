@@ -73,6 +73,21 @@ export class DataService {
     return await response.json();
   }
 
+  async getProjectSharings(project_id: string, username: string) {
+    const response = await this.request(
+      this.makeUrl(
+        `workbenches/${project_id}/shares?user_id=${encodeURIComponent(
+          username,
+        )}`,
+      ),
+      { method: 'GET' },
+    );
+
+    console.log('getProjectSharings', await response.text());
+
+    return await response.json();
+  }
+
   async createProject(payload: ICreateProjectPayload) {
     const {
       username,

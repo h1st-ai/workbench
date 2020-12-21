@@ -71,6 +71,12 @@ export class ProjectController {
     return this.dataService.getProjectInfo(id, preferred_username);
   }
 
+  @Get('project/:id/shares')
+  getProjectSharings(@Param('id') id, @Request() req): any {
+    const { preferred_username } = req.user;
+    return this.dataService.getProjectSharings(id, preferred_username);
+  }
+
   @Delete('project/:id')
   deleteProject(@Param('id') id, @Request() req): any {
     const { preferred_username } = req.user;
