@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { withKeycloak } from '@react-keycloak/web';
+import { useKeycloak } from '@react-keycloak/web';
 
 import styles from './style.module.css';
 
@@ -14,8 +14,9 @@ interface IUserProfile {
   };
 }
 
-function ProfilePhoto({ keycloak }: any) {
+function ProfilePhoto() {
   const [profile, setProfile] = useState({});
+  const { keycloak, initialized } = useKeycloak();
 
   useEffect(() => {
     async function getProfile() {
@@ -23,7 +24,9 @@ function ProfilePhoto({ keycloak }: any) {
       setProfile(p);
     }
 
-    getProfile();
+    if (initialized) {
+      getProfile();
+    }
   }, []);
 
   if (!profile) {
@@ -53,4 +56,4 @@ function renderProfile(profile: IUserProfile): React.ReactNode {
   }
 }
 
-export default withKeycloak(ProfilePhoto);
+export default ProfilePhoto;

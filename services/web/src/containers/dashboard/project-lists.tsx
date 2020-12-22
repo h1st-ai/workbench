@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { withKeycloak } from '@react-keycloak/web';
+// import { withKeycloak } from '@react-keycloak/web';
 import ReactTooltip from 'react-tooltip';
 
 import { makeApiParams } from 'data/client';
@@ -21,7 +21,6 @@ function ProjectLists(): any {
   const { viewMode, projects } = useSelector(
     (store: IStore) => store.dashboard,
   );
-  const { token } = useSelector((store: IStore) => store.auth);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -234,6 +233,6 @@ function ProjectLists(): any {
   );
 }
 
-export default withKeycloak(ProjectLists);
+export default ProjectLists;
 
 //

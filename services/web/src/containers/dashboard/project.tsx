@@ -362,7 +362,7 @@ export function ProjectGridItem({
               <span data-tip={`RAM: ${ram / 1024}G`} data-for={id}>
                 <FontAwesomeIcon icon={faMemory} /> {ram / 1024}G
               </span>
-              {gpu != undefined && (
+              {gpu !== undefined && (
                 <span data-tip={`GPU: ${gpu / 1024}G`} data-for={id}>
                   <FontAwesomeIcon icon={faThLarge} /> {gpu}
                 </span>

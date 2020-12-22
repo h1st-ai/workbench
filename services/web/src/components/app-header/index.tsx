@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { withKeycloak } from '@react-keycloak/web';
+import { useKeycloak } from '@react-keycloak/web';
 
 import Logo from './logo';
 import Icon from 'components/icon';
 import ProfilePhoto from 'components/profile-photo';
 import styles from './style.module.css';
 
-function AppHeader({ keycloak }: any) {
+function AppHeader() {
   const [menustate, setMenuState] = useState(false);
+  const { keycloak, initialized } = useKeycloak();
+
   return (
     <header className={styles.appHeader}>
       <Logo />
@@ -80,4 +82,4 @@ function renderMenu(menuOpenned: Boolean, keycloak: any) {
   }
 }
 
-export default withKeycloak(AppHeader);
+export default AppHeader;

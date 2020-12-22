@@ -3,7 +3,7 @@ const dev = {
     URL: 'http://localhost/api',
   },
   AUTH: {
-    URL: 'http://localhost/access/auth',
+    URL: 'https://login.h1st.ai/auth',
   },
 };
 
@@ -28,9 +28,9 @@ const prod = {
 let config = dev;
 
 if (process.env.REACT_APP_STAGE === 'production') {
-  config = prod
+  config = prod;
 } else if (process.env.REACT_APP_STAGE === 'staging') {
-  config = staging
+  config = staging;
 }
 
 export default {

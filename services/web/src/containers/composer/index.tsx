@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { withKeycloak } from '@react-keycloak/web';
-import { Provider, useDispatch } from 'react-redux';
+import React from 'react';
+import { useKeycloak } from '@react-keycloak/web';
+import { Provider } from 'react-redux';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
@@ -16,18 +16,15 @@ declare global {
   }
 }
 
-function PrivateRoute({ children, authenticator, ...rest }: any) {
-  if (!authenticator) {
-    return null;
-  }
+function PrivateRoute({ children, ...rest }: any) {
+  const { keycloak, initialized } = useKeycloak();
+  alert(initialized);
 
   return (
     <Route
       {...rest}
       render={({ location }) => {
-        const { keycloak, keycloakInitialized } = authenticator;
-
-        if (!keycloakInitialized) {
+        if (!initialized) {
           return null;
         } else if (!keycloak.authenticated) {
           return keycloak.login();
@@ -39,10 +36,10 @@ function PrivateRoute({ children, authenticator, ...rest }: any) {
   );
 }
 
-function setAuthInfo(token: string) {
+function setAuthInfo(token: string | undefined) {
   const dispatch = store.dispatch;
   dispatch(authActions.setToken({ token }));
-  Cookies.set('token', token, { path: '/' });
+  Cookies.set('token', token || '', { path: '/' });
 }
 
 async function setUpTracking(auth: any) {
@@ -59,7 +56,9 @@ async function setUpTracking(auth: any) {
   }
 }
 
-function Authenticator({ auth }: any) {
+function Authenticator() {
+  const { keycloak: auth, initialized } = useKeycloak();
+
   if (auth.authenticated) {
     setAuthInfo(auth.token);
 
@@ -88,20 +87,18 @@ function Authenticator({ auth }: any) {
   return null;
 }
 
-function Composer({ keycloak, keycloakInitialized }: any) {
+function Composer() {
+  const { keycloak, initialized } = useKeycloak();
+
   return (
     <Provider store={store}>
-      <Authenticator auth={keycloak} />
+      <Authenticator />
       <Router>
         <Switch>
           <Route path="/p/{test}">
             <Dashboard />
           </Route>
-          <PrivateRoute
-            exact
-            authenticator={{ keycloak, keycloakInitialized }}
-            path="/"
-          >
+          <PrivateRoute exact path="/">
             <Dashboard />
           </PrivateRoute>
         </Switch>
@@ -110,4 +107,4 @@ function Composer({ keycloak, keycloakInitialized }: any) {
   );
 }
 
-export default withKeycloak(Composer);
+export default Composer;

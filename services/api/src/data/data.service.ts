@@ -83,7 +83,7 @@ export class DataService {
       { method: 'GET' },
     );
 
-    console.log('getProjectSharings', await response.text());
+    // console.log('getProjectSharings', await response.text());
 
     return await response.json();
   }
