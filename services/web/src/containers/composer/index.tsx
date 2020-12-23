@@ -18,7 +18,6 @@ declare global {
 
 function PrivateRoute({ children, ...rest }: any) {
   const { keycloak, initialized } = useKeycloak();
-  alert(initialized);
 
   return (
     <Route
