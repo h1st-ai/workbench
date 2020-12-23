@@ -15,6 +15,7 @@ import ShareDialogComponent from './dialog';
 
 import { H1stAuthService } from '../../auth-service';
 import { H1stBackendWithClientService } from '../../../common/protocol';
+import { CommandService, MessageService } from '@theia/core';
 
 export const ABOUT_CONTENT_CLASS = 'theia-aboutDialog';
 
@@ -31,6 +32,8 @@ export class ShareDialog extends ReactDialog<void> {
     @inject(H1stBackendWithClientService)
     readonly h1stBackendWithClientService: H1stBackendWithClientService,
     @inject(H1stAuthService) readonly h1stAuthService: H1stAuthService,
+    @inject(MessageService) readonly messageService: MessageService,
+    @inject(CommandService) readonly commandService: CommandService,
     @inject(ApplicationServer) readonly appServer: ApplicationServer,
   ) {
     super({
@@ -60,6 +63,8 @@ export class ShareDialog extends ReactDialog<void> {
         keycloak={this.keycloak}
         workspaceId={this.workspaceId}
         service={this.h1stBackendWithClientService}
+        messageService={this.messageService}
+        commands={this.commandService}
       />
     );
   }

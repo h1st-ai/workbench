@@ -5,55 +5,56 @@ import {
   MenuModelRegistry,
   Emitter,
   MessageService,
-} from "@theia/core/lib/common";
+} from '@theia/core/lib/common';
 import {
   LabelProvider,
   open,
   CommonCommands,
   // FrontendApplication,
-} from "@theia/core/lib/browser";
+} from '@theia/core/lib/browser';
 
-import { TaskCommands } from "@theia/task/lib/browser/task-frontend-contribution";
-import { KeymapsCommands } from "@theia/keymaps/lib/browser/keymaps-frontend-contribution";
+import { TaskCommands } from '@theia/task/lib/browser/task-frontend-contribution';
+import { KeymapsCommands } from '@theia/keymaps/lib/browser/keymaps-frontend-contribution';
 import {
   DebugCommands,
   DebugMenus,
-} from "@theia/debug/lib/browser/debug-frontend-application-contribution";
-import { EditorManager } from "@theia/editor/lib/browser";
-import URI from "@theia/core/lib/common/uri";
-import { CommonMenus, OpenerService } from "@theia/core/lib/browser";
-import { SelectionService } from "@theia/core/lib/common/selection-service";
-import { FileSystemUtils } from "@theia/filesystem/lib/common";
-import { FileStat } from "@theia/filesystem/lib/common/files";
+} from '@theia/debug/lib/browser/debug-frontend-application-contribution';
+import { EditorManager } from '@theia/editor/lib/browser';
+import URI from '@theia/core/lib/common/uri';
+import { CommonMenus, OpenerService } from '@theia/core/lib/browser';
+import { SelectionService } from '@theia/core/lib/common/selection-service';
+import { FileSystemUtils } from '@theia/filesystem/lib/common';
+import { FileStat } from '@theia/filesystem/lib/common/files';
 
 import {
   NavigatorContextMenu,
   FileNavigatorContribution,
-} from "@theia/navigator/lib/browser/navigator-contribution";
+} from '@theia/navigator/lib/browser/navigator-contribution';
 
-import { WorkspaceInputDialog } from "@theia/workspace/lib/browser/workspace-input-dialog";
+import { WorkspaceInputDialog } from '@theia/workspace/lib/browser/workspace-input-dialog';
 
-import { inject, injectable } from "inversify";
-import { H1stBackendWithClientService } from "../common/protocol";
+import { inject, injectable } from 'inversify';
+import { H1stBackendWithClientService } from '../common/protocol';
 
 import {
   WorkspaceCommands,
   WorkspaceRootUriAwareCommandHandler,
   WorkspaceService,
-} from "@theia/workspace/lib/browser";
+} from '@theia/workspace/lib/browser';
 import {
+  H1stCloseShareCommand,
   H1stNewModelCommand,
   H1stNewNotebookCommand,
   H1stOpenShareCommand,
   H1stOpenWorkspace,
-} from "./commands";
-import { FileService } from "@theia/filesystem/lib/browser/file-service";
+} from './commands';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
 
-import getModelFileTemplate from "../common/templates/models";
+import getModelFileTemplate from '../common/templates/models';
 // import getNotebookFileTemplate from "../common/templates/notebook";
-import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
-import { H1stAboutDialog } from "./style/about-dialog";
-import { ShareDialog } from "./widgets/share-dialog";
+import { UriCommandHandler } from '@theia/core/lib/common/uri-command-handler';
+import { H1stAboutDialog } from './style/about-dialog';
+import { ShareDialog } from './widgets/share-dialog';
 // import {
 //   // H1stNotebookWidget,
 //   NotebookCommand,
@@ -91,12 +92,12 @@ export class H1stCommandContribution implements CommandContribution {
   >();
 
   protected newWorkspaceRootUriAwareCommandHandler(
-    handler: UriCommandHandler<URI>
+    handler: UriCommandHandler<URI>,
   ): WorkspaceRootUriAwareCommandHandler {
     return new WorkspaceRootUriAwareCommandHandler(
       this.workspaceService,
       this.selectionService,
-      handler
+      handler,
     );
   }
 
@@ -133,7 +134,7 @@ export class H1stCommandContribution implements CommandContribution {
       registry.unregisterCommand(WorkspaceCommands.OPEN);
       registry.unregisterCommand(WorkspaceCommands.ADD_FOLDER);
       registry.unregisterCommand({
-        id: "navigator.tabbar.toolbar." + WorkspaceCommands.ADD_FOLDER,
+        id: 'navigator.tabbar.toolbar.' + WorkspaceCommands.ADD_FOLDER,
       });
       registry.unregisterCommand(TaskCommands.TASK_RUN);
       registry.unregisterCommand(TaskCommands.TASK_ATTACH);
@@ -207,6 +208,12 @@ export class H1stCommandContribution implements CommandContribution {
       },
     });
 
+    registry.registerCommand(H1stCloseShareCommand, {
+      execute: () => {
+        this.shareDialog.close();
+      },
+    });
+
     registry.registerCommand(H1stOpenWorkspace, {
       execute: async () => {
         //this.open(new URI("/"));
@@ -216,8 +223,8 @@ export class H1stCommandContribution implements CommandContribution {
     registry.registerCommand(
       H1stNewModelCommand,
       this.newWorkspaceRootUriAwareCommandHandler({
-        execute: (uri) =>
-          this.getDirectory(uri).then((parent) => {
+        execute: uri =>
+          this.getDirectory(uri).then(parent => {
             if (parent) {
               const parentUri = parent.resource;
               const { fileName, fileExtension } = this.getDefaultFileConfig();
@@ -225,21 +232,21 @@ export class H1stCommandContribution implements CommandContribution {
                 parentUri,
                 parent,
                 fileName,
-                fileExtension
+                fileExtension,
               );
 
               const dialog = new WorkspaceInputDialog(
                 {
-                  title: "New H1st Model",
+                  title: 'New H1st Model',
                   parentUri: parentUri,
                   initialValue: vacantChildUri.path.base,
-                  validate: (name) =>
-                    this.validateModelFileName(name, parent, true, "model"),
+                  validate: name =>
+                    this.validateModelFileName(name, parent, true, 'model'),
                 },
-                this.labelProvider
+                this.labelProvider,
               );
 
-              dialog.open().then(async (modelName) => {
+              dialog.open().then(async modelName => {
                 if (modelName) {
                   let name = modelName;
                   if (!/.+\.py$/.test(modelName)) {
@@ -251,7 +258,7 @@ export class H1stCommandContribution implements CommandContribution {
 
                   await this.fileService.create(
                     fileUri,
-                    getModelFileTemplate(workspaceName, modelName)
+                    getModelFileTemplate(workspaceName, modelName),
                   );
 
                   this.fireCreateNewModel({
@@ -263,7 +270,7 @@ export class H1stCommandContribution implements CommandContribution {
               });
             }
           }),
-      })
+      }),
     );
   }
 
@@ -272,8 +279,8 @@ export class H1stCommandContribution implements CommandContribution {
     fileExtension: string;
   } {
     return {
-      fileName: "NewH1stModel",
-      fileExtension: ".py",
+      fileName: 'NewH1stModel',
+      fileExtension: '.py',
     };
   }
 
@@ -282,8 +289,8 @@ export class H1stCommandContribution implements CommandContribution {
     fileExtension: string;
   } {
     return {
-      fileName: "NewNotebook",
-      fileExtension: ".ipynb",
+      fileName: 'NewNotebook',
+      fileExtension: '.ipynb',
     };
   }
 
@@ -291,21 +298,21 @@ export class H1stCommandContribution implements CommandContribution {
     name: string,
     parent: FileStat,
     recursive: boolean = false,
-    type: "model" | "notebook"
+    type: 'model' | 'notebook',
   ): string {
     if (!name) {
-      return "";
+      return '';
     }
 
-    if (type === "model") {
+    if (type === 'model') {
       if (!/^[a-zA-Z](\w){2,49}\.py$/.test(name))
-        return "Model name has to start with a letter, contains only letters and numbers and has to be betwen 3 to 50 characters in length";
+        return 'Model name has to start with a letter, contains only letters and numbers and has to be betwen 3 to 50 characters in length';
     } else {
       if (!/^[a-zA-Z].[\w_\\-]+\.ipynb$/.test(name))
-        return "Invalid name. Notebook name can only include characters and numbers";
+        return 'Invalid name. Notebook name can only include characters and numbers';
     }
 
-    return "";
+    return '';
   }
 }
 
@@ -330,7 +337,7 @@ export class H1stMenuContribution implements MenuContribution {
       menus.unregisterMenuAction(CommonMenus.VIEW.slice(-1)[0]);
       menus.unregisterMenuAction(CommonMenus.HELP.slice(-1)[0]);
     } catch (error) {
-      console.log("error", error);
+      console.log('error', error);
     }
 
     // menus.registerSubmenu(NotebookMenu.NOTEBOOK, "Notebook");

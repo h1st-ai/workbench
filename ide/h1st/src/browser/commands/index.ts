@@ -1,14 +1,14 @@
-import { Command } from "@theia/core/lib/common";
-import { WorkspaceCommands } from "@theia/workspace/lib/browser";
+import { Command } from '@theia/core/lib/common';
+import { WorkspaceCommands } from '@theia/workspace/lib/browser';
 
 export const H1stNewModelCommand: Command = {
-  id: "h1st.model.new.command",
-  label: "New Model",
+  id: 'h1st.model.new.command',
+  label: 'New Model',
 };
 
 export const H1stNewNotebookCommand: Command = {
-  id: "h1st.notebook.new.command",
-  label: "New Notebook",
+  id: 'h1st.notebook.new.command',
+  label: 'New Notebook',
 };
 
 export const H1stOpenWorkspace: Command = {
@@ -17,6 +17,11 @@ export const H1stOpenWorkspace: Command = {
 };
 
 export const H1stOpenShareCommand: Command = {
-  id: "h1st.share.open",
-  label: "Share",
+  id: 'h1st.share.open',
+  label: 'Share',
+};
+
+export const H1stCloseShareCommand: Command = {
+  id: 'h1st.share.close',
+  label: 'Close',
 };

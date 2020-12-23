@@ -77,6 +77,12 @@ export class ProjectController {
     return this.dataService.getProjectSharings(id, preferred_username);
   }
 
+  @Post('project/:id/shares')
+  addProjectSharings(@Param('id') id, @Request() req, @Body() items: any): any {
+    const { preferred_username } = req.user;
+    return this.dataService.addProjectSharings(id, preferred_username, items);
+  }
+
   @Delete('project/:id')
   deleteProject(@Param('id') id, @Request() req): any {
     const { preferred_username } = req.user;
