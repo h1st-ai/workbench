@@ -1,0 +1,58 @@
+version: "3"
+services:
+  #   haproxy:
+  #     container_name: haproxy
+  #     image: haproxy:2.2.2
+  #     port:
+  #       - "80:80"
+  #     volumes:
+  #       - "${H1ST_VSWB_WEB_CONFIG_PATH}:/usr/local/etc/haproxy:ro"
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    container_name: postgres
+    image: postgres:10.4
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=keycloak
+      - POSTGRES_ROOT_PASSWORD=admin
+    volumes:
+      - keycloak_postgresql:/var/vswb/postgres
+      - keycloak_postgresql_data:/var/vswb/postgres/data
+
+  keycloak:
+    # image: h1st/keycloak:latest
+    image: jboss/keycloak:11.0.0
+    # build: ../services/auth
+    links:
+      - postgres
+    ports:
+      - 8080:8080
+    volumes:
+      - keycloak_data:/var/vswb/keycloak
+      - ${H1ST_VSWB_PATH}/services/auth/theme/h1st:/opt/jboss/keycloak/themes
+      - ${H1ST_VSWB_PATH}/services/auth/theme/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+      - ${H1ST_VSWB_PATH}/services/auth/theme/standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
+    environment:
+      - DB_VENDOR=postgres
+      - DB_ADDR=postgres
+      - DB_USER=keycloak
+      - DB_DATABASE=keycloak
+      - DB_PASSWORD=keycloak
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - PROXY_ADDRESS_FORWARDING=true
+
+volumes:
+  keycloak_postgresql:
+  keycloak_postgresql_data:
+  keycloak_data:

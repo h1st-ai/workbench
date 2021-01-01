@@ -1,0 +1,23 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "keycloak",
+   "password": "keycloak",
+   "database": "keycloak",
+   "synchronize": false,
+   "entities": [
+      "**/*.entity.ts,src/**/*.entity.ts"
+   ],
+   "migrations": [
+      "migrations/**/*.ts"
+   ],
+   "subscribers": [
+      "src/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "database/migrations",
+      "subscribersDir": "src/subscriber"
+  }
+}

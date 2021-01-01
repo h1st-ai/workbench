@@ -1,0 +1,445 @@
+.container {
+  max-width: 1000px;
+  width: calc(100vw - 48px);
+  margin: 0px auto;
+  /* background: rgba(255, 0, 0, 0.7); */
+  padding: 24px 0px;
+}
+
+.toolBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.toolBar .listModes {
+  display: flex;
+}
+
+.toolBar .listModes button {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.toolBar .listModes button.active {
+  color: var(--color-primary);
+}
+
+.toolBar .listModes button.active svg {
+  fill: var(--color-primary) !important;
+}
+
+.projectList {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 5px;
+  border: none;
+  margin: 32px 0px;
+}
+
+.projectList tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.projectList th {
+  padding: 0px 24px;
+  height: 55px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--color-grey-3);
+  font-weight: normal;
+}
+
+.projectList td {
+  color: var(--color-grey-3);
+  font-weight: normal;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 16px 24px;
+  min-height: 40px;
+}
+
+.cardList {
+  padding: 0px;
+  margin: 32px 0px;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.card {
+  list-style: none;
+  width: calc(100% / 3 - 1.2vw);
+  margin-right: 1.5vw;
+  margin-bottom: 1.5vw;
+  background: #ffffff;
+  border-radius: 5px;
+  box-sizing: border-box;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 150ms ease-in-out, box-shadow 100ms ease-in-out;
+  position: relative;
+}
+
+.card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+}
+.card:hover h4 a {
+  color: var(--color-blue-bright);
+}
+
+.card:nth-child(3n) {
+  margin-right: 0px;
+}
+
+.card h4 {
+  margin: 0px 0px 8px 0px;
+  padding-right: 40px;
+}
+
+.card a {
+  text-decoration: none;
+  color: var(--color-dblue);
+}
+
+.card .actionBtn {
+  transition: all 200ms;
+}
+
+.card .actionBtn:hover {
+  transform: scale(1.2);
+}
+
+.card .trashBtn {
+  right: 16px;
+  bottom: 16px;
+  opacity: 0.8;
+  transition: all 200ms;
+}
+
+.card .trashBtn:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+.emptyState {
+  display: flex;
+  justify-content: center;
+  margin-top: 10vh;
+  position: relative;
+}
+
+.emptyState > button {
+  cursor: pointer;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  /* left: 40.94%; */
+  /* right: 40.86%; */
+  /* top: 50.44%; */
+  /* bottom: 44.22%; */
+  background: #30479b;
+  border-radius: 5px;
+  width: 200px;
+  height: 48px;
+  margin: auto;
+  color: #fff;
+  appearance: none;
+  border-color: transparent;
+  font-size: 14px;
+  letter-spacing: 110%;
+  font-weight: 600;
+}
+
+.emptyState input {
+  margin-bottom: 14px;
+}
+
+.emptyState :global(.dialog) {
+  width: 400px;
+}
+
+.creatingPane {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* font-size: 14px; */
+  line-height: 16px;
+  font-size: 14px;
+}
+
+.creatingPane ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px 40px 40px;
+  min-width: 65%;
+}
+
+.creatingPane ul li {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+  position: relative;
+  margin: 16px;
+}
+
+.creatingPane ul li svg {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 2px;
+}
+
+.creatingPane ul li.done {
+  color: #1a804d;
+}
+
+.topbarBtn {
+  position: absolute;
+  top: 8px;
+  right: 70px;
+  width: 162px !important;
+  height: 34px !important;
+  color: var(--color-opaque-white) !important;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.author img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+}
+
+.actionBtn.playBtn svg {
+}
+
+.trashBtn {
+  outline: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mainActions {
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  border-top: 1px solid #eee;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  padding: 6px 20px;
+  font-size: 14px;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  self-align: flex-end;
+}
+.actions nav {
+  positon: relative;
+}
+
+.innerContent {
+  padding: 20px 20px 8px;
+  flex: 1 0 auto;
+}
+.innerContent h4 {
+  font-weight: bold;
+}
+.innerContent h4 a:hover {
+  color: var(--color-blue-bright);
+}
+
+.errorMessage {
+  color: red;
+  border: 1px solid #fba7a7;
+  padding: 12px 16px;
+  margin-top: 16px;
+  font-size: 14px;
+  border-radius: 3px;
+}
+.projectMeta {
+  margin-top: 20px;
+  flex-items: flex-end;
+  margin: 10px 0 0 0;
+  padding: 0;
+  list-style: none;
+}
+.projectMeta li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.projectMetaLabel {
+  flex: 1 0 50%;
+
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0.5;
+  padding-top: 3px;
+  letter-spacing: 1px;
+  padding-right: 10px;
+}
+.projectMeta .timmeStamp {
+  flex: 1 0 50%;
+  text-align: left;
+}
+.actionsDropdownWrapper {
+  position: relative;
+  flex: 0 1 auto;
+  margin-left: auto;
+}
+.actionsDropdown {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  bottom: 0;
+
+  width: 120px;
+  right: -24px;
+  transform: translateY(30px);
+  transition: opacity 250ms ease-in, transform 250ms ease-in;
+  padding-bottom: 36px;
+}
+.actionsDropdown li {
+  border-bottom: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  background: #fff;
+}
+.actionsDropdown li:first-child {
+  border-top: 1px solid var(--color-border);
+}
+.actionsDropdown button {
+  padding: 10px 5px;
+  appearance: none;
+  background-color: transparent;
+  border-color: transparent;
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+  cursor: pointer;
+  width: 100%;
+  background-color: #fff;
+  text-align: left;
+}
+.actionsDropdown button:hover {
+  background-color: var(--color-light-yellow);
+}
+.actionsDropdown .menuIcon {
+  margin-right: 10px;
+  width: 20px;
+  height: 16px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+.actionsDropdown .menuIcon svg {
+  width: 16px;
+  height: 16px;
+  margin: 0 auto;
+}
+.menuTrigger svg * {
+  transition: fill 150ms ease;
+}
+.actionsDropdownWrapper:hover .menuTrigger svg * {
+  fill: var(--color-primary);
+}
+.actionsDropdownWrapper:hover .actionsDropdown {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+.menuTrigger {
+  background: transparent;
+  border-color: transparent;
+  padding: 5px 0;
+  margin-left: auto;
+  margin-right: -10px;
+}
+.actionDelete .menuIcon {
+}
+.actionDelete button {
+  color: var(--color-red);
+}
+.actionDelete svg,
+.actionDelete svg * {
+}
+.renderStatusWrapper {
+  display: flex;
+  align-items: center;
+}
+.availableResource {
+  background: var(--color-border);
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.usagePercentage {
+  background-color: var(--color-blue-bright);
+
+  height: 10px;
+}
+.resourceInfo {
+  margin: 30px 0 0 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+.resourceInfo li {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+.resourceInfo span {
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+.resourceInfo .availableResource {
+  flex: 1 0 50%;
+  display: flex;
+}
+/* .resourceInfo li:first-child{
+  padding-right: 10px;
+}
+.resourceInfo li:last-child{
+  padding-left: 10px;
+} */
+.resourceInfo > * {
+  flex: 1 0 50%;
+}
+.resourceInfo .projectMetaLabel {
+  display: block;
+  font-weight: 400;
+}

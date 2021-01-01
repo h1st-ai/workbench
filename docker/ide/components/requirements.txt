@@ -1,0 +1,22 @@
+s3fs==0.4.2
+statsmodels==0.11.1
+scikit-fuzzy==0.4.2
+scikit-learn==0.23.2
+tensorflow==2.2.0
+tqdm==4.45.0
+boto3==1.12.47
+scipy==1.4.1
+numpy==1.18.4
+pandas==1.0.4
+pandas-profiling==2.6.0
+matplotlib==3.2.1
+seaborn==0.10.0
+pyarrow==0.17.1
+plotly==4.6.0
+ray==1.0.0
+six >= 1.13.0
+pylint
+ipykernel
+nose2
+uvicorn
+xlrd

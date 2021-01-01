@@ -1,0 +1,3 @@
+# tune helper server
+pydantic == 1.7
+fastapi == 0.61.1

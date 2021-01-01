@@ -1,0 +1,147 @@
+body {
+  font-family: AvertaPE-Regular, "Helvetica Neue", sans-serif;
+  background: #f2f4f5;
+}
+
+.alert-error {
+  background-color: #ffffff;
+  border-color: #cc0000;
+  color: #333333;
+}
+
+.h1stlogin-pf-page {
+  min-height: 100%;
+  min-height: 100vh;
+}
+
+.h1stlogin-pf-page label {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 28px;
+  /* identical to box height, or 200% */
+
+  letter-spacing: 0.02em;
+
+  /* dark blue */
+
+  color: #2c3d69;
+}
+
+.h1stlogin-pf-page .form-control {
+  -webkit-appearance: none;
+  height: 45px;
+  /* line-height: 45px; */
+  padding: 0px 16px;
+
+  background: #ffffff !important;
+
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  border-radius: 5px;
+  box-shadow: none;
+}
+
+.h1stlogin-pf-page .btn-primary {
+  width: 100%;
+  height: 48px;
+  padding: 0px 16px;
+  /* #2241B0 */
+
+  background: #30479b;
+  border-radius: 5px;
+}
+
+.card-pf {
+  max-width: 519px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 32px;
+  margin: 0px auto;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0px;
+}
+
+.form-horizontal .form-group {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+#kc-page-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+  /* identical to box height, or 156% */
+
+  letter-spacing: 0.02em;
+  color: #6b7180;
+}
+
+#kc-header-wrapper {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+  /* identical to box height */
+
+  letter-spacing: 0.02em;
+
+  color: #2241b0;
+  text-transform: uppercase;
+  max-width: 240px;
+  min-height: 40px;
+  padding-left: 50px;
+  background: url(../img/logo.svg) left center no-repeat;
+  line-height: 40px;
+  margin: 7vh auto 3vh auto;
+}
+
+.h1stlogin-pf-social-all {
+  padding: 24px 0px;
+  border-top: 1px solid #ddd;
+  margin-bottom: 0px;
+  margin-top: 24px;
+}
+
+.h1stlogin-pf-social-all .zocial {
+  display: block;
+  text-decoration: none;
+  color: #fff;
+  width: 100%;
+  height: 48px;
+  line-height: 48px;
+  padding: 0px 16px;
+  /* #2241B0 */
+
+  background: #30479b;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.h1stlogin-pf-social-all .zocial.github {
+  background: #30479b url(../img/github.svg) 16px center no-repeat;
+}
+
+.h1stlogin-pf-social-all .zocial.google {
+  background: #30479b url(../img/google.svg) 16px center no-repeat;
+}
+
+#kc-form-options {
+  margin: 10px 0px 20px;
+}
+
+.h1stlogin-pf-social-link {
+  margin-bottom: 16px;
+}
+
+.h1stlogin-pf-social-link:last-child {
+  margin-bottom: 0px;
+}

@@ -1,0 +1,10 @@
+providers:
+    file:
+      directory: /opt/traefik/
+      watch: true
+
+entryPoints: 
+    web: 
+        address: ":3000"
+
+accessLog: {}

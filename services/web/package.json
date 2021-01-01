@@ -1,0 +1,74 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.12",
+    "@react-keycloak/web": "^3.4.0",
+    "@reduxjs/toolkit": "^1.4.0",
+    "@testing-library/jest-dom": "4.2.4",
+    "@testing-library/react": "9.3.2",
+    "@testing-library/user-event": "7.1.2",
+    "@types/classnames": "^2.2.10",
+    "@types/faker": "^4.1.12",
+    "@types/jest": "24.0.0",
+    "@types/js-cookie": "^2.2.6",
+    "@types/react": "16.9.0",
+    "@types/react-dom": "16.9.0",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.5",
+    "axios": "^0.20.0",
+    "axios-hooks": "^2.1.0",
+    "classnames": "^2.2.6",
+    "date-fns": "^2.16.0",
+    "js-cookie": "^2.2.1",
+    "keycloak-js": "11.0.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.3",
+    "react-tooltip": "^4.2.9",
+    "redux": "^4.0.5",
+    "typescript": "3.8"
+  },
+  "scripts": {
+    "start": "REACT_APP_STAGE=dev react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "build:prod": "REACT_APP_STAGE=production yarn run build",
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@storybook/addon-actions": "^6.0.21",
+    "@storybook/addon-essentials": "^6.0.21",
+    "@storybook/addon-links": "^6.0.21",
+    "@storybook/node-logger": "^6.0.21",
+    "@storybook/preset-create-react-app": "^3.1.4",
+    "@storybook/react": "^6.0.21",
+    "@types/node": "^14.6.0",
+    "babel-loader": "^8.1.0",
+    "react-is": "^16.13.1",
+    "tslint": "6.1.3"
+  }
+}

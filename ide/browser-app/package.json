@@ -1,0 +1,75 @@
+{
+  "private": true,
+  "name": "h1st-workbench",
+  "version": "0.1.0",
+  "dependencies": {
+    "@theia/console": "1.5.0",
+    "@theia/core": "1.5.0",
+    "@theia/editor": "1.5.0",
+    "@theia/file-search": "1.5.0",
+    "@theia/filesystem": "1.5.0",
+    "@theia/git": "1.5.0",
+    "@theia/keymaps": "1.5.0",
+    "@theia/markers": "1.5.0",
+    "@theia/messages": "1.5.0",
+    "@theia/metrics": "1.5.0",
+    "@theia/mini-browser": "1.5.0",
+    "@theia/monaco": "1.5.0",
+    "@theia/navigator": "1.5.0",
+    "@theia/outline-view": "1.5.0",
+    "@theia/output": "1.5.0",
+    "@theia/plugin-ext-vscode": "1.5.0",
+    "@theia/preview": "1.5.0",
+    "@theia/process": "1.5.0",
+    "@theia/scm": "1.5.0",
+    "@theia/scm-extra": "1.5.0",
+    "@theia/search-in-workspace": "1.5.0",
+    "@theia/task": "1.5.0",
+    "@theia/terminal": "1.5.0",
+    "@theia/userstorage": "1.5.0",
+    "@theia/variable-resolver": "1.5.0",
+    "@theia/workspace": "1.5.0",
+    "h1st": "0.0.0",
+    "react-digraph": "^7.0.0-alpha.5"
+  },
+  "devDependencies": {
+    "@theia/cli": "1.5.0"
+  },
+  "scripts": {
+    "clean": "theia clean",
+    "build": "theia build --mode development && yarn copy:asset",
+    "build:pro": "theia build",
+    "start": "yarn copy:asset && theia start --port 3002 --plugins=local-dir:plugins ",
+    "watch": "yarn copy:asset && theia build --watch --mode development ",
+    "download:plugins": "theia download:plugins",
+    "copy:asset": "cp ../../docker/ide/components/index.html ./lib/index.html"
+  },
+  "theia": {
+    "target": "browser",
+    "frontend": {
+      "config": {
+        "editor.autoSave": "on",
+        "defaultTheme": "brackets-light-pro",
+        "applicationName": "H1st Workbench",
+        "preferences": {
+          "files.enableTrash": false,
+          "files.exclue": {
+            "**/.DS_Store": true,
+            "**/*.pyc": true,
+            "__pycache__": true,
+            ".theia": true,
+            "**/__pycache__": true
+          }
+        }
+      }
+    }
+  },
+  "theiaPluginsDir": "plugins",
+  "theiaPlugins": {
+    "h1st-workbench-theme-default": "https://h1st-static.s3.amazonaws.com/h1st-workbench.theme.0.0.0.vsix",
+    "vscode-python": "https://github.com/microsoft/vscode-python/releases/download/2020.1.58038/ms-python-release.vsix",
+    "vscode-builtin-python": "https://github.com/theia-ide/vscode-builtin-extensions/releases/download/v1.39.1-prel/python-1.39.1-prel.vsix",
+    "vscode-ms-python": "https://open-vsx.org/api/ms-python/python/2020.7.0/file/ms-python.python-2020.7.0.vsix",
+    "vscode-one-dark-pro": "https://open-vsx.org/api/zhuangtongfa/material-theme/3.8.7/file/zhuangtongfa.material-theme-3.8.7.vsix"
+  }
+}
