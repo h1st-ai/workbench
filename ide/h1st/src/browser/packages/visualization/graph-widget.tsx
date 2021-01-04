@@ -6,7 +6,7 @@ import {
 } from "@theia/core/lib/browser";
 import { injectable } from "inversify";
 import URI from "@theia/core/lib/common/uri";
-import { GraphContainer } from "./containers/GrapphContainer";
+import { GraphContainer } from "./containers/GraphContainer";
 import { configureStore } from "@reduxjs/toolkit";
 import reducer from "./reducers";
 
