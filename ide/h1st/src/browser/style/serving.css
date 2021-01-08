@@ -2,3 +2,185 @@
   -webkit-mask: url("data:image/svg+xml,%3Csvg width='25' height='26' viewBox='0 0 25 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1.61719' width='23' height='23' rx='1' stroke='%23E4EAFF' stroke-width='2'/%3E%3Cpath d='M11.0124 12.0109L11.0041 7.41884L15.6107 12.0254L11.0208 16.6153L11.0124 12.0109Z' stroke='%23E4EAFF' stroke-width='2'/%3E%3C/svg%3E%0A");
   mask: url("data:image/svg+xml,%3Csvg width='25' height='26' viewBox='0 0 25 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1.61719' width='23' height='23' rx='1' stroke='%23E4EAFF' stroke-width='2'/%3E%3Cpath d='M11.0124 12.0109L11.0041 7.41884L15.6107 12.0254L11.0208 16.6153L11.0124 12.0109Z' stroke='%23E4EAFF' stroke-width='2'/%3E%3C/svg%3E%0A");
 }
+
+.serving-content {
+  padding: 24px;
+  height: 100%;
+}
+
+.serving-left {
+  border-right: 1px solid #dde5e6;
+  width: 25%;
+}
+
+.form-section {
+  margin: 18px 0px;
+}
+
+.form-section .section-title {
+  width: 100%;
+  color: #465367;
+  margin-bottom: 12px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.serving-input-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #d4d8dc;
+  outline: none;
+}
+
+.form-section .row {
+  width: 100%;
+}
+
+.form-section .space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 43px;
+  height: 22px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #30479b;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #30479b;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.radio-button-box {
+  margin: 12px 0px;
+  border: 1px solid #dde5e7;
+  border-radius: 5px;
+  background-color: #f7f9ff;
+}
+
+.radio-button-item {
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+}
+
+.radio-button-item:first-child {
+  border-radius: 5px 5px 0px 0px;
+}
+
+.radio-button-item:last-child {
+  border-radius: 0px 0px 5px 5px;
+}
+
+.radio-button-item.selected {
+  background-color: #30479b;
+}
+
+.radio-button-item .input-box {
+  width: 15%;
+}
+
+.radio-button-item .information .title {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.radio-button-item .information label {
+  cursor: pointer;
+}
+
+.radio-button-item .information .title {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.radio-button-item.selected .information .title {
+  color: white;
+  font-weight: 700;
+}
+
+.radio-button-item .information .description {
+  font-size: 12px;
+  font-weight: 700;
+  color: #b0b6c1;
+}
+
+.deploy-button {
+  width: 100%;
+  background-color: #30479b;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+
+.deploy-button::before {
+  position: relative;
+  content: url("data:image/svg+xml,%3Csvg width='9' height='13' viewBox='0 0 9 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.459617 6.55566L0.459617 1.2906C0.459617 0.445389 1.58931 0.0221089 2.25 0.619763L8.07045 5.88483C8.48003 6.25532 8.48003 6.85601 8.07045 7.2265L2.25 12.4916C1.58931 13.0892 0.459617 12.6659 0.459617 11.8207L0.459617 6.55566Z' fill='white'/%3E%3C/svg%3E");
+  width: 10px;
+  height: 10px;
+  float: left;
+}
