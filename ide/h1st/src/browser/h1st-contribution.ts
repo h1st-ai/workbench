@@ -44,6 +44,7 @@ import {
 import {
   H1stNewModelCommand,
   H1stNewNotebookCommand,
+  H1stOpenShareCommand,
   H1stOpenWorkspace,
 } from "./commands";
 import { FileService } from "@theia/filesystem/lib/browser/file-service";
@@ -52,6 +53,7 @@ import getModelFileTemplate from "../common/templates/models";
 // import getNotebookFileTemplate from "../common/templates/notebook";
 import { UriCommandHandler } from "@theia/core/lib/common/uri-command-handler";
 import { H1stAboutDialog } from "./style/about-dialog";
+import { ShareDialog } from "./widgets/share-dialog";
 // import {
 //   // H1stNotebookWidget,
 //   NotebookCommand,
@@ -78,6 +80,8 @@ export class H1stCommandContribution implements CommandContribution {
   protected readonly workspaceService: WorkspaceService;
   @inject(H1stAboutDialog)
   protected readonly aboutDialog: H1stAboutDialog;
+  @inject(ShareDialog)
+  protected readonly shareDialog: ShareDialog;
   @inject(H1stBackendWithClientService)
   private readonly h1stBackEndWithClientService: H1stBackendWithClientService;
   // @inject(FrontendApplication) private readonly app: FrontendApplication;
@@ -194,6 +198,12 @@ export class H1stCommandContribution implements CommandContribution {
     registry.registerCommand(CommonCommands.ABOUT_COMMAND, {
       execute: () => {
         this.aboutDialog.open();
+      },
+    });
+
+    registry.registerCommand(H1stOpenShareCommand, {
+      execute: () => {
+        this.shareDialog.open();
       },
     });
 
