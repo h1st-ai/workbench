@@ -3,6 +3,7 @@ import os
 import importlib
 import inspect
 from h1st import Graph, Decision
+from h1st.core.ensemble import Ensemble
 from os.path import dirname, basename, isfile, join
 import glob
 from concurrent.futures import ProcessPoolExecutor
@@ -13,7 +14,10 @@ def get_package_dir():
 def find_graphs(module_name):
     graphs = []
 
-    try: 
+    try:       
+        if module_name in sys.modules:
+            del sys.modules[module_name]
+            
         module = importlib.import_module(module_name)
     except:
         return []
@@ -101,7 +105,11 @@ def get_graph_topology(graph_name):
                         else None),
             'edges': [{
                 'next_node_id': edge[0].id,
-                'edge_label': edge[1]
+                'edge_label': edge[1],
+                'ensemble_sub_models':
+                    [m.__class__.__name__ for m in node._containable._sub_models]
+                        if isinstance(node._containable, Ensemble)
+                        else None
             } for edge in node.edges]   
         }
 
