@@ -3,6 +3,12 @@
   mask: url("data:image/svg+xml,%3Csvg width='25' height='26' viewBox='0 0 25 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1.61719' width='23' height='23' rx='1' stroke='%23E4EAFF' stroke-width='2'/%3E%3Cpath d='M11.0124 12.0109L11.0041 7.41884L15.6107 12.0254L11.0208 16.6153L11.0124 12.0109Z' stroke='%23E4EAFF' stroke-width='2'/%3E%3C/svg%3E%0A");
 }
 
+.serving {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
 .serving-content {
   padding: 24px;
   height: 100%;
@@ -183,4 +189,58 @@ input:checked + .slider:before {
   width: 10px;
   height: 10px;
   float: left;
+}
+
+.serving-right {
+  flex: 1;
+}
+
+.serving-information {
+  padding: 24px;
+}
+
+.deployment-history-table,
+.deployment-history-table table {
+  width: 100%;
+  border: none;
+}
+
+.deployment-history-table table thead {
+  background-color: #30479b;
+  color: white;
+}
+
+.deployment-history-table table thead th {
+  padding: 10px;
+}
+
+.deployment-history-table table thead th:first-child {
+  border-radius: 5px 0px 0px 0px;
+}
+
+.deployment-history-table table thead th:last-child {
+  border-radius: 0px 5px 0px 0px;
+}
+
+.deployment-history-table table tbody tr td {
+  padding: 10px;
+  border-bottom: 1px solid #d4d8dc;
+  border-left: 1px solid #d4d8dc;
+  border-right: 1px solid #d4d8dc;
+}
+
+.deployment-history-table table tbody tr td {
+  padding: 10px;
+}
+
+.deployment-history-table table tbody tr:nth-child(2n) td {
+  background-color: #f2f5f7;
+}
+
+.deployment-history-table table tbody tr:last-child td:first-child {
+  border-radius: 0px 0px 0px 5px;
+}
+
+.deployment-history-table table tbody tr:last-child td:last-child {
+  border-radius: 0px 0px 5px 0px;
 }
