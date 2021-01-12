@@ -55,10 +55,34 @@ const DeploymentHistoryTable = () => {
   );
 };
 
+const DeploymentMonitoringItem = props => {
+  const { title = 'Total predictions', number = 10 } = props;
+  return (
+    <div className="item">
+      <div className="title">{title} </div>
+      <div className="number">{number} </div>
+    </div>
+  );
+};
+
+const DeploymentMonitoring = () => {
+  return (
+    <div className="deployment-monitoring">
+      <DeploymentMonitoringItem />
+      <DeploymentMonitoringItem />
+      <DeploymentMonitoringItem />
+      <DeploymentMonitoringItem />
+      <DeploymentMonitoringItem />
+      <DeploymentMonitoringItem />
+    </div>
+  );
+};
+
 const Information = () => {
   return (
     <div className="serving-right serving-information">
       <DeploymentHistoryTable />
+      <DeploymentMonitoring />
     </div>
   );
 };

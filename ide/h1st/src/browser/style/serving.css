@@ -244,3 +244,28 @@ input:checked + .slider:before {
 .deployment-history-table table tbody tr:last-child td:last-child {
   border-radius: 0px 0px 5px 0px;
 }
+
+.deployment-monitoring {
+  margin-top: 36px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.deployment-monitoring .item {
+  width: 100%;
+  padding: 24px;
+  margin: 8px;
+  background-color: #eef1f9;
+  border-radius: 5px;
+  flex: 1 1 25%;
+}
+
+.deployment-monitoring .item:nth-child(3n + 1) {
+  margin-left: 0px;
+}
+
+.deployment-monitoring .item:nth-child(3n + 3) {
+  margin-right: 0px;
+}
