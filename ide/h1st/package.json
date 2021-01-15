@@ -50,9 +50,9 @@
     "react-redux": "7.2.1",
     "react-tooltip": "^4.2.10",
     "redux": "4.0.5",
+    "resize-observer-polyfill": "^1.5.1",
     "stickybits": "^3.7.7",
     "styled-components": "5.2.0",
-    "resize-observer-polyfill": "^1.5.1",
     "uniqid": "^5.2.0"
   },
   "devDependencies": {
@@ -61,6 +61,7 @@
     "@types/react": "^17.0.0",
     "@types/react-redux": "7.1.9",
     "@types/redux-mock-store": "^1.0.2",
+    "@types/styled-components": "^5.1.7",
     "redux-mock-store": "^1.5.4",
     "rimraf": "3.0.2",
     "ts-node": "^9.0.0",
