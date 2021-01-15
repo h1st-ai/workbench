@@ -3,6 +3,7 @@ import os
 import importlib
 import inspect
 from h1st import Graph, Decision
+from h1st.core.ensemble import Ensemble
 from os.path import dirname, basename, isfile, join
 import glob
 from concurrent.futures import ProcessPoolExecutor
@@ -99,6 +100,10 @@ def get_graph_topology(graph_name):
                     else ('action'
                         if id not in ['start', 'end']
                         else None),
+            'ensemble_sub_models':
+                [m.__class__.__name__ for m in node._containable._sub_models]
+                    if isinstance(node._containable, Ensemble)
+                    else None,
             'edges': [{
                 'next_node_id': edge[0].id,
                 'edge_label': edge[1]
