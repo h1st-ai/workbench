@@ -126,11 +126,11 @@ def get_topology(graph_class_name: str) -> dict:
 from .deployment import Deployment
 
 
-@app.post("/api/deployment")
+@app.post("/api/deployments")
 def create(inputs: dict) -> dict:
     return Deployment.create(inputs['service_class_name'])
 
 
-@app.post("/api/deployment")
+@app.post("/api/deployments")
 def delete(service_class_name: str) -> dict:
     return Deployment.delete(service_class_name)
