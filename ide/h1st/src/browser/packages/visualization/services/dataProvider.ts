@@ -8,7 +8,8 @@ import { IEdge, INode } from '../types';
 import { log } from './logging';
 // import { log } from "./logging";
 
-const API_ENDPOINT = process.env.TUNE_SERVER || 'http://localhost:3003';
+const API_ENDPOINT =
+  process.env.TUNE_SERVER || 'https://staging.h1st.ai/project/q3pfv1rwqv';
 
 const fetchModules = async () => {
   const fetchModulesResponse = await fetch(`${API_ENDPOINT}/api/graphs`);
