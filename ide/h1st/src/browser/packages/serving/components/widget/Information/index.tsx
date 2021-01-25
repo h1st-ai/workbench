@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classnames from 'classnames';
 import { CopyIcon } from './Icons/Icons';
 
 const ServingItem = () => {
@@ -57,11 +58,11 @@ const DeploymentHistoryTable = () => {
 };
 
 const DeploymentMonitoringItem = (props: any) => {
-  const { title = 'Total predictions', number = 10 } = props;
+  const { title = 'Total predictions', number = 10, error } = props;
   return (
     <div className="item">
       <div className="title">{title} </div>
-      <div className="number">{number} </div>
+      <div className={classnames(['number', { error }])}>{number} </div>
     </div>
   );
 };
@@ -70,11 +71,19 @@ const DeploymentMonitoring = () => {
   return (
     <div className="deployment-monitoring">
       <DeploymentMonitoringItem />
-      <DeploymentMonitoringItem />
-      <DeploymentMonitoringItem />
-      <DeploymentMonitoringItem />
-      <DeploymentMonitoringItem />
-      <DeploymentMonitoringItem />
+      <DeploymentMonitoringItem title="Total requests" />
+      <DeploymentMonitoringItem title="Request over xxx ms" />
+      <DeploymentMonitoringItem title="Median | peak load" />
+      <DeploymentMonitoringItem
+        title="Data Error Rate"
+        error={true}
+        number={2}
+      />
+      <DeploymentMonitoringItem
+        title="System Error Rate"
+        error={true}
+        number={4}
+      />
     </div>
   );
 };

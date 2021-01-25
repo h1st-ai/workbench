@@ -30,6 +30,7 @@ const InputItem = ({
           id={checkboxId}
           type="radio"
           value={value}
+          checked={value === selected}
           name={name}
           onChange={e => onSelect(e.target.value)}
         />
@@ -45,7 +46,7 @@ const InputItem = ({
 };
 
 const SelectBox = ({ name = 'select' }) => {
-  const [selected, setSelected] = React.useState();
+  const [selected, setSelected] = React.useState('small');
   const choices = [
     {
       name,
@@ -66,6 +67,7 @@ const SelectBox = ({ name = 'select' }) => {
       description: <div>2GB RAM | 1 CPU</div>,
     },
   ];
+
   return (
     <div className="radio-button-box">
       {choices.map((choice, idx) => (

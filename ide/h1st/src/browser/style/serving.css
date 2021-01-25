@@ -7,6 +7,7 @@
   height: 100%;
   display: flex;
   flex-direction: row;
+  font-family: var(--theia-ui-font-family);
 }
 
 .serving-content {
@@ -263,7 +264,7 @@ input:checked + .slider:before {
 
 .deployment-monitoring .item {
   width: 100%;
-  padding: 24px;
+  padding: 16px;
   margin: 8px;
   background-color: #eef1f9;
   border-radius: 5px;
@@ -276,6 +277,22 @@ input:checked + .slider:before {
 
 .deployment-monitoring .item:nth-child(3n + 3) {
   margin-right: 0px;
+}
+
+.deployment-monitoring .item .title {
+  color: #6b7180;
+  font-family: var(--theia-ui-font-family);
+}
+
+.deployment-monitoring .number {
+  font-weight: 600;
+  margin-top: 22px;
+  font-size: 36px;
+  color: #30479b;
+}
+
+.deployment-monitoring .number.error {
+  color: #e76e6e;
 }
 
 .button-group {
@@ -346,4 +363,25 @@ input:checked + .slider:before {
 
 .deployment-row:hover .button-group {
   visibility: visible;
+}
+
+.replicas-input::-webkit-outer-spin-button,
+.replicas-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.replicas-input {
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  border-radius: 5px;
+  border: 1px solid #d4d8dc;
+  text-align: center;
+  -webkit-appearance: none;
+}
+
+.replicas-input-label {
+  color: #465367;
+  margin-left: 6px;
 }

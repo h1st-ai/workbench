@@ -131,6 +131,6 @@ def create(inputs: dict) -> dict:
     return Deployment.create(inputs['service_class_name'])
 
 
-@app.post("/api/deployments")
+@app.delete("/api/deployments")
 def delete(service_class_name: str) -> dict:
     return Deployment.delete(service_class_name)

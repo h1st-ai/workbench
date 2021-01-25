@@ -1,7 +1,14 @@
 import * as React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
 import { SelectBox } from '../SelectBox';
 
-const SelectGraphClass = () => {
+const SelectGraphClass = (props: any) => {
+  const { graphClass, setGraphClass } = props;
+
+  useEffect(() => {
+    console.log(graphClass);
+  }, []);
   return (
     <div className="form-section">
       <div className="section-title">Class</div>
@@ -18,7 +25,7 @@ const InstanceSize = () => {
   return (
     <div className="form-section">
       <div className="section-title">Instance Size</div>
-      <div className="row space-between">
+      {/* <div className="row space-between">
         <div className="form-label">Auto-scaling</div>
         <div>
           <label className="switch">
@@ -26,24 +33,43 @@ const InstanceSize = () => {
             <span className="slider round"></span>
           </label>
         </div>
-      </div>
+      </div> */}
       <div>
         <SelectBox />
       </div>
-      <div>
-        <button className="deploy-button" type="button">
-          Deploy
-        </button>
+      <div className="section-title">Replicas</div>
+      <div className="row">
+        <input
+          className="replicas-input"
+          type="number"
+          min={1}
+          max={3}
+          defaultValue={1}
+        />{' '}
+        <span className="replicas-input-label">Medium instances</span>
       </div>
     </div>
   );
 };
 
+const DeployButton = () => {
+  return (
+    <div>
+      <button className="deploy-button" type="button">
+        Deploy
+      </button>
+    </div>
+  );
+};
+
 const DeploymentForm = () => {
+  const [graphClass, setGraphClass] = useState(null);
+
   return (
     <div className="serving-content serving-left">
-      <SelectGraphClass />
+      <SelectGraphClass graphClass={graphClass} setGraphClass={setGraphClass} />
       <InstanceSize />
+      <DeployButton />
     </div>
   );
 };
