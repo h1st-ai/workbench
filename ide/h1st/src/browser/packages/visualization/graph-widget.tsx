@@ -1,18 +1,18 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Message,
   NavigatableWidget,
   ReactWidget,
-} from "@theia/core/lib/browser";
-import { injectable } from "inversify";
-import URI from "@theia/core/lib/common/uri";
-import { GraphContainer } from "./containers/GrapphContainer";
-import { configureStore } from "@reduxjs/toolkit";
-import reducer from "./reducers";
+} from '@theia/core/lib/browser';
+import { injectable } from 'inversify';
+import URI from '@theia/core/lib/common/uri';
+import { GraphContainer } from './containers/GraphContainer';
+import { configureStore } from '@reduxjs/toolkit';
+import reducer from './reducers';
 
 @injectable()
 export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
-  static readonly ID = "h1st:graph:widget";
+  static readonly ID = 'h1st:graph:widget';
   private readonly store: any;
 
   constructor(readonly uri: URI) {
@@ -32,7 +32,7 @@ export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
   protected async onAfterAttach(msg: Message): Promise<void> {
     super.onAfterAttach(msg);
 
-    console.log("On after attach", msg, this.isVisible);
+    console.log('On after attach', msg, this.isVisible);
     this.update();
   }
 
@@ -42,7 +42,7 @@ export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
 
   protected render(): React.ReactNode {
     return (
-      <div className="h1st-graph" style={{ height: "100%" }}>
+      <div className="h1st-graph" style={{ height: '100%' }}>
         <GraphContainer store={this.store} />
       </div>
     );
