@@ -5,23 +5,35 @@ import { CopyIcon } from './Icons/Icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
+const formatDate = (dateSring: string) => {
+  const date = new Date(dateSring);
+
+  return date.toLocaleString('default', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
 const ServingItem = (props: any) => {
   return (
     <tr className="deployment-row">
       <td>serve_1</td>
-      <td>{props?.graphName}</td>
-      <td>David Gil</td>
-      <td>{props?.deployed_at}</td>
+      <td>{props?.graph_name}</td>
+      <td></td>
+      <td>{formatDate(props?.deployed_at)}</td>
       <td>Local</td>
       <td>{props?.status}</td>
       <td>
-        <span className="button-group">
-          <button className="serving-table-button serving-table-button__start">
+        <span className="button-group align-end">
+          {/* <button className="serving-table-button serving-table-button__start">
             Start
-          </button>
-          <button className="serving-table-button serving-table-button__stop">
-            Stop
-          </button>
+          </button> */}
+          {props?.status === 'deployed' && (
+            <button className="serving-table-button serving-table-button__stop">
+              Stop
+            </button>
+          )}
           <button className="serving-table-button serving-table-button__url">
             <CopyIcon />
             URL
@@ -104,7 +116,7 @@ const Information = () => {
   return (
     <div className="serving-right serving-information">
       <DeploymentHistoryTable />
-      <DeploymentMonitoring />
+      {/* <DeploymentMonitoring /> */}
     </div>
   );
 };

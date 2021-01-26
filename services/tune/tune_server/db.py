@@ -8,12 +8,13 @@ import datetime
 
 class ServingDb:
   @staticmethod
-  def saveDeployment(graphName):
+  def saveDeployment(graphName, url):
     obj = {
       'id': str(uuid.uuid4()),
       'graph_name': graphName,
       'deployed_at': datetime.datetime.utcnow().isoformat(),
-      'status': 'deployed'
+      'status': 'deployed',
+      'url': url
     }
 
     deployments = ServingDb.read_data()

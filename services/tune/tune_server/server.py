@@ -137,7 +137,7 @@ def create(inputs: dict) -> dict:
     
     if res['status'] == 'ready':
         print('Save deployment')
-        ServingDb.saveDeployment(inputs['service_class_name'])
+        ServingDb.saveDeployment(inputs['service_class_name'], res['url'])
     
     return res
 
