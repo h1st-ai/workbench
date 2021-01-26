@@ -1,9 +1,8 @@
 import * as React from 'react';
-import axios from 'axios';
 import classnames from 'classnames';
+import axios from 'axios';
 import { CopyIcon } from './Icons/Icons';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { MessageService } from '@theia/core';
 
 const formatDate = (dateSring: string) => {
   const date = new Date(dateSring);
@@ -12,7 +11,38 @@ const formatDate = (dateSring: string) => {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
   });
+};
+
+const copyURL = async (url: string) => {
+  const fullUrl = 'http://localhost:8000' + url;
+  if (!navigator.clipboard) {
+    var textArea = document.createElement('textarea');
+    textArea.value = fullUrl;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      document.execCommand('copy');
+    } catch (err) {
+      console.error('Unable to copy', err);
+    }
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(fullUrl);
+  } catch (error) {
+    console.error('Async: Could not copy text: ', error);
+  }
 };
 
 const ServingItem = (props: any) => {
@@ -30,11 +60,24 @@ const ServingItem = (props: any) => {
             Start
           </button> */}
           {props?.status === 'deployed' && (
-            <button className="serving-table-button serving-table-button__stop">
+            <button
+              className="serving-table-button serving-table-button__stop"
+              onClick={() => {
+                props?.stopDeployment(props?.graph_name);
+              }}
+            >
               Stop
             </button>
           )}
-          <button className="serving-table-button serving-table-button__url">
+          <button
+            className="serving-table-button serving-table-button__url"
+            onClick={async () => {
+              await copyURL(props?.url);
+              props?.messageService?.info(
+                'URL successfully copied to clipboard',
+              );
+            }}
+          >
             <CopyIcon />
             URL
           </button>
@@ -45,18 +88,25 @@ const ServingItem = (props: any) => {
   );
 };
 
-const DeploymentHistoryTable = () => {
-  const [deployments, setDeployments] = useState([]);
+interface DeploymentHistoryTableProps {
+  deployments: any;
+  messageService: MessageService;
+  getDeployments: Function;
+}
 
-  const getDeployments = async () => {
+const DeploymentHistoryTable = ({
+  deployments = [],
+  messageService,
+  getDeployments,
+}: DeploymentHistoryTableProps) => {
+  const removeDeployment = (id: string) => {};
+  const stopDeployment = async (classname: string) => {
     try {
-      const res = await axios.get('http://localhost:3000/api/deployments');
-      setDeployments(res.data);
+      await axios.delete(`http://localhost:3000/api/deployments/${classname}`);
+      messageService.info('Stop serving sucessfully');
+      getDeployments();
     } catch (error) {}
   };
-  useEffect(() => {
-    getDeployments();
-  }, []);
   return (
     <div className="deployment-history-table">
       <table cellSpacing={0}>
@@ -72,8 +122,14 @@ const DeploymentHistoryTable = () => {
           </tr>
         </thead>
         <tbody>
-          {deployments.map((deployment, idx) => (
-            <ServingItem key={idx} {...deployment} />
+          {deployments.map((deployment: any, idx: number) => (
+            <ServingItem
+              key={idx}
+              {...deployment}
+              messageService={messageService}
+              removeDeployment={removeDeployment}
+              stopDeployment={stopDeployment}
+            />
           ))}
         </tbody>
       </table>
@@ -112,10 +168,24 @@ const DeploymentMonitoring = () => {
   );
 };
 
-const Information = () => {
+interface InfomationProps {
+  deployments: any[];
+  messageService: MessageService;
+  getDeployments: Function;
+}
+
+const Information = ({
+  deployments = [],
+  messageService,
+  getDeployments,
+}: InfomationProps) => {
   return (
     <div className="serving-right serving-information">
-      <DeploymentHistoryTable />
+      <DeploymentHistoryTable
+        deployments={deployments}
+        messageService={messageService}
+        getDeployments={getDeployments}
+      />
       {/* <DeploymentMonitoring /> */}
     </div>
   );

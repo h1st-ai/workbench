@@ -95,6 +95,7 @@ const DeployButton = ({ onDeploy }: { onDeploy: Function }) => {
 
 interface DeploymentFormProps {
   messageService: MessageService;
+  getDeployments: Function;
 }
 
 const DeploymentForm = (props: DeploymentFormProps) => {
@@ -108,6 +109,7 @@ const DeploymentForm = (props: DeploymentFormProps) => {
     props?.messageService?.info?.(
       `Deploy successfully, \n API endpoint: ${res.data?.url}`,
     );
+    props?.getDeployments?.();
   };
 
   return (

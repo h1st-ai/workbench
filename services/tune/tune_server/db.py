@@ -4,7 +4,7 @@ import json
 import datetime
 
 
-# TODO: Convert this class to actial DB
+# TODO: Convert this class to DB
 
 class ServingDb:
   @staticmethod
@@ -31,6 +31,22 @@ class ServingDb:
     ServingDb.write_data(deployments)
 
   @staticmethod
+  def stop_deployment(graphName):
+    deployments = ServingDb.read_data()
+    if not deployments:
+      deployments = []
+
+  
+    for deployment in deployments:
+      #Set all deployment for current graph to stop
+      if deployment['graph_name'] == graphName:
+        deployment['status']= 'stopped'
+
+    ServingDb.write_data(deployments)
+
+
+  # Helper functions
+  @staticmethod
   def read_data():
     # Opening JSON file 
     if os.path.exists("serving.json"):
@@ -41,9 +57,6 @@ class ServingDb:
     else:
       return []
     
-    
-
-
   @staticmethod
   def write_data(data):
     with open('serving.json', 'w') as openfile:

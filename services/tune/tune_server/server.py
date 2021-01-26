@@ -145,6 +145,8 @@ def create(inputs: dict) -> dict:
 def get_deployments():
     return ServingDb.read_data()
 
-@app.delete("/api/deployments")
+@app.delete("/api/deployments/{service_class_name}")
 def delete(service_class_name: str) -> dict:
-    return Deployment.delete(service_class_name)
+    result = Deployment.delete(service_class_name)
+    ServingDb.stop_deployment(service_class_name)
+    return result
