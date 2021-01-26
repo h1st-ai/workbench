@@ -13,6 +13,31 @@ from .graph_utils import get_package_dir
 ray_client = serve.connect()
 
 
+def find_all_service_class():
+    pkg_dir = get_package_dir()
+
+    # find files end with _service.py
+    sys.path.append(pkg_dir)
+    modules = glob.glob(join(pkg_dir, "*_service.py"))
+    filenames = [basename(f) for f in modules if isfile(f)]
+
+    classes = []
+
+    # load services until found the one matching
+    for filename in filenames:
+        try:
+            spec = importlib.util.spec_from_file_location("module.name", os.path.join(pkg_dir, filename))
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            for att in dir(module):
+                kclass = getattr(module, att)
+                if inspect.isclass(kclass):
+                    classes.append(kclass)
+        except:
+            print('error with', filename)
+
+    return [klass.__name__ for klass in classes] 
+
 def find_service_class(classname):
     pkg_dir = get_package_dir()
 
@@ -49,6 +74,7 @@ class Deployment:
 
         if not service_class:
             return {
+                "status": "error",
                 "error": 404,
                 "message": "service not found"
             }
@@ -67,4 +93,12 @@ class Deployment:
         return {
             "status": "ready",
             "url": route
+        }
+
+    @staticmethod
+    def find_all_service_class():
+        classes = find_all_service_class()
+
+        return {
+            "data": classes
         }

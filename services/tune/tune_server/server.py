@@ -8,11 +8,12 @@ import os
 
 from h1st.model_repository.explorer import ModelExplorer
 from .graph_utils import find_graphs_in_package, get_graph_topology
+from .db import ServingDb
 
 
 class Settings(BaseSettings):
     project_root: str = os.getcwd()
-    allowed_cors_origins: str = "localhost:3000"
+    allowed_cors_origins: str = "localhost:3002,http://localhost:3002"
 
 
 settings = Settings()
@@ -126,10 +127,23 @@ def get_topology(graph_class_name: str) -> dict:
 from .deployment import Deployment
 
 
+@app.get('/api/deployments/classes')
+def get_service_classes():
+    return Deployment.find_all_service_class()
+
 @app.post("/api/deployments")
 def create(inputs: dict) -> dict:
-    return Deployment.create(inputs['service_class_name'])
+    res = Deployment.create(inputs['service_class_name'])
+    
+    if res['status'] == 'ready':
+        print('Save deployment')
+        ServingDb.saveDeployment(inputs['service_class_name'])
+    
+    return res
 
+@app.get('/api/deployments')
+def get_deployments():
+    return ServingDb.read_data()
 
 @app.delete("/api/deployments")
 def delete(service_class_name: str) -> dict:

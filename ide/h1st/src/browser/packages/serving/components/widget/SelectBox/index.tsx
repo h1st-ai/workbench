@@ -8,6 +8,7 @@ interface IRadioInputItem {
   description?: string | JSX.Element;
   onSelect: Function;
   selected: any;
+  disabled?: boolean;
 }
 
 const InputItem = ({
@@ -17,6 +18,7 @@ const InputItem = ({
   description,
   onSelect,
   selected,
+  disabled,
 }: IRadioInputItem) => {
   const checkboxId = `checkbox-${value}`;
   return (
@@ -33,6 +35,7 @@ const InputItem = ({
           checked={value === selected}
           name={name}
           onChange={e => onSelect(e.target.value)}
+          disabled
         />
       </div>
       <div className="information">
@@ -46,25 +49,35 @@ const InputItem = ({
 };
 
 const SelectBox = ({ name = 'select' }) => {
-  const [selected, setSelected] = React.useState('small');
+  const [selected, setSelected] = React.useState('local');
   const choices = [
     {
       name,
-      value: 'large',
-      title: 'Large',
-      description: <div>8GB RAM | 4 CPU</div>,
-    },
-    {
-      name,
-      value: 'medium',
-      title: 'Medium',
-      description: <div>4GB RAM | 2 CPU</div>,
+      value: 'local',
+      title: 'Local machine',
+      description: '',
+      disabled: false,
     },
     {
       name,
       value: 'small',
       title: 'Small',
       description: <div>2GB RAM | 1 CPU</div>,
+      disabled: true,
+    },
+    {
+      name,
+      value: 'medium',
+      title: 'Medium',
+      description: <div>4GB RAM | 2 CPU</div>,
+      disabled: true,
+    },
+    {
+      name,
+      value: 'large',
+      title: 'Large',
+      description: <div>8GB RAM | 4 CPU</div>,
+      disabled: true,
     },
   ];
 

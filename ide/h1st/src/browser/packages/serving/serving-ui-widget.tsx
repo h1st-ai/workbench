@@ -13,6 +13,7 @@ import { Provider } from 'react-redux';
 import { ServingUris } from './experiment-uris';
 import reducer from './reducers/widget';
 import { ServingContent } from './components/servingContent';
+import { MessageService } from '@theia/core';
 
 @injectable()
 export class ServingUIWidget extends ReactWidget
@@ -21,13 +22,15 @@ export class ServingUIWidget extends ReactWidget
   private _id: string;
   private _uri: URI;
   private _store: EnhancedStore;
+  private messageService: MessageService;
 
-  constructor({ name, id, uri }: any) {
+  constructor({ name, id, uri }: any, messageService: MessageService) {
     super();
     this._name = name;
     this._id = id;
     this._uri = uri;
     this._store = configureStore({ reducer, devTools: true });
+    this.messageService = messageService;
   }
 
   get name(): string {
@@ -70,7 +73,7 @@ export class ServingUIWidget extends ReactWidget
   render(): React.ReactNode {
     return (
       <Provider store={this._store}>
-        <ServingContent />
+        <ServingContent messageService={this.messageService} />
       </Provider>
     );
   }

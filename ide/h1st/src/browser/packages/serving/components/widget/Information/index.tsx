@@ -1,16 +1,19 @@
 import * as React from 'react';
+import axios from 'axios';
 import classnames from 'classnames';
 import { CopyIcon } from './Icons/Icons';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
-const ServingItem = () => {
+const ServingItem = (props: any) => {
   return (
     <tr className="deployment-row">
       <td>serve_1</td>
-      <td>graphClassName</td>
+      <td>{props?.graphName}</td>
       <td>David Gil</td>
-      <td>Dec 20, 2020</td>
-      <td>Large</td>
-      <td>Active</td>
+      <td>{props?.deployed_at}</td>
+      <td>Local</td>
+      <td>{props?.status}</td>
       <td>
         <span className="button-group">
           <button className="serving-table-button serving-table-button__start">
@@ -31,6 +34,17 @@ const ServingItem = () => {
 };
 
 const DeploymentHistoryTable = () => {
+  const [deployments, setDeployments] = useState([]);
+
+  const getDeployments = async () => {
+    try {
+      const res = await axios.get('http://localhost:3000/api/deployments');
+      setDeployments(res.data);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getDeployments();
+  }, []);
   return (
     <div className="deployment-history-table">
       <table cellSpacing={0}>
@@ -46,11 +60,9 @@ const DeploymentHistoryTable = () => {
           </tr>
         </thead>
         <tbody>
-          {Array(6)
-            .fill({})
-            .map((_, idx) => (
-              <ServingItem key={idx} />
-            ))}
+          {deployments.map((deployment, idx) => (
+            <ServingItem key={idx} {...deployment} />
+          ))}
         </tbody>
       </table>
     </div>
