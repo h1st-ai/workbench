@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { MessageService } from '@theia/core';
-import { H1stBackendWithClientService } from '../../../../../../common/protocol';
 import { DeploymentHistoryTable } from './DeploymentHistoryTable';
 
 // const DeploymentMonitoringItem = (props: any) => {
@@ -36,24 +34,15 @@ import { DeploymentHistoryTable } from './DeploymentHistoryTable';
 
 interface InfomationProps {
   deployments: any[];
-  messageService: MessageService;
   getDeployments: Function;
-  service: H1stBackendWithClientService;
 }
 
-const Information = ({
-  deployments = [],
-  messageService,
-  getDeployments,
-  service,
-}: InfomationProps) => {
+const Information = ({ deployments = [], getDeployments }: InfomationProps) => {
   return (
     <div className="serving-right serving-information">
       <DeploymentHistoryTable
         deployments={deployments}
-        messageService={messageService}
         getDeployments={getDeployments}
-        service={service}
       />
       {/* <DeploymentMonitoring /> */}
     </div>

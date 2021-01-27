@@ -1,33 +1,30 @@
 import * as React from 'react';
-import { MessageService } from '@theia/core';
-import { H1stBackendWithClientService } from '../../../../../../../common/protocol';
 import { DeploymentItem } from './DeploymentItem';
+import ServingContext from '../../../../context';
 
 interface DeploymentHistoryTableProps {
   deployments: any;
-  messageService: MessageService;
   getDeployments: Function;
-  service: H1stBackendWithClientService;
 }
 
 const DeploymentHistoryTable = ({
   deployments = [],
-  messageService,
   getDeployments,
-  service,
 }: DeploymentHistoryTableProps) => {
+  const { backendService, messageService } = React.useContext(ServingContext);
+
   const removeDeployment = async (id: string) => {
     try {
       console.log('Call remove deployment in ui', { id });
-      await service.removeServingDeployment(id);
-      messageService.info('Remove serving sucessfully');
+      await backendService?.removeServingDeployment(id);
+      messageService?.info('Remove serving sucessfully');
       getDeployments();
     } catch (error) {}
   };
   const stopDeployment = async (classname: string, version: number) => {
     try {
-      await service.stopServingDeployment(classname, version);
-      messageService.info('Stop serving sucessfully');
+      await backendService?.stopServingDeployment(classname, version);
+      messageService?.info('Stop serving sucessfully');
       getDeployments();
     } catch (error) {}
   };

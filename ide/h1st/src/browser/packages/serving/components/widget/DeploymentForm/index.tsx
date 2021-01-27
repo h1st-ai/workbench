@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { SelectBox } from '../SelectBox';
-import { MessageService } from '@theia/core';
+import { useContext } from 'react';
+import ServingContext from '../../../context';
 
 const SelectGraphClass = (props: any) => {
   const [graphClasses, setGraphClasses] = useState([]);
@@ -94,11 +95,11 @@ const DeployButton = ({ onDeploy }: { onDeploy: Function }) => {
 };
 
 interface DeploymentFormProps {
-  messageService: MessageService;
   getDeployments: Function;
 }
 
 const DeploymentForm = (props: DeploymentFormProps) => {
+  const { messageService } = useContext(ServingContext);
   const [graphClass, setGraphClass] = useState(null);
 
   const onDeploy = async () => {
@@ -106,7 +107,7 @@ const DeploymentForm = (props: DeploymentFormProps) => {
       service_class_name: graphClass,
     });
 
-    props?.messageService?.info?.(
+    messageService?.info?.(
       `Deploy successfully, \n API endpoint: ${res.data?.url}`,
     );
     props?.getDeployments?.();

@@ -1,9 +1,10 @@
-import { ServingManager } from './serving-manager';
+import { MessageService } from '@theia/core';
+import { H1stBackendWithClientService } from '../../../common/protocol';
 
-export interface ITuningContext {
-  manager: ServingManager | undefined;
+export interface IServingContext {
+  messageService: MessageService | undefined;
+  backendService: H1stBackendWithClientService | undefined;
 }
-
 export interface IStore {
   tunes: IExperimentSlice;
 }

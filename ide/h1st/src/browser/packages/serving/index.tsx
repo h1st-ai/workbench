@@ -13,8 +13,6 @@ import { Provider } from 'react-redux';
 import { WidgetManager } from '@theia/core/lib/browser';
 
 import store from './stores';
-import TuningContext from './context';
-import { ITuningContext } from './types';
 import { ServingManager } from './serving-manager';
 import { ServingPanel } from './components/servingPanel';
 
@@ -82,19 +80,13 @@ export class ServingPanelWidget extends ReactWidget {
   }
 
   protected render(): React.ReactNode {
-    const contextValue: ITuningContext = {
-      manager: this.tuningManager,
-    };
-
     return (
-      <TuningContext.Provider value={contextValue}>
-        <Provider store={this.store}>
-          <ServingPanel
-            commandService={this.commandService}
-            manager={this.tuningManager}
-          />
-        </Provider>
-      </TuningContext.Provider>
+      <Provider store={this.store}>
+        <ServingPanel
+          commandService={this.commandService}
+          manager={this.tuningManager}
+        />
+      </Provider>
     );
   }
 

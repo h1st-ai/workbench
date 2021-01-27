@@ -15,6 +15,8 @@ import reducer from './reducers/widget';
 import { ServingContent } from './components/servingContent';
 import { MessageService } from '@theia/core';
 import { H1stBackendWithClientService } from '../../../common/protocol';
+import { IServingContext } from './types';
+import ServingContext from './context';
 
 @injectable()
 export class ServingUIWidget extends ReactWidget
@@ -78,13 +80,17 @@ export class ServingUIWidget extends ReactWidget
   }
 
   render(): React.ReactNode {
+    const contextValue: IServingContext = {
+      messageService: this.messageService,
+      backendService: this.service,
+    };
+
     return (
-      <Provider store={this._store}>
-        <ServingContent
-          messageService={this.messageService}
-          service={this.service}
-        />
-      </Provider>
+      <ServingContext.Provider value={contextValue}>
+        <Provider store={this._store}>
+          <ServingContent />
+        </Provider>
+      </ServingContext.Provider>
     );
   }
 }
