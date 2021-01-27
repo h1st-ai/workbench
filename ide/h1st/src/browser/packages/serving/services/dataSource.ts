@@ -18,13 +18,16 @@ export const removeServingDeployment = async (id: string) => {
   } catch (error) {}
 };
 
-export const stopServingDeployment = async (classname: string) => {
+export const stopServingDeployment = async (
+  classname: string,
+  version: number,
+) => {
   try {
-    await axios.delete(`${BASE_URL}/api/deployments/${classname}`);
+    await axios.delete(`${BASE_URL}/api/deployments/${classname}/${version}`);
   } catch (error) {}
 };
 
 export const getServingServiceURL = (url: string) => `${SERVING_URL}${url}`;
 
 export const getExampleServingServiceURL = (url: string) =>
-  `${SERVING_URL}${url}?data=[1, 2]`;
+  `${SERVING_URL}${url}?data=${encodeURI('[1, 2]')}`;

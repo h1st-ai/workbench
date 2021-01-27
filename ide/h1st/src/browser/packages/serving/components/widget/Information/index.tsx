@@ -8,6 +8,7 @@ import {
   removeServingDeployment,
   stopServingDeployment,
 } from '../../../services/dataSource';
+import { useEffect } from 'react';
 
 const formatDate = (dateSring: string) => {
   const date = new Date(dateSring);
@@ -53,10 +54,14 @@ const copyURL = async (url: string) => {
 const ServingItem = (props: any) => {
   const [showTry, setShowTry] = useState(false);
 
+  useEffect(() => {
+    setShowTry(false);
+  }, [props?.id]);
+
   return (
     <tr className="deployment-row">
       <td>{props?.graph_name}</td>
-      <td>{props?.version}</td>
+      <td style={{ textAlign: 'center' }}>v{props?.version}</td>
       <td>{props?.deployed_by ?? ''}</td>
       <td>{formatDate(props?.deployed_at)}</td>
       <td>Local</td>
@@ -81,7 +86,7 @@ const ServingItem = (props: any) => {
               key="stop"
               className="serving-table-button serving-table-button__stop"
               onClick={() => {
-                props?.stopDeployment(props?.graph_name);
+                props?.stopDeployment(props?.graph_name, props?.version);
               }}
             >
               Stop
@@ -134,9 +139,9 @@ const DeploymentHistoryTable = ({
       getDeployments();
     } catch (error) {}
   };
-  const stopDeployment = async (classname: string) => {
+  const stopDeployment = async (classname: string, version: number) => {
     try {
-      await stopServingDeployment(classname);
+      await stopServingDeployment(classname, version);
       messageService.info('Stop serving sucessfully');
       getDeployments();
     } catch (error) {}
