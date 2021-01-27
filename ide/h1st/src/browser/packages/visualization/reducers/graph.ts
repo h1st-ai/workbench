@@ -26,7 +26,7 @@ const getEdgeIndex = (graph: IGraph, searchEdge: any) => {
 };
 
 export const GraphSlice = createSlice({
-  name: "kernel",
+  name: "graph",
   initialState,
   reducers: {
     setSelected: (state, { payload }) => {

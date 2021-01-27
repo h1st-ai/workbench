@@ -47,7 +47,7 @@ export class NotebookFactory implements WidgetFactory {
   }
 
   protected async createEditor(uri: URI): Promise<H1stNotebookWidget> {
-    // const textEditor = await this.editorProvider(uri);
+    console.log('services', this.h1stBackendWithClientService);
     const newNotebook = new H1stNotebookWidget(
       uri,
       this.selectionService,

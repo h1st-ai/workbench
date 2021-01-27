@@ -1,4 +1,4 @@
-type NodeType = "condition" | "action" | undefined;
+type NodeType = 'condition' | 'action' | undefined;
 
 export interface INode {
   id?: string;
@@ -8,6 +8,7 @@ export interface INode {
   x: number;
   y: number;
   title?: string;
+  subModels?: string[];
 }
 
 export interface IEdge {
