@@ -45,6 +45,14 @@ class ServingDb:
     ServingDb.write_data(deployments)
 
 
+  @staticmethod
+  def remove_deployment(id):
+    deployments = ServingDb.read_data()
+    filteded_deployments = [deployment for deployment in deployments if deployment['id'] != id]
+
+    ServingDb.write_data(filteded_deployments)
+
+
   # Helper functions
   @staticmethod
   def read_data():

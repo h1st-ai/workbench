@@ -27,7 +27,7 @@ const SelectGraphClass = (props: any) => {
   }, []);
   return (
     <div className="form-section">
-      <div className="section-title">Class</div>
+      <div className="section-title">Service Class</div>
       <div>
         <select
           value={graphClass}

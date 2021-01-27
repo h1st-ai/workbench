@@ -1,6 +1,11 @@
 from fastapi import FastAPI, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseSettings
+from starlette import middleware
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware as StarletteCORSMiddleware
+
+
 from ray import serve
 from tune_server.runner import TuneConfig, TuneRunner
 
@@ -19,12 +24,6 @@ class Settings(BaseSettings):
 settings = Settings()
 app = FastAPI()
 
-# start ray server
-try:
-    ray_client = serve.start(detached=True)
-except:
-    ray_client = serve.connect()
-
 if settings.allowed_cors_origins:
     origins = settings.allowed_cors_origins.split(",")
     app.add_middleware(
@@ -34,6 +33,23 @@ if settings.allowed_cors_origins:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# start ray server
+try:
+    # serve.init(
+        
+    # )
+
+    ray_client = serve.start(
+        detached=True,
+        # http_options={
+        #     "middleware": [
+        #         Middleware(StarletteCORSMiddleware, allow_origins=["*"], allow_methods=["*"])
+        #     ]
+        # },
+    )
+except:
+    ray_client = serve.connect()
 
 
 @app.get("/api")
@@ -132,7 +148,7 @@ def get_service_classes():
     return Deployment.find_all_service_class()
 
 @app.post("/api/deployments")
-def create(inputs: dict) -> dict:
+def create(inputs: dict):
     res = Deployment.create(inputs['service_class_name'])
     
     if res['status'] == 'ready':
@@ -150,3 +166,10 @@ def delete(service_class_name: str) -> dict:
     result = Deployment.delete(service_class_name)
     ServingDb.stop_deployment(service_class_name)
     return result
+
+@app.delete('/api/deployments-history/{id}')
+def remove_deployment(id):
+    ServingDb.remove_deployment(id)
+    return {
+        'result': 'success'
+    }

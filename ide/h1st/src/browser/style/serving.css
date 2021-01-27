@@ -314,6 +314,7 @@ input:checked + .slider:before {
   color: white;
 }
 
+.serving-table-button__try,
 .serving-table-button__start,
 .serving-table-button__stop,
 .serving-table-button__url,
@@ -354,6 +355,7 @@ input:checked + .slider:before {
 
 .serving-table-button__remove {
   padding-top: 4px;
+  padding-bottom: 4px;
   background-color: #d97862;
   border: 1px solid #c22f25;
 }

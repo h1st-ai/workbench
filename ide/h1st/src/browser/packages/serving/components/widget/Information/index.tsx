@@ -1,8 +1,13 @@
 import * as React from 'react';
-import classnames from 'classnames';
-import axios from 'axios';
+import { useState } from 'react';
 import { CopyIcon } from './Icons/Icons';
 import { MessageService } from '@theia/core';
+import {
+  getExampleServingServiceURL,
+  getServingServiceURL,
+  removeServingDeployment,
+  stopServingDeployment,
+} from '../../../services/dataSource';
 
 const formatDate = (dateSring: string) => {
   const date = new Date(dateSring);
@@ -17,7 +22,7 @@ const formatDate = (dateSring: string) => {
 };
 
 const copyURL = async (url: string) => {
-  const fullUrl = 'http://localhost:8000' + url;
+  const fullUrl = getServingServiceURL(url);
   if (!navigator.clipboard) {
     var textArea = document.createElement('textarea');
     textArea.value = fullUrl;
@@ -46,11 +51,13 @@ const copyURL = async (url: string) => {
 };
 
 const ServingItem = (props: any) => {
+  const [showTry, setShowTry] = useState(false);
+
   return (
     <tr className="deployment-row">
-      <td>serve_1</td>
       <td>{props?.graph_name}</td>
-      <td></td>
+      <td>{props?.version}</td>
+      <td>{props?.deployed_by ?? ''}</td>
       <td>{formatDate(props?.deployed_at)}</td>
       <td>Local</td>
       <td>{props?.status}</td>
@@ -59,30 +66,51 @@ const ServingItem = (props: any) => {
           {/* <button className="serving-table-button serving-table-button__start">
             Start
           </button> */}
-          {props?.status === 'deployed' && (
+          {props?.status === 'deployed' && [
             <button
+              key="try"
+              className="serving-table-button serving-table-button__try"
+              onClick={() => {
+                // props?.stopDeployment(props?.graph_name);
+                setShowTry(!showTry);
+              }}
+            >
+              {showTry ? 'Hide' : 'Try'}
+            </button>,
+            <button
+              key="stop"
               className="serving-table-button serving-table-button__stop"
               onClick={() => {
                 props?.stopDeployment(props?.graph_name);
               }}
             >
               Stop
-            </button>
-          )}
+            </button>,
+            <button
+              key="copy"
+              className="serving-table-button serving-table-button__url"
+              onClick={async () => {
+                await copyURL(props?.url);
+                props?.messageService?.info(
+                  'URL successfully copied to clipboard',
+                );
+              }}
+            >
+              <CopyIcon />
+              URL
+            </button>,
+          ]}
+
           <button
-            className="serving-table-button serving-table-button__url"
-            onClick={async () => {
-              await copyURL(props?.url);
-              props?.messageService?.info(
-                'URL successfully copied to clipboard',
-              );
-            }}
-          >
-            <CopyIcon />
-            URL
-          </button>
-          <button className="serving-table-button serving-table-button__remove"></button>
+            className="serving-table-button serving-table-button__remove"
+            onClick={() => props?.removeDeployment(props?.id)}
+          ></button>
         </span>
+        {showTry && (
+          <div style={{ width: '100%', marginTop: 8 }}>
+            <code>curl {getExampleServingServiceURL(props?.url)}</code>
+          </div>
+        )}
       </td>
     </tr>
   );
@@ -99,10 +127,16 @@ const DeploymentHistoryTable = ({
   messageService,
   getDeployments,
 }: DeploymentHistoryTableProps) => {
-  const removeDeployment = (id: string) => {};
+  const removeDeployment = async (id: string) => {
+    try {
+      await removeServingDeployment(id);
+      messageService.info('Remove serving sucessfully');
+      getDeployments();
+    } catch (error) {}
+  };
   const stopDeployment = async (classname: string) => {
     try {
-      await axios.delete(`http://localhost:3000/api/deployments/${classname}`);
+      await stopServingDeployment(classname);
       messageService.info('Stop serving sucessfully');
       getDeployments();
     } catch (error) {}
@@ -112,8 +146,8 @@ const DeploymentHistoryTable = ({
       <table cellSpacing={0}>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Graph</th>
+            <th>Service</th>
+            <th>Version</th>
             <th>Deployed by</th>
             <th>Deployed On</th>
             <th>Instances</th>
@@ -137,36 +171,36 @@ const DeploymentHistoryTable = ({
   );
 };
 
-const DeploymentMonitoringItem = (props: any) => {
-  const { title = 'Total predictions', number = 10, error } = props;
-  return (
-    <div className="item">
-      <div className="title">{title} </div>
-      <div className={classnames(['number', { error }])}>{number} </div>
-    </div>
-  );
-};
+// const DeploymentMonitoringItem = (props: any) => {
+//   const { title = 'Total predictions', number = 10, error } = props;
+//   return (
+//     <div className="item">
+//       <div className="title">{title} </div>
+//       <div className={classnames(['number', { error }])}>{number} </div>
+//     </div>
+//   );
+// };
 
-const DeploymentMonitoring = () => {
-  return (
-    <div className="deployment-monitoring">
-      <DeploymentMonitoringItem />
-      <DeploymentMonitoringItem title="Total requests" />
-      <DeploymentMonitoringItem title="Request over xxx ms" />
-      <DeploymentMonitoringItem title="Median | peak load" />
-      <DeploymentMonitoringItem
-        title="Data Error Rate"
-        error={true}
-        number={2}
-      />
-      <DeploymentMonitoringItem
-        title="System Error Rate"
-        error={true}
-        number={4}
-      />
-    </div>
-  );
-};
+// const DeploymentMonitoring = () => {
+//   return (
+//     <div className="deployment-monitoring">
+//       <DeploymentMonitoringItem />
+//       <DeploymentMonitoringItem title="Total requests" />
+//       <DeploymentMonitoringItem title="Request over xxx ms" />
+//       <DeploymentMonitoringItem title="Median | peak load" />
+//       <DeploymentMonitoringItem
+//         title="Data Error Rate"
+//         error={true}
+//         number={2}
+//       />
+//       <DeploymentMonitoringItem
+//         title="System Error Rate"
+//         error={true}
+//         number={4}
+//       />
+//     </div>
+//   );
+// };
 
 interface InfomationProps {
   deployments: any[];
