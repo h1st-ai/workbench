@@ -14,6 +14,7 @@ import { ServingUris } from './experiment-uris';
 import reducer from './reducers/widget';
 import { ServingContent } from './components/servingContent';
 import { MessageService } from '@theia/core';
+import { H1stBackendWithClientService } from '../../../common/protocol';
 
 @injectable()
 export class ServingUIWidget extends ReactWidget
@@ -23,14 +24,20 @@ export class ServingUIWidget extends ReactWidget
   private _uri: URI;
   private _store: EnhancedStore;
   private messageService: MessageService;
+  private service: H1stBackendWithClientService;
 
-  constructor({ name, id, uri }: any, messageService: MessageService) {
+  constructor(
+    { name, id, uri }: any,
+    messageService: MessageService,
+    service: H1stBackendWithClientService,
+  ) {
     super();
     this._name = name;
     this._id = id;
     this._uri = uri;
     this._store = configureStore({ reducer, devTools: true });
     this.messageService = messageService;
+    this.service = service;
   }
 
   get name(): string {
@@ -73,7 +80,10 @@ export class ServingUIWidget extends ReactWidget
   render(): React.ReactNode {
     return (
       <Provider store={this._store}>
-        <ServingContent messageService={this.messageService} />
+        <ServingContent
+          messageService={this.messageService}
+          service={this.service}
+        />
       </Provider>
     );
   }

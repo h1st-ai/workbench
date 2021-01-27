@@ -5,10 +5,9 @@ import { MessageService } from '@theia/core';
 import {
   getExampleServingServiceURL,
   getServingServiceURL,
-  removeServingDeployment,
-  stopServingDeployment,
 } from '../../../services/dataSource';
 import { useEffect } from 'react';
+import { H1stBackendWithClientService } from '../../../../../../common/protocol';
 
 const formatDate = (dateSring: string) => {
   const date = new Date(dateSring);
@@ -125,23 +124,26 @@ interface DeploymentHistoryTableProps {
   deployments: any;
   messageService: MessageService;
   getDeployments: Function;
+  service: H1stBackendWithClientService;
 }
 
 const DeploymentHistoryTable = ({
   deployments = [],
   messageService,
   getDeployments,
+  service,
 }: DeploymentHistoryTableProps) => {
   const removeDeployment = async (id: string) => {
     try {
-      await removeServingDeployment(id);
+      console.log('Call remove deployment in ui', { id });
+      await service.removeServingDeployment(id);
       messageService.info('Remove serving sucessfully');
       getDeployments();
     } catch (error) {}
   };
   const stopDeployment = async (classname: string, version: number) => {
     try {
-      await stopServingDeployment(classname, version);
+      await service.stopServingDeployment(classname, version);
       messageService.info('Stop serving sucessfully');
       getDeployments();
     } catch (error) {}
@@ -211,12 +213,14 @@ interface InfomationProps {
   deployments: any[];
   messageService: MessageService;
   getDeployments: Function;
+  service: H1stBackendWithClientService;
 }
 
 const Information = ({
   deployments = [],
   messageService,
   getDeployments,
+  service,
 }: InfomationProps) => {
   return (
     <div className="serving-right serving-information">
@@ -224,6 +228,7 @@ const Information = ({
         deployments={deployments}
         messageService={messageService}
         getDeployments={getDeployments}
+        service={service}
       />
       {/* <DeploymentMonitoring /> */}
     </div>

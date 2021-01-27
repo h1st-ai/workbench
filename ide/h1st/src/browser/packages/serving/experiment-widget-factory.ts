@@ -49,6 +49,7 @@ export class ServingUIWidgetFactory implements WidgetFactory {
     const newExperiment = new ServingUIWidget(
       { name, id, uri },
       this.messageService,
+      this.h1stBackendWithClientService,
     );
 
     // this.setLabels(newExperiment, uri);

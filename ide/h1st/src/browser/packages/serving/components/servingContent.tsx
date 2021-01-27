@@ -2,15 +2,21 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { DeploymentForm } from './widget/DeploymentForm';
 import { Information } from './widget/Information';
-import { getServingDeployments } from '../services/dataSource';
+import { MessageService } from '@theia/core';
+import { H1stBackendWithClientService } from '../../../../common/protocol';
 
-export const ServingContent = (props: any) => {
-  const [deployments, setDeployments] = useState([]);
+interface IServingProps {
+  messageService: MessageService;
+  service: H1stBackendWithClientService;
+}
+
+export const ServingContent = (props: IServingProps) => {
+  const [deployments, setDeployments] = useState<any[]>([]);
 
   const getDeployments = async () => {
     try {
-      const deployments = await getServingDeployments();
-      setDeployments(deployments);
+      const deployments = await props?.service.getDeployments();
+      setDeployments(deployments as any[]);
     } catch (error) {}
   };
   useEffect(() => {
@@ -26,6 +32,7 @@ export const ServingContent = (props: any) => {
         deployments={deployments}
         messageService={props?.messageService}
         getDeployments={getDeployments}
+        service={props.service}
       />
     </div>
   );

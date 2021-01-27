@@ -28,4 +28,7 @@ export interface H1stBackendWithClientService
   getTuneList(): Promise<any>;
   getEnv(): Promise<string>;
   getCollaborators(needle: string, token: string): Promise<any[]>;
+  getDeployments(): Promise<any[]>;
+  removeServingDeployment(id: string): Promise<void>;
+  stopServingDeployment(classname: string, version: number): Promise<void>;
 }

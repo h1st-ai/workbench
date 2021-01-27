@@ -226,4 +226,45 @@ export class H1stBackendWithClientServiceImpl
         : reject('No Client'),
     );
   }
+
+  async getDeployments(): Promise<any[]> {
+    if (!this.client) {
+      return Promise.reject('No client');
+    }
+
+    await this.client.getName();
+
+    const res = await fetch(Settings.TUNE_HOST + '/api/deployments');
+
+    return res.json();
+  }
+
+  async removeServingDeployment(id: string) {
+    try {
+      if (!this.client) {
+        return Promise.reject('No client');
+      }
+      await this.client.getName();
+
+      await fetch(`${Settings.TUNE_HOST}/api/deployments-history/${id}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {}
+  }
+
+  async stopServingDeployment(classname: string, version: number) {
+    try {
+      if (!this.client) {
+        return Promise.reject('No client');
+      }
+      await this.client.getName();
+
+      await fetch(
+        `${Settings.TUNE_HOST}/api/deployments/${classname}/${version}`,
+        {
+          method: 'DELETE',
+        },
+      );
+    } catch (error) {}
+  }
 }
