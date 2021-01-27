@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3000';
-const SERVING_URL = 'http://localhost:8000';
+const BASE_URL = process.env.TUNE_URL || 'https://staging.h1st.ai';
+const SERVING_URL = process.env.SERVING_URL || 'https://staging.h1st.ai';
 
 export const getServingDeployments = async () => {
   try {

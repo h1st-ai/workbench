@@ -1,4 +1,5 @@
 import os
+from sys import version
 import uuid
 import json
 import datetime
@@ -8,30 +9,32 @@ import datetime
 
 class ServingDb:
   @staticmethod
-  def saveDeployment(graphName, url):
+  def saveDeployment(className, url):
+    current_max_version = ServingDb.get_max_version_by_class(className)
     obj = {
       'id': str(uuid.uuid4()),
-      'graph_name': graphName,
+      'graph_name': className,
       'deployed_at': datetime.datetime.utcnow().isoformat(),
       'status': 'deployed',
-      'url': url
+      'url': url,
+      'version': current_max_version + 1 if current_max_version else 1
     }
 
     deployments = ServingDb.read_data()
     if not deployments:
       deployments = []
 
-    # Change status of previous deployment
-    for deployment in deployments:
-      if deployment['graph_name'] == graphName:
-        deployment['status']= 'stopped'
+    # # Change status of previous deployment -> Do versioning, do not use this
+    # for deployment in deployments:
+    #   if deployment['graph_name'] == className:
+    #     deployment['status']= 'stopped'
 
     deployments.insert(0, obj)
 
     ServingDb.write_data(deployments)
 
   @staticmethod
-  def stop_deployment(graphName):
+  def stop_deployment(className, version):
     deployments = ServingDb.read_data()
     if not deployments:
       deployments = []
@@ -39,7 +42,7 @@ class ServingDb:
   
     for deployment in deployments:
       #Set all deployment for current graph to stop
-      if deployment['graph_name'] == graphName:
+      if deployment['graph_name'] == className and deployment['version'] == int(version):
         deployment['status']= 'stopped'
 
     ServingDb.write_data(deployments)
@@ -52,6 +55,20 @@ class ServingDb:
 
     ServingDb.write_data(filteded_deployments)
 
+  @staticmethod
+  def get_deploymens_by_id(id):
+    deployments = ServingDb.read_data()
+    filteded_deployments = [deployment for deployment in deployments if deployment['id'] == id]
+
+    return filteded_deployments[0]
+
+  
+  @staticmethod
+  def get_max_version_by_class(className):
+    deployments = ServingDb.read_data()
+    graph_deployments = [deployment for deployment in deployments if deployment['graph_name'] == className]
+    max_version = max(deployment['version'] for deployment in graph_deployments) if graph_deployments else 0
+    return max_version
 
   # Helper functions
   @staticmethod

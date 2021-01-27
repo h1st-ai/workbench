@@ -1,3 +1,4 @@
+from sys import version
 from fastapi import FastAPI, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseSettings
@@ -36,17 +37,8 @@ if settings.allowed_cors_origins:
 
 # start ray server
 try:
-    # serve.init(
-        
-    # )
-
     ray_client = serve.start(
         detached=True,
-        # http_options={
-        #     "middleware": [
-        #         Middleware(StarletteCORSMiddleware, allow_origins=["*"], allow_methods=["*"])
-        #     ]
-        # },
     )
 except:
     ray_client = serve.connect()
@@ -149,7 +141,9 @@ def get_service_classes():
 
 @app.post("/api/deployments")
 def create(inputs: dict):
-    res = Deployment.create(inputs['service_class_name'])
+    className = inputs['service_class_name']
+    current_version = ServingDb.get_max_version_by_class(className)
+    res = Deployment.create(className, current_version + 1)
     
     if res['status'] == 'ready':
         print('Save deployment')
@@ -161,14 +155,16 @@ def create(inputs: dict):
 def get_deployments():
     return ServingDb.read_data()
 
-@app.delete("/api/deployments/{service_class_name}")
-def delete(service_class_name: str) -> dict:
-    result = Deployment.delete(service_class_name)
-    ServingDb.stop_deployment(service_class_name)
+@app.delete("/api/deployments/{service_class_name}/{version}")
+def delete(service_class_name: str, version: int) -> dict:
+    result = Deployment.delete(service_class_name, version)
+    ServingDb.stop_deployment(service_class_name, version)
     return result
 
 @app.delete('/api/deployments-history/{id}')
 def remove_deployment(id):
+    deployment = ServingDb.get_deploymens_by_id(id)
+    Deployment.delete(deployment['graph_name'], deployment['version'])
     ServingDb.remove_deployment(id)
     return {
         'result': 'success'

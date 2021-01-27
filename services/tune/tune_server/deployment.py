@@ -62,14 +62,22 @@ def find_service_class(classname):
 
 class Deployment:
     @staticmethod
-    def delete(service_classname):
-        ray_client.delete_backend(service_classname)
+    def delete(service_classname, version):
+        version_str = str(version)
+        backend_name = re.sub(r'(?<!^)(?=[A-Z])', '_', service_classname).lower()
+        
+        backend_name_with_version = f'{backend_name}_{version_str}'
+
+        ray_client.delete_endpoint(backend_name_with_version)
+        ray_client.delete_backend(backend_name_with_version)
+
         return {
             "message": "deleted"
         }
 
     @staticmethod
-    def create(service_classname):
+    def create(service_classname, version):
+        version_str = str(version)
         service_class = find_service_class(service_classname)  # load Graph class
 
         if not service_class:
@@ -80,15 +88,19 @@ class Deployment:
             }
 
         backend_name = re.sub(r'(?<!^)(?=[A-Z])', '_', service_classname).lower()
-        endpoint_name = backend_name
-        route = "/%s" % endpoint_name
+        
+        backend_name_with_version = f'{backend_name}_{version_str}'
+        endpoint_name = backend_name_with_version
+        route_name = '/%s' % backend_name
+        route = f"{route_name}/v{version_str}"
 
-        if backend_name in ray_client.list_backends():
-            ray_client.delete_endpoint(endpoint_name)
-            ray_client.delete_backend(backend_name)
 
-        ray_client.create_backend(backend_name, service_class)
-        ray_client.create_endpoint(endpoint_name, backend=backend_name, route=route)
+        if backend_name_with_version in ray_client.list_backends():
+            ray_client.delete_endpoint(backend_name_with_version)
+            ray_client.delete_backend(backend_name_with_version)
+
+        ray_client.create_backend(backend_name_with_version, service_class)
+        ray_client.create_endpoint(endpoint_name, backend=backend_name_with_version, route=route)
 
         return {
             "status": "ready",
