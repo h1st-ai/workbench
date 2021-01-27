@@ -9,10 +9,8 @@ import {
 } from '@theia/core/lib/browser';
 import { Emitter, Event, CommandService } from '@theia/core';
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
 import { WidgetManager } from '@theia/core/lib/browser';
 
-import store from './stores';
 import { ServingManager } from './serving-manager';
 import { ServingPanel } from './components/servingPanel';
 
@@ -41,9 +39,7 @@ export class ServingPanelWidget extends ReactWidget {
     @inject(CommandService) readonly commandService: CommandService,
   ) {
     super();
-    this.store = store;
     this.tuningManager = new ServingManager({
-      store,
       app,
       widgetManager,
       openerService,
@@ -81,12 +77,10 @@ export class ServingPanelWidget extends ReactWidget {
 
   protected render(): React.ReactNode {
     return (
-      <Provider store={this.store}>
-        <ServingPanel
-          commandService={this.commandService}
-          manager={this.tuningManager}
-        />
-      </Provider>
+      <ServingPanel
+        commandService={this.commandService}
+        manager={this.tuningManager}
+      />
     );
   }
 
