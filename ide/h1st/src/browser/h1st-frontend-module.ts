@@ -41,6 +41,13 @@ import { ExperimentListWidget } from './packages/tune';
 import { TuningOpener } from './packages/tune/opener';
 import { TuningUriLabelProviderContribution } from './packages/tune/experiment-uris';
 
+// serving
+import { ServingUIWidgetFactory } from './packages/serving/experiment-widget-factory';
+import { ServingContribution } from './packages/serving/contribution';
+import { ServingPanelWidget } from './packages/serving';
+import { ServingOpener } from './packages/serving/opener';
+import { ServingUriLabelProviderContribution } from './packages/serving/experiment-uris';
+
 import { GraphFactory } from './packages/visualization/graph-factory';
 import { GraphOpener } from './packages/visualization/opener';
 import { NotebookFactory } from './packages/notebook/notebook-factory';
@@ -72,6 +79,29 @@ export default new ContainerModule((bind, unbind) => {
     id: ExperimentListWidget.ID,
     createWidget: () => ctx.container.get(ExperimentListWidget),
   }));
+
+  // Serving
+  bind(ServingOpener).toSelf();
+  bind(OpenHandler).toService(ServingOpener);
+  bind(ServingUIWidgetFactory)
+    .toSelf()
+    .inSingletonScope();
+  bind(WidgetFactory).toService(ServingUIWidgetFactory);
+  bind(LabelProviderContribution)
+    .to(ServingUriLabelProviderContribution)
+    .inSingletonScope();
+
+  bind(ServingPanelWidget).toSelf();
+  bind<WidgetFactory>(WidgetFactory).toDynamicValue(ctx => ({
+    id: ServingPanelWidget.ID,
+    createWidget: () => ctx.container.get(ServingPanelWidget),
+  }));
+
+  bindViewContribution(bind, ServingContribution);
+  bind(FrontendApplicationContribution).toService(ServingContribution);
+  bind(TabBarToolbarContribution).toService(ServingContribution);
+
+  // ======
 
   bind(GraphOpener).toSelf();
   bind(OpenHandler).toService(GraphOpener);

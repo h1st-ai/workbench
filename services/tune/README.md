@@ -16,3 +16,11 @@ Query specific details about an experiment. This returns all the trials and metr
 
 
 Important: Currently tune runner server has to run at the root of project folder
+
+## Deployment
+
+`POST /api/deployments`
+Create a new deployment
+
+`DELETE /api/deployments`
+Delete a deployment
