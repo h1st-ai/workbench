@@ -44,8 +44,8 @@
   },
   "scripts": {
     "clean": "theia clean",
-    "build": "theia build --mode development && yarn copy:asset",
-    "build:pro": "theia build",
+    "build": "theia build --config=my.webpack.config.js --mode development && yarn copy:asset",
+    "build:pro": "theia build --config=my.webpack.config.js",
     "start": "yarn copy:asset && theia start --config=my.webpack.config.js --port 3002 --plugins=local-dir:plugins",
     "watch": "yarn copy:asset && theia build --config=my.webpack.config.js --watch --mode development ",
     "download:plugins": "theia download:plugins",
