@@ -267,4 +267,17 @@ export class H1stBackendWithClientServiceImpl
       );
     } catch (error) {}
   }
+
+  async getServiceClasses() {
+    try {
+      if (!this.client) {
+        return Promise.reject('No client');
+      }
+      await this.client.getName();
+
+      const res = await fetch(`${Settings.TUNE_HOST}/api/deployments/classes`);
+
+      return res.json();
+    } catch (error) {}
+  }
 }
