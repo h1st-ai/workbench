@@ -31,4 +31,5 @@ export interface H1stBackendWithClientService
   getDeployments(): Promise<any[]>;
   removeServingDeployment(id: string): Promise<void>;
   stopServingDeployment(classname: string, version: number): Promise<void>;
+  getServiceClasses(): Promise<any>;
 }

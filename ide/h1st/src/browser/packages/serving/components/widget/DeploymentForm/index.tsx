@@ -11,13 +11,9 @@ const SelectGraphClass = (props: any) => {
   const { graphClass, setGraphClass } = props;
 
   const getGraphClass = async () => {
-    // const res = await fetch('http://localhost:3000/api/deployments/classes');
-    // const data = await res.json();
-    const res = await axios.get(
-      'http://localhost:3000/api/deployments/classes',
-    );
+    const response = await props?.backendService?.getServiceClasses?.();
 
-    const data = res.data?.data ?? [];
+    const data = response?.data ?? [];
 
     setGraphClasses(data);
     setGraphClass(data?.[0]);
@@ -99,7 +95,7 @@ interface DeploymentFormProps {
 }
 
 const DeploymentForm = (props: DeploymentFormProps) => {
-  const { messageService } = useContext(ServingContext);
+  const { messageService, backendService } = useContext(ServingContext);
   const [graphClass, setGraphClass] = useState(null);
 
   const onDeploy = async () => {
@@ -115,7 +111,11 @@ const DeploymentForm = (props: DeploymentFormProps) => {
 
   return (
     <div className="serving-content serving-left">
-      <SelectGraphClass graphClass={graphClass} setGraphClass={setGraphClass} />
+      <SelectGraphClass
+        graphClass={graphClass}
+        setGraphClass={setGraphClass}
+        backendService={backendService}
+      />
       <InstanceSize />
       <DeployButton onDeploy={onDeploy} />
     </div>
