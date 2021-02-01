@@ -44,10 +44,10 @@
   },
   "scripts": {
     "clean": "theia clean",
-    "build": "theia build --config=my.webpack.config.js --mode development && yarn copy:asset",
-    "build:pro": "theia build --config=my.webpack.config.js",
-    "start": "yarn copy:asset && theia start --config=my.webpack.config.js --port 3002 --plugins=local-dir:plugins",
-    "watch": "yarn copy:asset && theia build --config=my.webpack.config.js --watch --mode development ",
+    "build": "theia build --config=ide.webpack.config.js --mode development && yarn copy:asset",
+    "build:pro": "theia build --config=ide.webpack.config.js",
+    "start": "yarn copy:asset && theia start --config=ide.webpack.config.js --port 3002 --plugins=local-dir:plugins",
+    "watch": "yarn copy:asset && theia build --config=ide.webpack.config.js --watch --mode development ",
     "download:plugins": "theia download:plugins",
     "copy:asset": "cp ../../docker/ide/components/index.html ./lib/index.html"
   },

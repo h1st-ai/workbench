@@ -5,4 +5,4 @@ lib
 *-app/*
 !*-app/package.json
 .vscode
-!browser-app/my.webpack.config.js
+!browser-app/ide.webpack.config.js
