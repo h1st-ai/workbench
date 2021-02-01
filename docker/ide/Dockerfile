@@ -32,6 +32,7 @@ COPY ./ide/h1st/tsconfig.json ./h1st/tsconfig.json
 COPY ./ide/h1st/src ./h1st/src
 
 COPY ./ide/browser-app/package.json ./browser-app/package.json
+COPY ./ide/browser-app/ide.webpack.config.js ./browser-app/ide.webpack.config.js
 
 RUN yarn global add @theia/cli@1.5.0 && yarn
 
