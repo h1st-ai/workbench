@@ -15,7 +15,7 @@ import { ServingManager } from './serving-manager';
 import { ServingPanel } from './components/servingPanel';
 
 @injectable()
-export class ServingPanelWidget extends ReactWidget {
+export class AppTemplatePanelWidget extends ReactWidget {
   static readonly ID = 'h1st:app-template:sidebar:widget';
   static readonly LABEL = 'App Template';
 
@@ -60,9 +60,9 @@ export class ServingPanelWidget extends ReactWidget {
 
   @postConstruct()
   protected async init(): Promise<void> {
-    this.id = ServingPanelWidget.ID;
-    this.title.label = ServingPanelWidget.LABEL;
-    this.title.caption = ServingPanelWidget.LABEL;
+    this.id = AppTemplatePanelWidget.ID;
+    this.title.label = AppTemplatePanelWidget.LABEL;
+    this.title.caption = AppTemplatePanelWidget.LABEL;
     this.title.closable = true;
     this.title.iconClass = 'sidebar-app-template-icon';
 

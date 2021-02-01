@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { ServingPanelWidget } from './index';
+import { AppTemplatePanelWidget } from './index';
 import {
   AbstractViewContribution,
   FrontendApplicationContribution,
@@ -45,8 +45,8 @@ export namespace ServingMenu {
 }
 
 @injectable()
-export class ServingContribution
-  extends AbstractViewContribution<ServingPanelWidget>
+export class AppTemplateDistribution
+  extends AbstractViewContribution<AppTemplatePanelWidget>
   implements FrontendApplicationContribution, TabBarToolbarContribution {
   @inject(FrontendApplicationStateService)
   protected readonly stateService: FrontendApplicationStateService;
@@ -60,8 +60,8 @@ export class ServingContribution
    */
   constructor(@inject(OpenerService) protected openerService: OpenerService) {
     super({
-      widgetId: ServingPanelWidget.ID,
-      widgetName: ServingPanelWidget.LABEL,
+      widgetId: AppTemplatePanelWidget.ID,
+      widgetName: AppTemplatePanelWidget.LABEL,
       defaultWidgetOptions: { area: 'left', rank: 200 },
       toggleCommandId: AppTemplateCommand.APP_TEMPLATE_COMMAND.id,
     });
@@ -103,7 +103,7 @@ export class ServingContribution
       },
       // this.withWidget(widget, () => {
       //   console.log('hgaha', widget);
-      //   (widget as ServingPanelWidget).manager.createNewExperiment();
+      //   (widget as AppTemplatePanelWidget).manager.createNewExperiment();
       // }),
     });
   }
@@ -144,11 +144,11 @@ export class ServingContribution
 
   protected withWidget<T>(
     widget: Widget | undefined = this.tryGetWidget(),
-    fn: (widget: ServingPanelWidget) => T,
+    fn: (widget: AppTemplatePanelWidget) => T,
   ): T | false {
     if (
-      widget instanceof ServingPanelWidget &&
-      widget.id === ServingPanelWidget.ID
+      widget instanceof AppTemplatePanelWidget &&
+      widget.id === AppTemplatePanelWidget.ID
     ) {
       return fn(widget);
     }

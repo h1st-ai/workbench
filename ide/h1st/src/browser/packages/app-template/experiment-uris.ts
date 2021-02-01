@@ -46,7 +46,7 @@ export namespace ServingUris {
 }
 
 @injectable()
-export class ServingUriLabelProviderContribution
+export class AppTemplateUriLabelProvicerContribution
   implements LabelProviderContribution {
   constructor(@inject(LabelProvider) protected labelProvider: LabelProvider) {}
 

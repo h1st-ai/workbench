@@ -9,7 +9,7 @@ import { injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 
 import { ServingUris } from './experiment-uris';
-import { ServingContent } from './components/servingContent';
+import { AppTemplateView } from './components/AppTemplateView';
 
 @injectable()
 export class ServingUIWidget extends ReactWidget
@@ -63,6 +63,6 @@ export class ServingUIWidget extends ReactWidget
   }
 
   render(): React.ReactNode {
-    return <ServingContent />;
+    return <AppTemplateView />;
   }
 }

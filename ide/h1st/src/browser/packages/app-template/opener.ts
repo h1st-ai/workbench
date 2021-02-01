@@ -15,7 +15,7 @@ export interface ServingOpenerOptions extends WidgetOpenerOptions {
 }
 
 @injectable()
-export class ServingOpener extends NavigatableWidgetOpenHandler<
+export class AppTemplateOpener extends NavigatableWidgetOpenHandler<
   ServingUIWidget
 > {
   readonly id = ServingUIWidgetFactory.ID;
