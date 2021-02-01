@@ -16,7 +16,7 @@
 @import 'tune.css';
 @import 'serving.css';
 @import 'share-diaglog.css';
-
+@import 'app-template.css';
 button {
   cursor: pointer;
 }

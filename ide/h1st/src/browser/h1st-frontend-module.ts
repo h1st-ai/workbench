@@ -48,6 +48,13 @@ import { ServingPanelWidget } from './packages/serving';
 import { ServingOpener } from './packages/serving/opener';
 import { ServingUriLabelProviderContribution } from './packages/serving/experiment-uris';
 
+// app-template
+import { ServingUIWidgetFactory as AppTemplateUIWidgetFactory } from './packages/app-template/experiment-widget-factory';
+import { AppTemplateDistribution } from './packages/app-template/contribution';
+import { AppTemplatePanelWidget } from './packages/app-template';
+import { AppTemplateOpener } from './packages/app-template/opener';
+import { AppTemplateUriLabelProvicerContribution } from './packages/app-template/experiment-uris';
+
 import { GraphFactory } from './packages/visualization/graph-factory';
 import { GraphOpener } from './packages/visualization/opener';
 import { NotebookFactory } from './packages/notebook/notebook-factory';
@@ -100,6 +107,27 @@ export default new ContainerModule((bind, unbind) => {
   bindViewContribution(bind, ServingContribution);
   bind(FrontendApplicationContribution).toService(ServingContribution);
   bind(TabBarToolbarContribution).toService(ServingContribution);
+
+  // AppTemplate
+  bind(AppTemplateOpener).toSelf();
+  bind(OpenHandler).toService(AppTemplateOpener);
+  bind(AppTemplateUIWidgetFactory)
+    .toSelf()
+    .inSingletonScope();
+  bind(WidgetFactory).toService(AppTemplateUIWidgetFactory);
+  bind(LabelProviderContribution)
+    .to(AppTemplateUriLabelProvicerContribution)
+    .inSingletonScope();
+
+  bind(AppTemplatePanelWidget).toSelf();
+  bind<WidgetFactory>(WidgetFactory).toDynamicValue(ctx => ({
+    id: AppTemplatePanelWidget.ID,
+    createWidget: () => ctx.container.get(AppTemplatePanelWidget),
+  }));
+
+  bindViewContribution(bind, AppTemplateDistribution);
+  bind(FrontendApplicationContribution).toService(AppTemplateDistribution);
+  bind(TabBarToolbarContribution).toService(AppTemplateDistribution);
 
   // ======
 
