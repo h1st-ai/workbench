@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useContext } from 'react';
+import AppTemplateContext from '../../context';
 import { Icon } from '../Icon';
 
 interface AppTemplateItemsProps {
@@ -9,11 +11,23 @@ interface AppTemplateItemsProps {
     workflow: string;
     stack: string;
   };
+  templateName?: string;
+  handleOnClone?: Function;
 }
 
 const AppTemplateItem = (props: AppTemplateItemsProps) => {
+  const { messageService } = useContext(AppTemplateContext);
+  const handleOnClick = async () => {
+    if (props?.templateName) {
+      await props?.handleOnClone?.(props?.templateName);
+    }
+
+    messageService?.info?.(
+      `${props.name} was cloned sucessfully into you workspace`,
+    );
+  };
   return (
-    <div className="app-template-item">
+    <div className="app-template-item" onClick={handleOnClick}>
       <div className="main-content">
         <div className="icon">
           {Array.isArray(props.icon) ? (

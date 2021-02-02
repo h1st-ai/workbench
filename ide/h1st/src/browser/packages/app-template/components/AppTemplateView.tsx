@@ -1,12 +1,19 @@
 import * as React from 'react';
+import { H1stBackendWithClientService } from '../../../../common/protocol';
 import { AppTemplateGroup } from './AppTemplateGroup';
 
-interface IServingProps {}
+interface IServingProps {
+  service: H1stBackendWithClientService;
+}
 
 export const AppTemplateView = (props: IServingProps) => {
+  const handleOnClone = async (url: string) => {
+    await props.service.cloneTemplateRepo(url);
+  };
   return (
     <div className="app-template-container">
       <AppTemplateGroup
+        handleOnClone={handleOnClone}
         title="Usecases"
         items={[
           {
@@ -17,6 +24,7 @@ export const AppTemplateView = (props: IServingProps) => {
               workflow: 'CNN, FuzzyLogic, Ensemble',
               stack: 'React, Django',
             },
+            templateName: 'pred-maintenance',
           },
           {
             name: 'IoT Cybersecurity',
@@ -26,6 +34,7 @@ export const AppTemplateView = (props: IServingProps) => {
               workflow: 'LSTM, CNN, Boolean Logic, Ensemble',
               stack: 'Android, NodeJS, FastAPI',
             },
+            templateName: 'iot-cybersec',
           },
         ]}
       />

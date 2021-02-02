@@ -6,6 +6,7 @@ import {
   H1stBackendWithClientService,
 } from '../common/protocol';
 import Settings from './config';
+import { execCommand } from './utils';
 
 const { readdirSync, statSync, readFileSync } = require('fs');
 const { join } = require('path');
@@ -279,5 +280,17 @@ export class H1stBackendWithClientServiceImpl
 
       return res.json();
     } catch (error) {}
+  }
+
+  async cloneTemplateRepo(name: string) {
+    await execCommand(`rm -rf ${process.env.WORKSPACE_PATH}/temp`);
+    await execCommand(
+      `git clone https://github.com/h1st-ai/H1st-AI-App-Templates.git ${process.env.WORKSPACE_PATH}/temp`,
+    );
+
+    await execCommand(
+      `mv ${process.env.WORKSPACE_PATH}/temp/${name} ${process.env.WORKSPACE_PATH}/${name}`,
+    );
+    await execCommand(`rm -rf ${process.env.WORKSPACE_PATH}/temp`);
   }
 }
