@@ -32,6 +32,7 @@
 
 .app-template-item {
   border: 1px solid #d4d8dc;
+  cursor: pointer;
 }
 
 .app-template-item .main-content {

@@ -10,6 +10,10 @@ import URI from '@theia/core/lib/common/uri';
 
 import { ServingUris } from './experiment-uris';
 import { AppTemplateView } from './components/AppTemplateView';
+import { H1stBackendWithClientService } from '../../../common/protocol';
+import { MessageService } from '@theia/core';
+import { IAppTemplateContext } from './types';
+import { AppTemplateContextProvider } from './context';
 
 @injectable()
 export class ServingUIWidget extends ReactWidget
@@ -17,12 +21,16 @@ export class ServingUIWidget extends ReactWidget
   private _name: string;
   private _id: string;
   private _uri: URI;
+  private service: H1stBackendWithClientService;
+  private messageService: MessageService;
 
-  constructor({ name, id, uri }: any) {
+  constructor({ name, id, uri, service, messageService }: any) {
     super();
     this._name = name;
     this._id = id;
     this._uri = uri;
+    this.service = service;
+    this.messageService = messageService;
   }
 
   get name(): string {
@@ -63,6 +71,14 @@ export class ServingUIWidget extends ReactWidget
   }
 
   render(): React.ReactNode {
-    return <AppTemplateView />;
+    const contextValue: IAppTemplateContext = {
+      messageService: this.messageService,
+      backendService: this.service,
+    };
+    return (
+      <AppTemplateContextProvider value={contextValue}>
+        <AppTemplateView service={this.service} />;
+      </AppTemplateContextProvider>
+    );
   }
 }

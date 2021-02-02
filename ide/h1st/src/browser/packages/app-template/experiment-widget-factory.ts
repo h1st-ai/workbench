@@ -46,7 +46,13 @@ export class ServingUIWidgetFactory implements WidgetFactory {
 
     const { name, id } = data;
     // const textEditor = await this.editorProvider(uri);
-    const newExperiment = new ServingUIWidget({ name, id, uri });
+    const newExperiment = new ServingUIWidget({
+      name,
+      id,
+      uri,
+      service: this.h1stBackendWithClientService,
+      messageService: this.messageService,
+    });
 
     // this.setLabels(newExperiment, uri);
     const labelListener = this.labelProvider.onDidChange(event => {

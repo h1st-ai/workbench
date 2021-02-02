@@ -4,6 +4,7 @@ import { AppTemplateItem } from '../AppTemplateItem';
 interface IAppTemplateGroupProps {
   title: string;
   items: any[];
+  handleOnClone?: Function;
 }
 
 const AppTemplateGroup = (props: IAppTemplateGroupProps) => {
@@ -13,7 +14,7 @@ const AppTemplateGroup = (props: IAppTemplateGroupProps) => {
       <div className="items">
         {props?.items?.map(item => (
           <div className="item" key={item.key}>
-            <AppTemplateItem {...item} />
+            <AppTemplateItem {...item} handleOnClone={props?.handleOnClone} />
           </div>
         ))}
       </div>
