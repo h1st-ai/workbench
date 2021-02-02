@@ -40,58 +40,79 @@ export const AppTemplateView = (props: IServingProps) => {
       />
       <AppTemplateGroup
         title="AI Workflow Examples"
+        handleOnClone={handleOnClone}
         items={[
           {
-            name: 'Image Classification',
-            icon: 'image-classification',
-            key: 'image-classification',
+            name: 'Handwritten Digit Classification',
+            icon: 'handwriting',
+            key: 'handwriting',
+            templateName: 'digit-classification',
           },
           {
-            name: 'Object Detection',
-            icon: 'object-detection',
-            key: 'object-detection',
-          },
-          {
-            name: 'ML and Boolean Logic',
-            icon: 'ml-boolean-logic',
-            key: 'ml-boolean-logic',
-          },
-          {
-            name: 'Fuzzy Logic',
-            icon: 'fuzzy-logic',
-            key: 'fuzzy-logic',
+            name: 'Handwritten Digit Classification with Feedback',
+            icon: 'handwriting',
+            key: 'handwriting-feedback',
+            templateName: 'digit-classification-feedback',
           },
           {
             name: 'Ensemble',
             icon: 'ensemble',
             key: 'ensemble',
+            templateName: 'h1st-ai-ensemble',
+          },
+          {
+            name: 'Fuzzy Logic',
+            icon: 'fuzzy-logic',
+            key: 'fuzzy-logic',
+            templateName: 'h1st-ai-fuzzylogic',
           },
 
           {
-            name: 'Human in the loop',
-            icon: 'human-in-the-loop',
-            key: 'human-in-the-loop',
+            name: 'Simple 10x Multiplication',
+            icon: '10x',
+            key: '10x-multiply',
+            templateName: 'simple-10x-multiply',
+          },
+          {
+            name: '2-Step AI Workflow',
+            icon: '2-step',
+            key: 'image-classification',
+            templateName: '2-step-workflow',
           },
         ]}
       />
 
       <AppTemplateGroup
         title="Tech stacks"
+        handleOnClone={handleOnClone}
         items={[
           {
-            name: 'React & Django',
-            icon: ['react', 'django'],
+            name: 'H1st with React UI',
+            icon: 'react',
             key: 'react-django',
+            templateName: 'h1st-with-react-ui',
           },
           {
-            name: 'React & FastAPI',
-            icon: ['react', 'fast-api'],
-            key: 'react-fast-api',
+            name: 'H1st with Angular.js UI',
+            key: 'h1st-angular',
+            templateName: 'h1st-with-angular-ui',
           },
           {
             name: 'Streamlit',
             icon: 'streamlit',
             key: 'streamlit',
+          },
+        ]}
+      />
+      <AppTemplateGroup
+        title="Light/Quickstart"
+        handleOnClone={handleOnClone}
+        items={[
+          {
+            name: 'Quickstart (no UI)',
+            icon: 'quick-start',
+            key: 'quick-start',
+            templateName: 'h1st-ai-base',
           },
         ]}
       />
