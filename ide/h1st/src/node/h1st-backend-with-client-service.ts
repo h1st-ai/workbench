@@ -289,7 +289,9 @@ export class H1stBackendWithClientServiceImpl
       `git clone https://github.com/h1st-ai/H1st-AI-App-Templates.git ${path}/temp`,
     );
 
-    await execCommand(`mv ${path}/temp/${name} ${path}/${name}`);
+    await execCommand(
+      `rsync -r --copy-links --safe-links ${path}/temp/${name} ${path}/${name}`,
+    );
     await execCommand(`rm -rf ${path}/temp`);
   }
 }
