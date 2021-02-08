@@ -2,7 +2,7 @@ import sys
 import os
 import importlib
 import inspect
-from h1st import Graph, Decision
+from h1st.core import Graph, Decision
 from h1st.core.ensemble import Ensemble
 from os.path import dirname, basename, isfile, join
 import glob

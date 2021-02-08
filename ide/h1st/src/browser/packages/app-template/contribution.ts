@@ -15,7 +15,7 @@ import {
 import { OpenerService, open } from '@theia/core/lib/browser/opener-service';
 import { MenuModelRegistry } from '@theia/core';
 import { TOOL_MENU } from '../tune/contribution';
-import { ServingUris } from './experiment-uris';
+import { AppTemplateUris } from './experiment-uris';
 
 export namespace AppTemplateCommand {
   const APP_TEMPLATE_CATEGORY = 'AppTemplate';
@@ -85,7 +85,7 @@ export class AppTemplateDistribution
 
         open(
           this.openerService,
-          ServingUris.encode('app-template-view', name),
+          AppTemplateUris.encode('app-template-view', name),
           {
             mode: 'activate',
             name,

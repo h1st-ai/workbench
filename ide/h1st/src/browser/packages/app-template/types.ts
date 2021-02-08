@@ -1,9 +1,10 @@
-import { MessageService } from '@theia/core';
+import { CommandService, MessageService } from '@theia/core';
 import { H1stBackendWithClientService } from '../../../common/protocol';
 
 export interface IAppTemplateContext {
   messageService: MessageService | undefined;
   backendService: H1stBackendWithClientService | undefined;
+  commandService: CommandService | undefined;
 }
 export interface IStore {
   tunes: IExperimentSlice;

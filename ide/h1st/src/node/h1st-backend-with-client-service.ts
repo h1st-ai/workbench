@@ -289,7 +289,7 @@ export class H1stBackendWithClientServiceImpl
     );
 
     await execCommand(
-      `rsync -r --copy-links --safe-links ${process.env.WORKSPACE_PATH}/temp/${name} ${process.env.WORKSPACE_PATH}/${name}`,
+      `rsync -r --copy-links --safe-links ${process.env.WORKSPACE_PATH}/temp/${name} ${process.env.WORKSPACE_PATH}`,
     );
     await execCommand(`rm -rf ${process.env.WORKSPACE_PATH}/temp`);
   }

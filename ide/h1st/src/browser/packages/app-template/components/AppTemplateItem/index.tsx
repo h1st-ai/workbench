@@ -1,3 +1,4 @@
+import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import * as React from 'react';
 import { useContext } from 'react';
 import AppTemplateContext from '../../context';
@@ -16,15 +17,27 @@ interface AppTemplateItemsProps {
 }
 
 const AppTemplateItem = (props: AppTemplateItemsProps) => {
-  const { messageService } = useContext(AppTemplateContext);
+  const { messageService, commandService } = useContext(AppTemplateContext);
   const handleOnClick = async () => {
-    if (props?.templateName) {
-      await props?.handleOnClone?.(props?.templateName);
-    }
+    try {
+      messageService?.info?.(
+        `Cloning project ${props.name} into you workspace`,
+      );
 
-    messageService?.info?.(
-      `${props.name} was cloned sucessfully into you workspace`,
-    );
+      if (props?.templateName) {
+        await props?.handleOnClone?.(props?.templateName);
+      }
+
+      messageService?.info?.(
+        `${props.name} was cloned sucessfully into you workspace`,
+      );
+
+      return commandService?.executeCommand(
+        FileNavigatorCommands.REFRESH_NAVIGATOR.id,
+      );
+    } catch (error) {
+      console.log('clone error', error);
+    }
   };
   return (
     <div className="app-template-item" onClick={handleOnClick}>

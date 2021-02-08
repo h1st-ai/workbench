@@ -1,7 +1,7 @@
 // import { ExperimentWidgetFactory } from './experiment-widget-factory';
 import { FrontendApplication, WidgetManager } from '@theia/core/lib/browser';
 import { OpenerService, open } from '@theia/core/lib/browser/opener-service';
-import { ServingUris } from './experiment-uris';
+import { AppTemplateUris } from './experiment-uris';
 
 // import { ExperimentWidget } from './expriment-widget';
 // import { WidgetManager } from '@theia/core/lib/browser';
@@ -34,7 +34,7 @@ export class ServingManager {
     const id = uniqid();
     const name = 'serving';
 
-    open(this.openerService, ServingUris.encode(id, name), {
+    open(this.openerService, AppTemplateUris.encode(id, name), {
       mode: 'activate',
       name,
       id,

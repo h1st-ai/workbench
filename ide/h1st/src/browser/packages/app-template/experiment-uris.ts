@@ -11,7 +11,7 @@ export interface IDecodedTuningURI {
   name: string;
 }
 
-export namespace ServingUris {
+export namespace AppTemplateUris {
   export const TUNING_SCHEME = 'app-template';
 
   export const encode = (id: string, name: string): URI => {
@@ -51,7 +51,7 @@ export class AppTemplateUriLabelProvicerContribution
   constructor(@inject(LabelProvider) protected labelProvider: LabelProvider) {}
 
   canHandle(element: object): number {
-    if (element instanceof URI && ServingUris.isTuningUri(element)) {
+    if (element instanceof URI && AppTemplateUris.isTuningUri(element)) {
       return 100;
     }
     return 0;
@@ -62,7 +62,7 @@ export class AppTemplateUriLabelProvicerContribution
   }
 
   getName(uri: URI): string {
-    const { name } = ServingUris.decode(uri);
+    const { name } = AppTemplateUris.decode(uri);
 
     return name;
   }
