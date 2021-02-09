@@ -1,4 +1,5 @@
-const SERVING_URL = process.env.SERVING_URL || 'https://staging.h1st.ai';
+const SERVING_URL =
+  process.env.SERVING_URL || `${window?.location?.origin ?? ''}`;
 
 export const getServingServiceURL = (url: string) => `${SERVING_URL}${url}`;
 

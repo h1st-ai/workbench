@@ -10,15 +10,21 @@ interface IServingPanel {
 
 export const ServingPanel = ({ commandService }: IServingPanel) => {
   return (
-    <div>
-      ServingPanel
+    <div style={{ padding: 8 }}>
       <button
         onClick={() => {
-          console.log('On click');
           commandService.executeCommand(ServingCommands.SERVING.id);
         }}
+        style={{
+          width: '100%',
+          outline: 'none',
+          border: 'none',
+          color: 'white',
+          backgroundColor: '#30479B',
+          padding: 8,
+        }}
       >
-        Show Panel
+        Show Serving Panel
       </button>
     </div>
   );

@@ -2,14 +2,14 @@ import sys
 import os
 import importlib
 import inspect
-from h1st import Graph, Decision
+from h1st.core import Graph, Decision
 from h1st.core.ensemble import Ensemble
 from os.path import dirname, basename, isfile, join
 import glob
 from concurrent.futures import ProcessPoolExecutor
 
 def get_package_dir():
-    return os.environ.get('WORKBENCH_NAME', './SampleProject')
+    return os.environ.get('WORKBENCH_NAME', '/home/project/SampleProject')
 
 def find_graphs(module_name):
     graphs = []
