@@ -4,6 +4,7 @@ import { IAppTemplateContext } from './types';
 const defaultValue: IAppTemplateContext = {
   messageService: undefined,
   backendService: undefined,
+  commandService: undefined,
 };
 
 const AppTemplateContext = React.createContext(defaultValue);

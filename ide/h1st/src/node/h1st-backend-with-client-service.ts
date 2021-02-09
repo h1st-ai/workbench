@@ -290,7 +290,7 @@ export class H1stBackendWithClientServiceImpl
     );
 
     await execCommand(
-      `rsync -r --copy-links --safe-links ${path}/temp/${name} ${path}/${name}`,
+      `rsync -r --copy-links --safe-links ${path}/temp/${name} ${path}`,
     );
     await execCommand(`rm -rf ${path}/temp`);
   }

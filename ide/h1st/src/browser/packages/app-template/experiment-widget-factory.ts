@@ -1,4 +1,4 @@
-import { MessageService, SelectionService } from '@theia/core';
+import { CommandService, MessageService, SelectionService } from '@theia/core';
 import {
   LabelProvider,
   WidgetFactory,
@@ -10,7 +10,7 @@ import { TextEditorProvider } from '@theia/editor/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { injectable, inject } from 'inversify';
 import { H1stBackendWithClientService } from '../../../common/protocol';
-import { ServingUris } from './experiment-uris';
+import { AppTemplateUris } from './experiment-uris';
 import { ServingUIWidget } from './serving-ui-widget';
 
 export interface TuningExperimentWidgetOpenerOptions
@@ -34,6 +34,7 @@ export class ServingUIWidgetFactory implements WidgetFactory {
   @inject(MessageService) protected readonly messageService: MessageService;
   @inject(H1stBackendWithClientService)
   protected readonly h1stBackendWithClientService: H1stBackendWithClientService;
+  @inject(CommandService) readonly commandService: CommandService;
 
   createWidget(
     options: TuningExperimentWidgetOpenerOptions,
@@ -42,7 +43,7 @@ export class ServingUIWidgetFactory implements WidgetFactory {
   }
 
   protected async createEditor(uri: URI): Promise<ServingUIWidget> {
-    const data = ServingUris.decode(uri);
+    const data = AppTemplateUris.decode(uri);
 
     const { name, id } = data;
     // const textEditor = await this.editorProvider(uri);
@@ -52,6 +53,7 @@ export class ServingUIWidgetFactory implements WidgetFactory {
       uri,
       service: this.h1stBackendWithClientService,
       messageService: this.messageService,
+      commandService: this.commandService,
     });
 
     // this.setLabels(newExperiment, uri);

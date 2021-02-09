@@ -8,10 +8,10 @@ import {
 import { injectable } from 'inversify';
 import URI from '@theia/core/lib/common/uri';
 
-import { ServingUris } from './experiment-uris';
+import { AppTemplateUris } from './experiment-uris';
 import { AppTemplateView } from './components/AppTemplateView';
 import { H1stBackendWithClientService } from '../../../common/protocol';
-import { MessageService } from '@theia/core';
+import { CommandService, MessageService } from '@theia/core';
 import { IAppTemplateContext } from './types';
 import { AppTemplateContextProvider } from './context';
 
@@ -23,14 +23,16 @@ export class ServingUIWidget extends ReactWidget
   private _uri: URI;
   private service: H1stBackendWithClientService;
   private messageService: MessageService;
+  private commandService: CommandService;
 
-  constructor({ name, id, uri, service, messageService }: any) {
+  constructor({ name, id, uri, service, messageService, commandService }: any) {
     super();
     this._name = name;
     this._id = id;
     this._uri = uri;
     this.service = service;
     this.messageService = messageService;
+    this.commandService = commandService;
   }
 
   get name(): string {
@@ -54,7 +56,7 @@ export class ServingUIWidget extends ReactWidget
   }
 
   createMoveToUri(): URI {
-    return ServingUris.encode(this._id, this._name);
+    return AppTemplateUris.encode(this._id, this._name);
   }
 
   onAfterAttach(msg: Message) {
@@ -74,6 +76,7 @@ export class ServingUIWidget extends ReactWidget
     const contextValue: IAppTemplateContext = {
       messageService: this.messageService,
       backendService: this.service,
+      commandService: this.commandService,
     };
     return (
       <AppTemplateContextProvider value={contextValue}>

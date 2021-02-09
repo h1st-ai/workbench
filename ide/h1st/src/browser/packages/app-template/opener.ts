@@ -7,7 +7,7 @@ import {
 } from '@theia/core/lib/browser';
 import { ServingUIWidget } from './serving-ui-widget';
 import { ServingUIWidgetFactory } from './experiment-widget-factory';
-import { ServingUris } from './experiment-uris';
+import { AppTemplateUris } from './experiment-uris';
 // import { TextEditor } from './editor';
 
 export interface ServingOpenerOptions extends WidgetOpenerOptions {
@@ -127,7 +127,7 @@ export class AppTemplateOpener extends NavigatableWidgetOpenHandler<
   }
 
   canHandle(uri: URI, options?: WidgetOpenerOptions): number {
-    if (uri.scheme.toLowerCase() === ServingUris.TUNING_SCHEME) {
+    if (uri.scheme.toLowerCase() === AppTemplateUris.TUNING_SCHEME) {
       return 10000;
     }
 
