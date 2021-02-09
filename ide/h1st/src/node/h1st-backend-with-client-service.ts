@@ -283,14 +283,15 @@ export class H1stBackendWithClientServiceImpl
   }
 
   async cloneTemplateRepo(name: string) {
-    await execCommand(`rm -rf ${process.env.WORKSPACE_PATH}/temp`);
+    const path = Settings.WORKSPACE_PATH;
+    await execCommand(`rm -rf ${path}/temp`);
     await execCommand(
-      `git clone https://github.com/h1st-ai/H1st-AI-App-Templates.git ${process.env.WORKSPACE_PATH}/temp`,
+      `git clone https://github.com/h1st-ai/H1st-AI-App-Templates.git ${path}/temp`,
     );
 
     await execCommand(
-      `rsync -r --copy-links --safe-links ${process.env.WORKSPACE_PATH}/temp/${name} ${process.env.WORKSPACE_PATH}`,
+      `rsync -r --copy-links --safe-links ${path}/temp/${name} ${path}`,
     );
-    await execCommand(`rm -rf ${process.env.WORKSPACE_PATH}/temp`);
+    await execCommand(`rm -rf ${path}/temp`);
   }
 }
