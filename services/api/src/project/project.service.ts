@@ -21,8 +21,8 @@ export class ProjectService {
     if (remoteData.success === true) {
       result = await this.projectRepository
         .createQueryBuilder('project')
-        .where('project.author_username = :author_username', {
-          author_username,
+        .where('project.id in (:...project_ids)', {
+          project_ids: remoteData.items.map(item => item.workbench_id),
         })
         .getMany();
 
