@@ -92,7 +92,7 @@ class Deployment:
         backend_name_with_version = f'{backend_name}_{version_str}'
         endpoint_name = backend_name_with_version
         route_name = '/%s' % backend_name
-        route = f"{route_name}/v{version_str}"
+        route = f"/serving{route_name}/v{version_str}"
 
 
         if backend_name_with_version in ray_client.list_backends():
