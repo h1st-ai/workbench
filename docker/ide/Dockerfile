@@ -55,7 +55,7 @@ COPY ./docker/ide/components/index.html ./src-gen/frontend/index.html
 COPY ./docker/ide/components/index.html ./lib/index.html
 
 # this is also updated more often
-RUN pip3 install --no-cache git+https://github.com/h1st-ai/h1st
+RUN pip3 install --no-cache --force-reinstall git+https://github.com/h1st-ai/h1st
 
 RUN apt-get update -y && apt-get install -y rsync
 
