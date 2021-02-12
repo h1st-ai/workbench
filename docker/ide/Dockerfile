@@ -34,7 +34,11 @@ COPY ./ide/h1st/src ./h1st/src
 COPY ./ide/browser-app/package.json ./browser-app/package.json
 COPY ./ide/browser-app/ide.webpack.config.js ./browser-app/ide.webpack.config.js
 
-RUN yarn global add @theia/cli@1.5.0 && yarn
+RUN yarn global add @theia/cli@1.5.0 pm2 && yarn
+RUN curl -O https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+RUN unzip ./ngrok-stable-linux-amd64.zip && chmod +x ./ngrok
+COPY ./ngrok /usr/bin
+RUN rm ngrok-stable-linux-amd64.zip ngrok
 
 WORKDIR /home/theia/browser-app
 RUN NODE_OPTIONS="--max_old_space_size=4096" yarn run build:pro && yarn run download:plugins
