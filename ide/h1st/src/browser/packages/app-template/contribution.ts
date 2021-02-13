@@ -67,6 +67,26 @@ export class AppTemplateDistribution
     });
   }
 
+  async openAppTemplateView() {
+    const name = `App template`;
+
+    await open(
+      this.openerService,
+      AppTemplateUris.encode('app-template-view', name),
+      {
+        mode: 'activate',
+        name,
+        id: 'app-serving-view',
+      },
+    );
+  }
+
+  async onDidInitializeLayout() {
+    this.openAppTemplateView();
+    // this.closeView();
+    this.closeView();
+  }
+
   async onStart(app: FrontendApplication): Promise<void> {
     // alert("on start");
   }
@@ -78,21 +98,7 @@ export class AppTemplateDistribution
       isEnabled: widget => this.withWidget(widget, () => true),
       isVisible: widget => this.withWidget(widget, () => true),
       execute: () => {
-        // console.log(JSON.stringify(arguments));
-        console.log('inside handler');
-
-        const name = `App template`;
-
-        open(
-          this.openerService,
-          AppTemplateUris.encode('app-template-view', name),
-          {
-            mode: 'activate',
-            name,
-            id: 'app-serving-view',
-          },
-        );
-
+        this.openAppTemplateView();
         this.toggleView();
 
         // console.log('On execute with widget');
