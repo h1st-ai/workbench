@@ -12,7 +12,6 @@ if [ ! -d "$WORKSPACE_PATH/$WORKBENCH_NAME" ]; then
 
     (
         cd $WORKSPACE_PATH
-        h1 new-project "$WORKBENCH_NAME"
     )
 fi
 
