@@ -33,4 +33,6 @@ export interface H1stBackendWithClientService
   stopServingDeployment(classname: string, version: number): Promise<void>;
   getServiceClasses(): Promise<any>;
   cloneTemplateRepo(url: string): Promise<any>;
+  getGraphs(): Promise<string[]>;
+  getGraphDetail(name: string): Promise<any>;
 }

@@ -9,16 +9,20 @@ import URI from '@theia/core/lib/common/uri';
 import { GraphContainer } from './containers/GraphContainer';
 import { configureStore } from '@reduxjs/toolkit';
 import reducer from './reducers';
+import { H1stBackendWithClientService } from '../../../common/protocol';
+import { GraphVisualizationContextProvider } from './context';
 
 @injectable()
 export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
   static readonly ID = 'h1st:graph:widget';
   private readonly store: any;
+  private readonly service: H1stBackendWithClientService;
 
-  constructor(readonly uri: URI) {
+  constructor(readonly uri: URI, service: H1stBackendWithClientService) {
     super();
     // Init store from Widget
     this.store = configureStore({ reducer, devTools: true });
+    this.service = service;
   }
 
   getResourceUri(): URI {
@@ -42,9 +46,15 @@ export class H1stGraphWidget extends ReactWidget implements NavigatableWidget {
 
   protected render(): React.ReactNode {
     return (
-      <div className="h1st-graph" style={{ height: '100%' }}>
-        <GraphContainer store={this.store} />
-      </div>
+      <GraphVisualizationContextProvider
+        value={{
+          backendService: this.service,
+        }}
+      >
+        <div className="h1st-graph" style={{ height: '100%' }}>
+          <GraphContainer store={this.store} />
+        </div>
+      </GraphVisualizationContextProvider>
     );
   }
 }

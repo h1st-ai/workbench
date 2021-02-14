@@ -36,7 +36,10 @@ export class GraphFactory implements WidgetFactory {
 
   protected async createEditor(uri: URI): Promise<H1stGraphWidget> {
     // const textEditor = await this.editorProvider(uri);
-    const newVisualization = new H1stGraphWidget(uri);
+    const newVisualization = new H1stGraphWidget(
+      uri,
+      this.h1stBackendWithClientService,
+    );
 
     this.setLabels(newVisualization, uri);
 

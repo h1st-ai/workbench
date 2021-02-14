@@ -6,7 +6,7 @@ import {
   H1stBackendWithClientService,
 } from '../common/protocol';
 import Settings from './config';
-import { execCommand } from './utils';
+import { convertNameToType, execCommand, isEdgeExist } from './utils';
 
 const { readdirSync, statSync, readFileSync } = require('fs');
 const { join } = require('path');
@@ -293,5 +293,71 @@ export class H1stBackendWithClientServiceImpl
       `rsync -r --copy-links --safe-links ${path}/temp/${name} ${path}`,
     );
     await execCommand(`rm -rf ${path}/temp`);
+  }
+
+  async getGraphs(): Promise<string[]> {
+    const fetchModulesResponse = await fetch(
+      `${Settings.TUNE_HOST}/api/graphs`,
+    );
+    const modules = await fetchModulesResponse.json();
+
+    const graphs = Object.keys(modules).reduce(
+      (graphs: string[], module: string) => {
+        graphs.push(...modules[module]);
+        return graphs;
+      },
+      [],
+    );
+
+    return graphs;
+  }
+
+  async getGraphDetail(graphName: string): Promise<any> {
+    const graphDetailResponse = await fetch(
+      `${Settings.TUNE_HOST}/api/graphs/${graphName}/topology`,
+    );
+
+    const graphDetail = await graphDetailResponse.json();
+
+    const graphNode: { [key: string]: {} } = {};
+    const graphEdges: any[] = [];
+
+    const nodeNames = Object.keys(graphDetail);
+
+    nodeNames.forEach((name: string) => {
+      if (!graphNode[name]) {
+        // Init node if not exist
+        graphNode[name] = {
+          id: name,
+          name: graphDetail[name].node_name,
+          title: graphDetail[name].node_name,
+          subModels: graphDetail[name].ensemble_sub_models,
+          type:
+            convertNameToType(graphDetail[name].node_name) ?? // to handle start, end
+            convertNameToType(graphDetail[name].node_type) ?? // to handle decisions
+            'action',
+        };
+      }
+      const { edges = [] } = graphDetail[name];
+
+      edges.forEach((edge: any) => {
+        if (edge.next_node_id) {
+          const newEdge = {
+            handleText: edge.edge_label,
+            source: name,
+            target: edge.next_node_id,
+            type: 'specialEdge',
+          };
+          if (!isEdgeExist(graphEdges, newEdge)) {
+            graphEdges.push(newEdge);
+          }
+        }
+      });
+    });
+
+    return {
+      nodes: Object.keys(graphNode).map(name => graphNode[name]),
+      edges: graphEdges,
+    };
   }
 }

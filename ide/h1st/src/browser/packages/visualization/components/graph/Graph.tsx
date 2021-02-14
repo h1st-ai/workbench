@@ -2,14 +2,15 @@ import {
   DiagramEngine,
   DiagramModel,
   PathFindingLinkFactory,
-} from "@projectstorm/react-diagrams";
-import * as React from "react";
-import { CanvasWidget } from "@projectstorm/react-canvas-core";
-import { GraphCanvasWidget } from "./GraphCanvasWidget";
-import { fetchGraphDetail, fetchModules } from "../../services/dataProvider";
-import { ChooseGraphModal } from "../ChooseGraphDialog";
-import { log } from "../../services/logging";
-import { initGraph, initGraphEngine, redistribute } from "./utils";
+} from '@projectstorm/react-diagrams';
+import * as React from 'react';
+import { CanvasWidget } from '@projectstorm/react-canvas-core';
+import { GraphCanvasWidget } from './GraphCanvasWidget';
+import { ChooseGraphModal } from '../ChooseGraphDialog';
+import { log } from '../../services/logging';
+import { initGraph, initGraphEngine, redistribute } from './utils';
+import { useContext } from 'react';
+import GraphVisualizationContext from '../../context';
 
 const GraphContainer = ({
   engine,
@@ -21,12 +22,16 @@ const GraphContainer = ({
   const [showChooseGraphModal, setShowChooseGraphModal] = React.useState(false);
   const [graphs, setGraphs] = React.useState<string[]>([]);
 
+  const { backendService } = useContext(GraphVisualizationContext);
+
   const pathfinding = engine
     .getLinkFactories()
     .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME);
 
   const populateGraph = async (graph: string) => {
-    const { nodes = [], edges = [] } = await fetchGraphDetail(graph);
+    const { nodes = [], edges = [] } = await backendService?.getGraphDetail(
+      graph,
+    );
 
     initGraph({
       edges,
@@ -39,7 +44,7 @@ const GraphContainer = ({
   };
 
   const fetchData = async () => {
-    const graphs = await fetchModules();
+    const graphs = (await backendService?.getGraphs()) ?? [];
     if (graphs.length > 0) {
       setGraphs(graphs);
       setShowChooseGraphModal(true);
@@ -55,7 +60,7 @@ const GraphContainer = ({
   const handleSelectGraph = (graph: string) => {
     populateGraph(graph);
     setShowChooseGraphModal(false);
-    log("Graph selected", graph);
+    log('Graph selected', graph);
   };
 
   React.useEffect(() => {
