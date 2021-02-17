@@ -15,7 +15,7 @@ preStop() {
 
 
 PYTHON_REQ_FILE=/home/project/requirements_xyz.txt
-if [ -f "$PYTHON_REQ_FILE"]; then
+if [ -f "$PYTHON_REQ_FILE" ]; then
     # Install new packages
     pip install -r $PYTHON_REQ_FILE
 else
