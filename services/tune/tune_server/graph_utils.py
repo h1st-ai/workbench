@@ -49,7 +49,7 @@ def find_graphs_in_package():
     sys.path.append(get_package_dir())
 
     # search module names
-    modules = glob.glob(join(get_package_dir(), "**/*.py"), recursive=True)
+    modules = glob.glob(join(get_package_dir(), "**", "*.py"), recursive=True)
     module_names = [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
     # import modules and extract Graph classes parallelly
