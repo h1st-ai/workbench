@@ -12,14 +12,13 @@ from .graph_utils import get_package_dir
 
 ray_client = serve.connect()
 
-
 def find_all_service_class():
     pkg_dir = get_package_dir()
 
     # find files end with _service.py
     sys.path.append(pkg_dir)
-    modules = glob.glob(join(pkg_dir, "*_service.py"))
-    filenames = [basename(f) for f in modules if isfile(f)]
+    modules = glob.glob(join(pkg_dir, "**/*_service.py"), recursive=True)
+    filenames = [f for f in modules if isfile(f)]
 
     classes = []
 
@@ -36,28 +35,14 @@ def find_all_service_class():
         except:
             print('error with', filename)
 
-    return [klass.__name__ for klass in classes] 
+    return classes
 
 def find_service_class(classname):
-    pkg_dir = get_package_dir()
 
     # find files end with _service.py
-    sys.path.append(pkg_dir)
-    modules = glob.glob(join(pkg_dir, "*_service.py"))
-    filenames = [basename(f) for f in modules if isfile(f)]
+    classes = find_all_service_class()
 
-    # load services until found the one matching
-    for filename in filenames:
-        spec = importlib.util.spec_from_file_location("module.name", os.path.join(pkg_dir, filename))
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-
-        for att in dir(module):
-            kclass = getattr(module, att)
-            if inspect.isclass(kclass) and classname in kclass.__name__:
-                return kclass
-
-    return None
+    return [klass for klass in classes if klass.__name__ == classname][0]
 
 
 class Deployment:
@@ -112,5 +97,5 @@ class Deployment:
         classes = find_all_service_class()
 
         return {
-            "data": classes
+            "data": [klass.__name__ for klass in classes]
         }
