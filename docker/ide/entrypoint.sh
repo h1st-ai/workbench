@@ -9,7 +9,7 @@ preStop() {
     echo "Container stopped, performing cleanup..."
     pip3 freeze > /home/project/requirements_xyz_tmp.txt
     # Check for difference and keep only new packages
-    awk 'NR == FNR{ a[$0] = 1;next } !a[$0]' /home/project/requirements_xyz_tmp.txt /home/project/requirements_xyz.txt  > /home/project/requirements_xyz.txt
+    awk 'NR == FNR{ a[$0] = 1;next } !a[$0]'  /home/project/requirements_xyz.txt /home/project/requirements_xyz_tmp.txt > /home/project/requirements_xyz.txt
     rm /home/project/requirements_xyz_tmp.txt
 }
 
