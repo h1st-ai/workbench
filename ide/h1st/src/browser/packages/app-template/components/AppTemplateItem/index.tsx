@@ -17,7 +17,9 @@ interface AppTemplateItemsProps {
 }
 
 const AppTemplateItem = (props: AppTemplateItemsProps) => {
-  const { messageService, commandService } = useContext(AppTemplateContext);
+  const { messageService, commandService, widget } = useContext(
+    AppTemplateContext,
+  );
   const handleOnClick = async () => {
     try {
       messageService?.info?.(
@@ -32,9 +34,11 @@ const AppTemplateItem = (props: AppTemplateItemsProps) => {
         `${props.name} was cloned sucessfully into you workspace`,
       );
 
-      return commandService?.executeCommand(
+      await commandService?.executeCommand(
         FileNavigatorCommands.REFRESH_NAVIGATOR.id,
       );
+      await commandService?.executeCommand(FileNavigatorCommands.FOCUS.id);
+      await widget?.close();
     } catch (error) {
       console.log('clone error', error);
     }

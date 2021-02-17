@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { SelectBox } from '../SelectBox';
@@ -96,15 +95,12 @@ interface DeploymentFormProps {
 
 const DeploymentForm = (props: DeploymentFormProps) => {
   const { messageService, backendService } = useContext(ServingContext);
-  const [graphClass, setGraphClass] = useState(null);
+  const [graphClass, setGraphClass] = useState('');
 
   const onDeploy = async () => {
-    const res = await axios.post('http://localhost:3000/api/deployments', {
-      service_class_name: graphClass,
-    });
-
+    const res = await backendService?.createDeployment(graphClass);
     messageService?.info?.(
-      `Deploy successfully, \n API endpoint: ${res.data?.url}`,
+      `Deploy successfully, \n API endpoint: ${res?.data?.url}`,
     );
     props?.getDeployments?.();
   };
