@@ -1,10 +1,12 @@
 import { CommandService, MessageService } from '@theia/core';
+import { ReactWidget } from '@theia/core/lib/browser';
 import { H1stBackendWithClientService } from '../../../common/protocol';
 
 export interface IAppTemplateContext {
   messageService: MessageService | undefined;
   backendService: H1stBackendWithClientService | undefined;
   commandService: CommandService | undefined;
+  widget: ReactWidget | undefined;
 }
 export interface IStore {
   tunes: IExperimentSlice;

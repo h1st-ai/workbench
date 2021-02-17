@@ -77,6 +77,7 @@ export class ServingUIWidget extends ReactWidget
       messageService: this.messageService,
       backendService: this.service,
       commandService: this.commandService,
+      widget: this,
     };
     return (
       <AppTemplateContextProvider value={contextValue}>

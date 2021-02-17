@@ -228,6 +228,24 @@ export class H1stBackendWithClientServiceImpl
     );
   }
 
+  async createDeployment(graphClass: string): Promise<any> {
+    if (!this.client) {
+      return Promise.reject('No client');
+    }
+
+    const res = await fetch(Settings.TUNE_HOST + '/api/deployments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        service_class_name: graphClass,
+      }),
+    });
+
+    return res.json();
+  }
+
   async getDeployments(): Promise<any[]> {
     if (!this.client) {
       return Promise.reject('No client');

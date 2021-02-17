@@ -5,6 +5,7 @@ const defaultValue: IAppTemplateContext = {
   messageService: undefined,
   backendService: undefined,
   commandService: undefined,
+  widget: undefined,
 };
 
 const AppTemplateContext = React.createContext(defaultValue);

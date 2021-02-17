@@ -29,6 +29,7 @@ export interface H1stBackendWithClientService
   getEnv(): Promise<string>;
   getCollaborators(needle: string, token: string): Promise<any[]>;
   getDeployments(): Promise<any[]>;
+  createDeployment(graphClass: string): Promise<any>;
   removeServingDeployment(id: string): Promise<void>;
   stopServingDeployment(classname: string, version: number): Promise<void>;
   getServiceClasses(): Promise<any>;
