@@ -1,5 +1,6 @@
 const SERVING_URL =
-  process.env.SERVING_URL || `${window?.location?.origin ?? ''}`;
+  process.env.SERVING_URL ||
+  `${window?.location?.origin + window?.location?.pathname ?? ''}`;
 
 export const getServingServiceURL = (url: string) => `${SERVING_URL}${url}`;
 
