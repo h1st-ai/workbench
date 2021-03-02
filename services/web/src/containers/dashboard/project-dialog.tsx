@@ -23,16 +23,16 @@ interface IInstanceConfig {
 
 const INSTANCE_CONFIG: IInstances = {
   small: {
-    cpu: 1024,
-    ram: 1024 * 2,
+    cpu: 1024 * 2,
+    ram: 1024 * 4,
   },
   medium: {
-    cpu: 1024 * 8,
-    ram: 1024 * 32,
+    cpu: 1024 * 4,
+    ram: 1024 * 16,
   },
   large: {
-    cpu: 1024 * 16,
-    ram: 1024 * 120,
+    cpu: 1024 * 8,
+    ram: 1024 * 32,
   },
 };
 
