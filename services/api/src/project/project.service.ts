@@ -19,12 +19,14 @@ export class ProjectService {
     let result = [];
 
     if (remoteData.success === true) {
-      result = await this.projectRepository
-        .createQueryBuilder('project')
-        .where('project.id in (:...project_ids)', {
-          project_ids: remoteData.items.map(item => item.workbench_id),
-        })
-        .getMany();
+      if (remoteData?.items?.length > 0) {
+        result = await this.projectRepository
+          .createQueryBuilder('project')
+          .where('project.id in (:...project_ids)', {
+            project_ids: remoteData.items.map(item => item.workbench_id),
+          })
+          .getMany();
+      }
 
       // update table with newest status
       const mappedTable = {};

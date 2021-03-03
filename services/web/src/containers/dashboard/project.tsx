@@ -17,7 +17,19 @@ import axious from 'axios';
 import { makeApiParams } from 'data/client';
 
 import styles from './style.module.css';
+import { INSTANCE_CONFIG } from './instance-config';
 // import { Avatar } from 'components/profile-photo';
+
+const getRamMapping = (actual: number): number => {
+  const size = Object.keys(INSTANCE_CONFIG).find(
+    (key: string) => INSTANCE_CONFIG[key].ram === actual,
+  );
+  if (size) {
+    return INSTANCE_CONFIG[size].display_ram;
+  }
+
+  return actual;
+};
 
 export function ProjectListItem({
   author_username,
@@ -359,8 +371,11 @@ export function ProjectGridItem({
               <span data-tip={`CPU: ${cpu / 1024}`} data-for={id}>
                 <FontAwesomeIcon icon={faMicrochip} /> {cpu / 1024}
               </span>
-              <span data-tip={`RAM: ${ram / 1024}G`} data-for={id}>
-                <FontAwesomeIcon icon={faMemory} /> {ram / 1024}G
+              <span
+                data-tip={`RAM: ${getRamMapping(ram) / 1024}G`}
+                data-for={id}
+              >
+                <FontAwesomeIcon icon={faMemory} /> {getRamMapping(ram) / 1024}G
               </span>
               {gpu !== undefined && (
                 <span data-tip={`GPU: ${gpu / 1024}G`} data-for={id}>

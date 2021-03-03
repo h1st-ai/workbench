@@ -9,32 +9,7 @@ import axios from 'axios';
 
 import styles from './style.module.css';
 import { makeApiParams } from 'data/client';
-
-interface IInstances {
-  [key: string]: IInstanceConfig;
-}
-
-interface IInstanceConfig {
-  cpu: number;
-  ram: number;
-  gpu?: number;
-  label?: string;
-}
-
-const INSTANCE_CONFIG: IInstances = {
-  small: {
-    cpu: 1024 * 2,
-    ram: 1024 * 4,
-  },
-  medium: {
-    cpu: 1024 * 4,
-    ram: 1024 * 16,
-  },
-  large: {
-    cpu: 1024 * 8,
-    ram: 1024 * 32,
-  },
-};
+import { INSTANCE_CONFIG } from './instance-config';
 
 export default function CreateProjectDialog() {
   const {
@@ -163,7 +138,7 @@ export default function CreateProjectDialog() {
             <li>
               <div className="instance-specs-label">RAM</div>
               <div className="instance-specs-value">
-                {INSTANCE_CONFIG[s].ram / 1024}G
+                {INSTANCE_CONFIG[s].display_ram / 1024}G
               </div>
             </li>
           </ul>
