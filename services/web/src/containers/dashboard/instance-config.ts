@@ -22,8 +22,8 @@ export const INSTANCE_CONFIG: IInstances = {
     display_ram: 1024 * 16,
   },
   large: {
-    cpu: 1024 * 8,
-    ram: 1024 * 30,
-    display_ram: 1024 * 30,
+    cpu: 1024 * 32,
+    ram: 1024 * 230,
+    display_ram: 1024 * 240,
   },
 };
