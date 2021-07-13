@@ -21,7 +21,7 @@ There are some required environment variables:
 - `WORKBENCH_NAME` (optional): By default the Workbench will pick up the first child of `WORKSPACE_PATH` and make it the workbench name. If you want to override that, set this to the name of the subfolder you want to be the workspace.
 - In `/services/api`, create a `.env` file from `.env_template`, override the variables in there if needed.
 
-### Saas services
+### SaaS services
 
 1. Start VPN
 2. Starting docker: `cd ./docker && docker-compose -f dev.yml up`

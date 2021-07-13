@@ -9,7 +9,7 @@ const dev = {
 
 const staging = {
   API: {
-    URL: 'https://staging.h1st.ai/api',
+    URL: 'https://builder-stg.aitomatic.com/api',
   },
   AUTH: {
     URL: 'https://login.h1st.ai/auth',
@@ -18,7 +18,7 @@ const staging = {
 
 const prod = {
   API: {
-    URL: 'https://cumulus.h1st.ai/api',
+    URL: 'https://builder.aitomatic.com/api',
   },
   AUTH: {
     URL: 'https://login.h1st.ai/auth',
